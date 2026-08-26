@@ -2,6 +2,14 @@
 
 A classic Snake game built with HTML5 Canvas, CSS, and JavaScript. Fully self-contained in a single HTML file with no external dependencies.
 
+## Ocean Theme Variant
+
+This build ships an **Abyssal Serpent** ocean/underwater re-skin: a deep-ocean water
+gradient background, ambient rising bubbles and drifting light rays, a glowing
+bioluminescent sea-serpent snake, and a glowing pearl instead of red food. All gameplay
+(arrow-key controls, scoring, wall + self collision, start/game-over screens, restart) is
+unchanged.
+
 ## How to Play
 
 1. Open `index.html` in any modern web browser.
@@ -11,7 +19,7 @@ A classic Snake game built with HTML5 Canvas, CSS, and JavaScript. Fully self-co
    - Down Arrow: Move down
    - Left Arrow: Move left
    - Right Arrow: Move right
-4. Eat the red food to grow longer and increase your score.
+4. Eat the glowing pearl to grow longer and increase your score.
 5. Avoid hitting the walls or your own tail.
 6. When the game ends, press **Enter** or click **Play Again** to restart.
 
