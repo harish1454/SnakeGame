@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
+    <title>Space Snake</title>
     <style>
         * {
             margin: 0;
@@ -12,13 +12,14 @@
         }
 
         body {
-            background-color: #1a1a2e;
+            background-color: #0a0a1a;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: #e0e0e0;
+            overflow: hidden;
         }
 
         .game-container {
@@ -38,20 +39,22 @@
         .title {
             font-size: 28px;
             font-weight: bold;
-            color: #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+            color: #00e5ff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5), 0 0 20px rgba(0, 229, 255, 0.3);
+            letter-spacing: 2px;
         }
 
         .score-display {
             font-size: 20px;
-            color: #ffdd57;
+            color: #ffab40;
             font-weight: bold;
+            text-shadow: 0 0 8px rgba(255, 171, 64, 0.4);
         }
 
         canvas {
-            border: 3px solid #00ff88;
+            border: 2px solid #1a237e;
             border-radius: 4px;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
             display: block;
         }
 
@@ -63,46 +66,53 @@
             justify-content: center;
             width: 400px;
             height: 400px;
-            background-color: rgba(10, 10, 30, 0.92);
+            background: radial-gradient(ellipse at center, rgba(10, 10, 40, 0.95) 0%, rgba(5, 5, 20, 0.98) 100%);
             border-radius: 4px;
             gap: 16px;
         }
 
         .overlay h2 {
             font-size: 32px;
-            color: #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            color: #00e5ff;
+            text-shadow: 0 0 15px rgba(0, 229, 255, 0.7), 0 0 30px rgba(0, 229, 255, 0.4);
+            letter-spacing: 3px;
         }
 
         .overlay p {
             font-size: 16px;
-            color: #ccc;
+            color: #b0bec5;
             text-align: center;
             line-height: 1.6;
         }
 
         .overlay .final-score {
             font-size: 24px;
-            color: #ffdd57;
+            color: #ffab40;
             font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 171, 64, 0.5);
         }
 
         .btn {
             padding: 12px 32px;
             font-size: 16px;
             font-weight: bold;
-            color: #1a1a2e;
-            background-color: #00ff88;
-            border: none;
+            color: #00e5ff;
+            background: transparent;
+            border: 2px solid #00e5ff;
             border-radius: 6px;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.1s;
+            transition: all 0.3s ease;
             margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
         }
 
         .btn:hover {
-            background-color: #00cc6a;
+            background: rgba(0, 229, 255, 0.15);
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.2);
             transform: scale(1.05);
+            text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
         }
 
         .btn:active {
@@ -111,7 +121,7 @@
 
         .instructions {
             font-size: 14px;
-            color: #888;
+            color: #5c6bc0;
             margin-top: 8px;
         }
 
@@ -123,22 +133,22 @@
 <body>
     <div class="game-container">
         <div class="header">
-            <div class="title">Snake</div>
-            <div class="score-display">Score: <span id="score">0</span></div>
+            <div class="title">SPACE SNAKE</div>
+            <div class="score-display">Energy: <span id="score">0</span></div>
         </div>
         <div style="position: relative;">
             <canvas id="gameCanvas" width="400" height="400"></canvas>
             <div class="overlay" id="startScreen">
-                <h2>Snake Game</h2>
-                <p>Use arrow keys to control the snake.<br>Eat food to grow and earn points.<br>Avoid hitting walls and yourself!</p>
-                <button class="btn" id="startBtn">Start Game</button>
-                <div class="instructions">Press any arrow key to begin</div>
+                <h2>COSMIC SERPENT</h2>
+                <p>Navigate your ship through the cosmos.<br>Collect cosmic energy to grow stronger.<br>Avoid asteroids (walls) and your own trail!</p>
+                <button class="btn" id="startBtn">Launch Ship</button>
+                <div class="instructions">Press any arrow key to launch</div>
             </div>
             <div class="overlay hidden" id="gameOverScreen">
-                <h2>Game Over</h2>
-                <p class="final-score">Score: <span id="finalScore">0</span></p>
-                <button class="btn" id="restartBtn">Play Again</button>
-                <div class="instructions">Press Enter or click to restart</div>
+                <h2>SHIP DESTROYED</h2>
+                <p class="final-score">Energy Collected: <span id="finalScore">0</span></p>
+                <button class="btn" id="restartBtn">Relaunch</button>
+                <div class="instructions">Press Enter or click to relaunch</div>
             </div>
         </div>
     </div>
@@ -151,17 +161,6 @@
             const CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
             const GAME_SPEED = 120; // milliseconds between frames
 
-            // Colors
-            const COLORS = {
-                background: '#0f0f23',
-                grid: '#16213e',
-                snake: '#00ff88',
-                snakeHead: '#00ffaa',
-                snakeOutline: '#009955',
-                food: '#ff6b6b',
-                foodGlow: '#ff4444'
-            };
-
             // Game state
             let snake = [];
             let food = { x: 0, y: 0 };
@@ -172,6 +171,15 @@
             let gameLoop = null;
             let gameStarted = false;
 
+            // Space theme state
+            let stars = [];
+            let particles = [];
+            let thrusterParticles = [];
+            let foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
+            let foodPulse = 0;
+            let starfieldOffset = 0;
+            let animationFrame = null;
+
             // DOM elements
             const canvas = document.getElementById('gameCanvas');
             const ctx = canvas.getContext('2d');
@@ -181,6 +189,24 @@
             const gameOverScreen = document.getElementById('gameOverScreen');
             const startBtn = document.getElementById('startBtn');
             const restartBtn = document.getElementById('restartBtn');
+
+            // Generate starfield
+            function generateStars() {
+                stars = [];
+                for (var i = 0; i < 120; i++) {
+                    stars.push({
+                        x: Math.random() * CANVAS_SIZE,
+                        y: Math.random() * CANVAS_SIZE,
+                        size: Math.random() * 2 + 0.5,
+                        brightness: Math.random(),
+                        twinkleSpeed: Math.random() * 0.03 + 0.01,
+                        twinkleOffset: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // Initialize stars
+            generateStars();
 
             // Initialize game
             function initGame() {
@@ -193,12 +219,14 @@
                 nextDirection = { x: 1, y: 0 };
                 score = 0;
                 scoreDisplay.textContent = '0';
+                particles = [];
+                thrusterParticles = [];
                 spawnFood();
             }
 
             // Spawn food at random position not occupied by snake
             function spawnFood() {
-                let newFood;
+                var newFood;
                 do {
                     newFood = {
                         x: Math.floor(Math.random() * GRID_SIZE),
@@ -206,6 +234,72 @@
                     };
                 } while (snake.some(function(segment) { return segment.x === newFood.x && segment.y === newFood.y; }));
                 food = newFood;
+                foodType = Math.floor(Math.random() * 3); // cycle through types
+            }
+
+            // Create particle burst when food is collected
+            function createFoodParticles(x, y) {
+                var colors = ['#00e5ff', '#7c4dff', '#ff4081', '#ffab40', '#69f0ae'];
+                for (var i = 0; i < 12; i++) {
+                    var angle = (Math.PI * 2 / 12) * i + Math.random() * 0.5;
+                    var speed = Math.random() * 3 + 1.5;
+                    particles.push({
+                        x: x,
+                        y: y,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        life: 1.0,
+                        decay: Math.random() * 0.03 + 0.02,
+                        size: Math.random() * 3 + 2,
+                        color: colors[Math.floor(Math.random() * colors.length)]
+                    });
+                }
+            }
+
+            // Create thruster particles behind the snake head
+            function createThrusterParticle() {
+                if (!gameRunning || snake.length === 0) return;
+                var head = snake[0];
+                var cx = head.x * CELL_SIZE + CELL_SIZE / 2;
+                var cy = head.y * CELL_SIZE + CELL_SIZE / 2;
+                // Place particles behind the direction of travel
+                var offsetX = -direction.x * CELL_SIZE * 0.4;
+                var offsetY = -direction.y * CELL_SIZE * 0.4;
+                for (var i = 0; i < 2; i++) {
+                    thrusterParticles.push({
+                        x: cx + offsetX + (Math.random() - 0.5) * 6,
+                        y: cy + offsetY + (Math.random() - 0.5) * 6,
+                        vx: -direction.x * (Math.random() * 1.5 + 0.5) + (Math.random() - 0.5) * 0.8,
+                        vy: -direction.y * (Math.random() * 1.5 + 0.5) + (Math.random() - 0.5) * 0.8,
+                        life: 1.0,
+                        decay: Math.random() * 0.05 + 0.04,
+                        size: Math.random() * 2.5 + 1
+                    });
+                }
+            }
+
+            // Update particles
+            function updateParticles() {
+                // Food particles
+                for (var i = particles.length - 1; i >= 0; i--) {
+                    particles[i].x += particles[i].vx;
+                    particles[i].y += particles[i].vy;
+                    particles[i].life -= particles[i].decay;
+                    particles[i].vx *= 0.96;
+                    particles[i].vy *= 0.96;
+                    if (particles[i].life <= 0) {
+                        particles.splice(i, 1);
+                    }
+                }
+                // Thruster particles
+                for (var j = thrusterParticles.length - 1; j >= 0; j--) {
+                    thrusterParticles[j].x += thrusterParticles[j].vx;
+                    thrusterParticles[j].y += thrusterParticles[j].vy;
+                    thrusterParticles[j].life -= thrusterParticles[j].decay;
+                    if (thrusterParticles[j].life <= 0) {
+                        thrusterParticles.splice(j, 1);
+                    }
+                }
             }
 
             // Update game state
@@ -234,10 +328,18 @@
                 // Add new head
                 snake.unshift(head);
 
+                // Create thruster particles
+                createThrusterParticle();
+
                 // Check food collision
                 if (head.x === food.x && head.y === food.y) {
                     score++;
                     scoreDisplay.textContent = score;
+                    // Create particle burst at food position
+                    createFoodParticles(
+                        food.x * CELL_SIZE + CELL_SIZE / 2,
+                        food.y * CELL_SIZE + CELL_SIZE / 2
+                    );
                     spawnFood();
                 } else {
                     // Remove tail if no food eaten
@@ -245,92 +347,298 @@
                 }
             }
 
-            // Draw everything
-            function draw() {
-                // Clear canvas
-                ctx.fillStyle = COLORS.background;
+            // Draw starfield background
+            function drawStarfield() {
+                // Deep space background
+                ctx.fillStyle = '#0a0a1a';
                 ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-                // Draw grid lines (subtle)
-                ctx.strokeStyle = COLORS.grid;
-                ctx.lineWidth = 0.5;
-                for (var i = 0; i <= GRID_SIZE; i++) {
+                // Subtle nebula gradient
+                var nebula = ctx.createRadialGradient(200, 200, 50, 200, 200, 250);
+                nebula.addColorStop(0, 'rgba(26, 0, 51, 0.3)');
+                nebula.addColorStop(0.5, 'rgba(10, 10, 40, 0.2)');
+                nebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = nebula;
+                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+
+                // Draw stars with twinkling
+                var time = Date.now() * 0.001;
+                for (var i = 0; i < stars.length; i++) {
+                    var star = stars[i];
+                    var twinkle = Math.sin(time * star.twinkleSpeed * 60 + star.twinkleOffset) * 0.5 + 0.5;
+                    var alpha = star.brightness * 0.4 + twinkle * 0.6;
+                    // Scroll effect - slight vertical drift
+                    var yPos = (star.y + starfieldOffset * star.size * 0.3) % CANVAS_SIZE;
+                    if (yPos < 0) yPos += CANVAS_SIZE;
+
                     ctx.beginPath();
-                    ctx.moveTo(i * CELL_SIZE, 0);
-                    ctx.lineTo(i * CELL_SIZE, CANVAS_SIZE);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(0, i * CELL_SIZE);
-                    ctx.lineTo(CANVAS_SIZE, i * CELL_SIZE);
-                    ctx.stroke();
+                    ctx.arc(star.x, yPos, star.size * (0.5 + twinkle * 0.5), 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(200, 220, 255, ' + alpha + ')';
+                    ctx.fill();
+
+                    // Add glow to brighter stars
+                    if (star.size > 1.5) {
+                        ctx.beginPath();
+                        ctx.arc(star.x, yPos, star.size * 2, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(150, 180, 255, ' + (alpha * 0.2) + ')';
+                        ctx.fill();
+                    }
                 }
 
-                // Draw food with glow effect
-                var foodX = food.x * CELL_SIZE + CELL_SIZE / 2;
-                var foodY = food.y * CELL_SIZE + CELL_SIZE / 2;
-                var foodRadius = CELL_SIZE / 2 - 2;
+                // Very subtle grid (faint blue lines)
+                ctx.strokeStyle = 'rgba(30, 40, 80, 0.15)';
+                ctx.lineWidth = 0.3;
+                for (var g = 0; g <= GRID_SIZE; g++) {
+                    ctx.beginPath();
+                    ctx.moveTo(g * CELL_SIZE, 0);
+                    ctx.lineTo(g * CELL_SIZE, CANVAS_SIZE);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(0, g * CELL_SIZE);
+                    ctx.lineTo(CANVAS_SIZE, g * CELL_SIZE);
+                    ctx.stroke();
+                }
+            }
 
-                // Glow
-                ctx.shadowColor = COLORS.foodGlow;
-                ctx.shadowBlur = 10;
-                ctx.fillStyle = COLORS.food;
+            // Draw food as space objects
+            function drawFood() {
+                var fx = food.x * CELL_SIZE + CELL_SIZE / 2;
+                var fy = food.y * CELL_SIZE + CELL_SIZE / 2;
+                var radius = CELL_SIZE / 2 - 2;
+                foodPulse += 0.08;
+                var pulse = Math.sin(foodPulse) * 0.2 + 0.8;
+
+                ctx.save();
+
+                if (foodType === 0) {
+                    // Planet with rings
+                    // Glow
+                    ctx.shadowColor = '#ff6e40';
+                    ctx.shadowBlur = 12 * pulse;
+                    // Planet body
+                    var planetGrad = ctx.createRadialGradient(fx - 2, fy - 2, 1, fx, fy, radius);
+                    planetGrad.addColorStop(0, '#ff8a65');
+                    planetGrad.addColorStop(0.6, '#d84315');
+                    planetGrad.addColorStop(1, '#bf360c');
+                    ctx.fillStyle = planetGrad;
+                    ctx.beginPath();
+                    ctx.arc(fx, fy, radius * pulse, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    // Ring
+                    ctx.strokeStyle = 'rgba(255, 171, 64, 0.7)';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.ellipse(fx, fy, radius * 1.3 * pulse, radius * 0.4 * pulse, -0.3, 0, Math.PI * 2);
+                    ctx.stroke();
+                } else if (foodType === 1) {
+                    // 5-pointed star
+                    ctx.shadowColor = '#ffeb3b';
+                    ctx.shadowBlur = 15 * pulse;
+                    ctx.fillStyle = '#fdd835';
+                    ctx.beginPath();
+                    for (var p = 0; p < 5; p++) {
+                        var outerAngle = (Math.PI * 2 / 5) * p - Math.PI / 2;
+                        var innerAngle = outerAngle + Math.PI / 5;
+                        var outerR = radius * pulse;
+                        var innerR = radius * 0.4 * pulse;
+                        if (p === 0) {
+                            ctx.moveTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
+                        } else {
+                            ctx.lineTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
+                        }
+                        ctx.lineTo(fx + Math.cos(innerAngle) * innerR, fy + Math.sin(innerAngle) * innerR);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                } else {
+                    // Energy orb (pulsating cyan/purple)
+                    ctx.shadowColor = '#00e5ff';
+                    ctx.shadowBlur = 18 * pulse;
+                    var orbGrad = ctx.createRadialGradient(fx, fy, 0, fx, fy, radius * pulse);
+                    orbGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
+                    orbGrad.addColorStop(0.3, 'rgba(0, 229, 255, 0.8)');
+                    orbGrad.addColorStop(0.7, 'rgba(124, 77, 255, 0.6)');
+                    orbGrad.addColorStop(1, 'rgba(124, 77, 255, 0)');
+                    ctx.fillStyle = orbGrad;
+                    ctx.beginPath();
+                    ctx.arc(fx, fy, radius * 1.2 * pulse, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Inner core
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    ctx.beginPath();
+                    ctx.arc(fx, fy, radius * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.restore();
+            }
+
+            // Draw snake head as a spaceship
+            function drawSnakeHead(segment) {
+                var cx = segment.x * CELL_SIZE + CELL_SIZE / 2;
+                var cy = segment.y * CELL_SIZE + CELL_SIZE / 2;
+                var size = CELL_SIZE / 2 - 1;
+
+                ctx.save();
+
+                // Translate and rotate based on direction
+                ctx.translate(cx, cy);
+                var angle = 0;
+                if (direction.x === 1) angle = 0;
+                else if (direction.x === -1) angle = Math.PI;
+                else if (direction.y === -1) angle = -Math.PI / 2;
+                else if (direction.y === 1) angle = Math.PI / 2;
+                ctx.rotate(angle);
+
+                // Glow effect
+                ctx.shadowColor = '#00e5ff';
+                ctx.shadowBlur = 12;
+
+                // Ship body (triangle/arrow pointing right)
                 ctx.beginPath();
-                ctx.arc(foodX, foodY, foodRadius, 0, Math.PI * 2);
+                ctx.moveTo(size, 0); // Nose
+                ctx.lineTo(-size * 0.7, -size * 0.7); // Top wing
+                ctx.lineTo(-size * 0.3, 0); // Indent
+                ctx.lineTo(-size * 0.7, size * 0.7); // Bottom wing
+                ctx.closePath();
+
+                // Gradient fill
+                var shipGrad = ctx.createLinearGradient(-size, 0, size, 0);
+                shipGrad.addColorStop(0, '#1a237e');
+                shipGrad.addColorStop(0.5, '#00bcd4');
+                shipGrad.addColorStop(1, '#00e5ff');
+                ctx.fillStyle = shipGrad;
                 ctx.fill();
+
+                // Outline
+                ctx.strokeStyle = '#00e5ff';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
                 ctx.shadowBlur = 0;
 
-                // Draw snake
-                for (var index = 0; index < snake.length; index++) {
+                // Cockpit/windshield
+                ctx.beginPath();
+                ctx.arc(size * 0.2, 0, size * 0.25, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.fill();
+
+                // Engine glow at the back
+                ctx.beginPath();
+                ctx.arc(-size * 0.4, 0, size * 0.2, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(255, 100, 0, 0.6)';
+                ctx.fill();
+
+                ctx.restore();
+            }
+
+            // Draw snake body as comet/energy trail
+            function drawSnakeBody() {
+                for (var index = 1; index < snake.length; index++) {
                     var segment = snake[index];
-                    var x = segment.x * CELL_SIZE;
-                    var y = segment.y * CELL_SIZE;
-                    var padding = 1;
+                    var x = segment.x * CELL_SIZE + CELL_SIZE / 2;
+                    var y = segment.y * CELL_SIZE + CELL_SIZE / 2;
+                    var progress = index / snake.length; // 0 at head, 1 at tail
 
-                    if (index === 0) {
-                        // Head - slightly brighter
-                        ctx.shadowColor = COLORS.snake;
-                        ctx.shadowBlur = 6;
-                        ctx.fillStyle = COLORS.snakeHead;
-                        ctx.fillRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
-                        ctx.shadowBlur = 0;
+                    // Fade from bright blue-purple near head to dim toward tail
+                    var alpha = 1 - progress * 0.7;
+                    var size = (CELL_SIZE / 2 - 2) * (1 - progress * 0.3);
 
-                        // Eyes
-                        ctx.fillStyle = '#1a1a2e';
-                        var eyeSize = 3;
-                        var eyeX1, eyeY1, eyeX2, eyeY2;
+                    ctx.save();
 
-                        if (direction.x === 1) { // right
-                            eyeX1 = x + CELL_SIZE - 7; eyeY1 = y + 5;
-                            eyeX2 = x + CELL_SIZE - 7; eyeY2 = y + CELL_SIZE - 8;
-                        } else if (direction.x === -1) { // left
-                            eyeX1 = x + 4; eyeY1 = y + 5;
-                            eyeX2 = x + 4; eyeY2 = y + CELL_SIZE - 8;
-                        } else if (direction.y === -1) { // up
-                            eyeX1 = x + 5; eyeY1 = y + 4;
-                            eyeX2 = x + CELL_SIZE - 8; eyeY2 = y + 4;
-                        } else { // down
-                            eyeX1 = x + 5; eyeY1 = y + CELL_SIZE - 7;
-                            eyeX2 = x + CELL_SIZE - 8; eyeY2 = y + CELL_SIZE - 7;
-                        }
+                    // Outer glow
+                    ctx.shadowColor = 'rgba(100, 50, 255, ' + (alpha * 0.5) + ')';
+                    ctx.shadowBlur = 8 * (1 - progress);
 
-                        ctx.beginPath();
-                        ctx.arc(eyeX1, eyeY1, eyeSize, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.beginPath();
-                        ctx.arc(eyeX2, eyeY2, eyeSize, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else {
-                        // Body - gradient effect based on position
-                        var alpha = 1 - (index / snake.length) * 0.4;
-                        ctx.fillStyle = 'rgba(0, 255, 136, ' + alpha + ')';
-                        ctx.fillRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
-                    }
+                    // Gradient orb for each segment
+                    var segGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
+                    // Shift from cyan (near head) to purple (near tail)
+                    var r = Math.floor(30 + progress * 100);
+                    var g = Math.floor(200 - progress * 150);
+                    var b = Math.floor(255);
+                    segGrad.addColorStop(0, 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')');
+                    segGrad.addColorStop(0.6, 'rgba(' + Math.floor(r * 0.5) + ', ' + Math.floor(g * 0.3) + ', ' + b + ', ' + (alpha * 0.7) + ')');
+                    segGrad.addColorStop(1, 'rgba(' + Math.floor(r * 0.3) + ', ' + Math.floor(g * 0.1) + ', ' + Math.floor(b * 0.8) + ', 0)');
 
-                    // Border for each segment
-                    ctx.strokeStyle = COLORS.snakeOutline;
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
+                    ctx.fillStyle = segGrad;
+                    ctx.beginPath();
+                    ctx.arc(x, y, size * 1.2, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Inner bright core
+                    ctx.fillStyle = 'rgba(200, 230, 255, ' + (alpha * 0.4) + ')';
+                    ctx.beginPath();
+                    ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.restore();
                 }
+            }
+
+            // Draw particles
+            function drawParticles() {
+                // Food collection particles
+                for (var i = 0; i < particles.length; i++) {
+                    var p = particles[i];
+                    ctx.save();
+                    ctx.globalAlpha = p.life;
+                    ctx.shadowColor = p.color;
+                    ctx.shadowBlur = 5;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+
+                // Thruster particles
+                for (var j = 0; j < thrusterParticles.length; j++) {
+                    var tp = thrusterParticles[j];
+                    ctx.save();
+                    ctx.globalAlpha = tp.life * 0.7;
+                    var tpColor = tp.life > 0.5 ? 'rgba(255, 150, 0, ' + tp.life + ')' : 'rgba(255, 50, 0, ' + tp.life + ')';
+                    ctx.fillStyle = tpColor;
+                    ctx.beginPath();
+                    ctx.arc(tp.x, tp.y, tp.size * tp.life, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.restore();
+                }
+            }
+
+            // Draw everything
+            function draw() {
+                // Draw starfield background
+                drawStarfield();
+
+                // Draw particles (behind snake and food)
+                drawParticles();
+
+                // Draw food
+                drawFood();
+
+                // Draw snake body (before head so head overlaps)
+                drawSnakeBody();
+
+                // Draw snake head
+                if (snake.length > 0) {
+                    drawSnakeHead(snake[0]);
+                }
+            }
+
+            // Animation loop for starfield scrolling and particle updates (runs independently)
+            function animateBackground() {
+                starfieldOffset += 0.3;
+                updateParticles();
+                if (gameRunning) {
+                    // Redraw is handled by the game loop
+                } else {
+                    // When game is not running, still animate the background
+                    draw();
+                }
+                animationFrame = requestAnimationFrame(animateBackground);
             }
 
             // Game over handler
@@ -411,7 +719,10 @@
             startBtn.addEventListener('click', startGame);
             restartBtn.addEventListener('click', restartGame);
 
-            // Draw initial state (background)
+            // Start background animation
+            animateBackground();
+
+            // Draw initial state
             draw();
         })();
     </script>

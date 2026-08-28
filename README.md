@@ -15,6 +15,28 @@ A classic Snake game built with HTML5 Canvas, CSS, and JavaScript. Fully self-co
 5. Avoid hitting the walls or your own tail.
 6. When the game ends, press **Enter** or click **Play Again** to restart.
 
+## Snake Types
+
+The game features multiple snake types, each with unique abilities and visual styles:
+
+| Snake Type | Description | Special Ability |
+|------------|-------------|-----------------|
+| 🐍 Classic | The original green snake | None — pure skill! |
+| ⚡ Speed Viper | A sleek blue snake | Moves 25% faster, scores double points |
+| 🔥 Fire Serpent | A red-orange blazing snake | Can pass through walls (wraps around) |
+| 👻 Ghost Snake | A translucent pale snake | Can pass through its own body 3 times per game |
+| 🌀 Portal Python | A purple iridescent snake | Teleports to a random safe location once every 30 seconds |
+| 🧊 Frost Cobra | An icy cyan snake | Temporarily freezes time (pauses game speed) on command |
+
+### Unlocking Snake Types
+
+- **Classic** — Available from the start
+- **Speed Viper** — Score 50+ points in a single game
+- **Fire Serpent** — Score 100+ points in a single game
+- **Ghost Snake** — Play 10 games
+- **Portal Python** — Score 75+ points without using any power-ups
+- **Frost Cobra** — Achieve a 150+ point high score
+
 ## Features
 
 - Smooth canvas-based rendering on a 20x20 grid
@@ -22,6 +44,7 @@ A classic Snake game built with HTML5 Canvas, CSS, and JavaScript. Fully self-co
 - Start screen with instructions
 - Game over screen with final score and restart option
 - Visual polish: gradient snake body, glowing food, subtle grid, and animated eyes
+- Multiple snake types with unique abilities
 - No external dependencies required
 
 ## Technical Details
