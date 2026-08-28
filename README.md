@@ -1,19 +1,54 @@
-# Snake Game
+# 🐍 Snake Game
 
 A classic Snake game built with HTML5 Canvas, CSS, and JavaScript. Fully self-contained in a single HTML file with no external dependencies. The project features multiple themed snake variants across different branches, each with unique visual identities and atmospheres.
+
+---
+
+## Table of Contents
+
+- [Screenshots](#screenshots)
+- [How to Play](#how-to-play)
+- [Snake Types](#snake-types)
+  - [Classic Snake](#classic-snake-main-branch)
+  - [Abyssal Serpent - Ocean Theme](#abyssal-serpent---ocean-theme-featureocean-snake-branch)
+  - [Cosmic Serpent - Space Theme](#cosmic-serpent---space-theme-featurespace-snake-branch)
+  - [Comparison at a Glance](#comparison-at-a-glance)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Browser Compatibility](#browser-compatibility)
+- [Technical Details](#technical-details)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
+## Screenshots
+
+| Start Screen | Gameplay Start |
+|:---:|:---:|
+| ![Start screen showing the game title and instructions](screenshots/01-start-screen.png) | ![Initial gameplay with the snake appearing on the board](screenshots/02-gameplay-start.png) |
+
+| Active Gameplay | Game Over |
+|:---:|:---:|
+| ![Active gameplay showing the snake moving and collecting food](screenshots/03-gameplay-active.png) | ![Game over screen displaying the final score](screenshots/04-game-over.png) |
+
+---
 
 ## How to Play
 
 1. Open `index.html` in any modern web browser.
 2. Click **Start Game** or press any arrow key to begin.
 3. Use the **arrow keys** to control the snake's direction:
-   - Up Arrow: Move up
-   - Down Arrow: Move down
-   - Left Arrow: Move left
-   - Right Arrow: Move right
+   - ⬆️ Up Arrow: Move up
+   - ⬇️ Down Arrow: Move down
+   - ⬅️ Left Arrow: Move left
+   - ➡️ Right Arrow: Move right
 4. Eat the food to grow longer and increase your score.
 5. Avoid hitting the walls or your own tail.
 6. When the game ends, press **Enter** or click **Play Again** to restart.
+
+---
 
 ## Snake Types
 
@@ -109,9 +144,11 @@ A spaceship-styled snake flying through a star-filled cosmos, collecting celesti
 | Particle effects | None | Rising bubbles | Thruster trail + collection bursts |
 | Overall mood | Clean arcade | Mysterious deep-sea | High-energy sci-fi |
 
+---
+
 ## Features
 
-- Smooth canvas-based rendering on a 20x20 grid
+- Smooth canvas-based rendering on a 20×20 grid
 - Score tracking with on-screen display
 - Start screen with instructions
 - Game over screen with final score and restart option
@@ -119,12 +156,100 @@ A spaceship-styled snake flying through a star-filled cosmos, collecting celesti
 - Multiple themed variants with unique art styles and ambient effects
 - No external dependencies required
 
+---
+
+## Getting Started
+
+No build tools or package managers are needed — just a web browser.
+
+```bash
+# Clone the repository
+git clone <repository-url>
+cd SnakeGame
+
+# Open the game in your default browser
+open index.html        # macOS
+xdg-open index.html    # Linux
+start index.html       # Windows
+```
+
+To try a different snake theme, switch to the corresponding branch:
+
+```bash
+git checkout feature/ocean-snake   # Abyssal Serpent
+git checkout feature/space-snake   # Cosmic Serpent
+```
+
+---
+
+## Project Structure
+
+```
+SnakeGame/
+├── index.html          # Complete game (HTML + CSS + JS in one file)
+├── README.md           # This file
+└── screenshots/
+    ├── 01-start-screen.png
+    ├── 02-gameplay-start.png
+    ├── 03-gameplay-active.png
+    └── 04-game-over.png
+```
+
+Each themed variant follows the same single-file structure on its respective branch.
+
+---
+
+## Browser Compatibility
+
+The game runs in any modern browser that supports the HTML5 `<canvas>` element and ES6 JavaScript.
+
+| Browser | Supported |
+|---------|:---------:|
+| Chrome 60+ | ✅ |
+| Firefox 55+ | ✅ |
+| Safari 11+ | ✅ |
+| Edge 79+ (Chromium) | ✅ |
+| Opera 47+ | ✅ |
+| Internet Explorer | ❌ |
+
+Mobile browsers are supported but the game currently requires a keyboard for input.
+
+---
+
 ## Technical Details
 
-- Pure HTML5, CSS, and JavaScript
-- Canvas size: 400x400 pixels
-- Grid: 20x20 cells (20px per cell)
+- Pure HTML5, CSS, and JavaScript — no frameworks or libraries
+- Canvas size: 400×400 pixels
+- Grid: 20×20 cells (20 px per cell)
 - Game speed: ~8 frames per second (120 ms tick interval)
 - Collision detection for walls and self-intersection
 - Direction buffering prevents 180-degree reversals
 - Each theme is a self-contained single HTML file
+
+---
+
+## Contributing
+
+Contributions are welcome! Here's how to get involved:
+
+1. **Fork** the repository.
+2. **Create a feature branch** from `main` (e.g., `feature/my-new-theme`).
+3. **Make your changes** — keep the single-file architecture intact.
+4. **Test** in multiple browsers to ensure compatibility.
+5. **Open a pull request** with a clear description of what you changed and why.
+
+### Ideas for Contributions
+
+- New snake themes (e.g., desert, jungle, retro 8-bit)
+- Touch/swipe controls for mobile devices
+- Sound effects and background music
+- High-score persistence via `localStorage`
+- Difficulty settings (speed ramp-up, larger grid)
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+> If no `LICENSE` file exists yet, one should be added to formalize the terms.
