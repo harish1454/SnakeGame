@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Game</title>
+    <title>Abyssal Serpent</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            background-color: #1a1a2e;
+            background-color: #021019;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -38,20 +38,20 @@
         .title {
             font-size: 28px;
             font-weight: bold;
-            color: #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+            color: #39e6c8;
+            text-shadow: 0 0 10px rgba(57, 230, 200, 0.35);
         }
 
         .score-display {
             font-size: 20px;
-            color: #ffdd57;
+            color: #7fdfff;
             font-weight: bold;
         }
 
         canvas {
-            border: 3px solid #00ff88;
+            border: 3px solid #39e6c8;
             border-radius: 4px;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+            box-shadow: 0 0 20px rgba(57, 230, 200, 0.25);
             display: block;
         }
 
@@ -63,15 +63,15 @@
             justify-content: center;
             width: 400px;
             height: 400px;
-            background-color: rgba(10, 10, 30, 0.92);
+            background-color: rgba(3, 16, 25, 0.9);
             border-radius: 4px;
             gap: 16px;
         }
 
         .overlay h2 {
             font-size: 32px;
-            color: #00ff88;
-            text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+            color: #39e6c8;
+            text-shadow: 0 0 10px rgba(57, 230, 200, 0.5);
         }
 
         .overlay p {
@@ -83,7 +83,7 @@
 
         .overlay .final-score {
             font-size: 24px;
-            color: #ffdd57;
+            color: #7fdfff;
             font-weight: bold;
         }
 
@@ -91,8 +91,8 @@
             padding: 12px 32px;
             font-size: 16px;
             font-weight: bold;
-            color: #1a1a2e;
-            background-color: #00ff88;
+            color: #021019;
+            background-color: #39e6c8;
             border: none;
             border-radius: 6px;
             cursor: pointer;
@@ -101,7 +101,7 @@
         }
 
         .btn:hover {
-            background-color: #00cc6a;
+            background-color: #2bbfa6;
             transform: scale(1.05);
         }
 
@@ -123,14 +123,14 @@
 <body>
     <div class="game-container">
         <div class="header">
-            <div class="title">Snake</div>
+            <div class="title">Abyssal Serpent</div>
             <div class="score-display">Score: <span id="score">0</span></div>
         </div>
         <div style="position: relative;">
             <canvas id="gameCanvas" width="400" height="400"></canvas>
             <div class="overlay" id="startScreen">
-                <h2>Snake Game</h2>
-                <p>Use arrow keys to control the snake.<br>Eat food to grow and earn points.<br>Avoid hitting walls and yourself!</p>
+                <h2>Abyssal Serpent</h2>
+                <p>Use the arrow keys to steer your serpent.<br>Devour glowing pearls to grow and score.<br>Avoid the reef walls and your own tail!</p>
                 <button class="btn" id="startBtn">Start Game</button>
                 <div class="instructions">Press any arrow key to begin</div>
             </div>
@@ -151,15 +151,17 @@
             const CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
             const GAME_SPEED = 120; // milliseconds between frames
 
-            // Colors
+            // Colors — ocean / bioluminescent palette
             const COLORS = {
-                background: '#0f0f23',
-                grid: '#16213e',
-                snake: '#00ff88',
-                snakeHead: '#00ffaa',
-                snakeOutline: '#009955',
-                food: '#ff6b6b',
-                foodGlow: '#ff4444'
+                waterTop: '#0e8a99',
+                waterMid: '#063a4d',
+                waterBottom: '#02121d',
+                grid: 'rgba(127, 223, 255, 0.05)',
+                serpent: '#1fbf8f',
+                serpentHead: '#7dffd8',
+                serpentGlow: '#39e6c8',
+                pearl: '#eafcff',
+                pearlGlow: '#7fdfff'
             };
 
             // Game state
@@ -171,6 +173,13 @@
             let gameRunning = false;
             let gameLoop = null;
             let gameStarted = false;
+
+            // Animation state (render decoupled from logic tick)
+            let animTime = 0;
+            let lastFrame = 0;
+            let rafId = null;
+            let waterGradient = null;
+            let bubbles = [];
 
             // DOM elements
             const canvas = document.getElementById('gameCanvas');
@@ -245,13 +254,76 @@
                 }
             }
 
+            // Initialize the ambient bubble field once
+            function initBubbles() {
+                bubbles = [];
+                var count = 22;
+                for (var i = 0; i < count; i++) {
+                    bubbles.push({
+                        x: Math.random() * CANVAS_SIZE,
+                        y: Math.random() * CANVAS_SIZE,
+                        r: 1 + Math.random() * 2,
+                        speed: 0.008 + Math.random() * 0.02, // px per ms
+                        drift: 4 + Math.random() * 8,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+            }
+
+            // Draw slowly drifting diagonal light rays (caustics)
+            function drawLightRays() {
+                var beams = 3;
+                for (var b = 0; b < beams; b++) {
+                    var baseX = (b + 0.5) * (CANVAS_SIZE / beams);
+                    var offset = Math.sin(animTime * 0.0002 + b * 1.7) * 40;
+                    var x = baseX + offset;
+                    var width = 42;
+                    var grad = ctx.createLinearGradient(x, 0, x + width * 1.5, CANVAS_SIZE);
+                    grad.addColorStop(0, 'rgba(127, 223, 255, 0.07)');
+                    grad.addColorStop(1, 'rgba(127, 223, 255, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x + width, 0);
+                    ctx.lineTo(x + width * 1.8 + 30, CANVAS_SIZE);
+                    ctx.lineTo(x + width * 1.8, CANVAS_SIZE);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
+
+            // Move and draw rising bubbles (alpha only, no per-bubble shadow)
+            function updateAndDrawBubbles(dt) {
+                ctx.fillStyle = 'rgba(200, 245, 255, 0.28)';
+                for (var i = 0; i < bubbles.length; i++) {
+                    var bub = bubbles[i];
+                    bub.y -= bub.speed * dt;
+                    if (bub.y < -bub.r) {
+                        bub.y = CANVAS_SIZE + bub.r;
+                        bub.x = Math.random() * CANVAS_SIZE;
+                    }
+                    var wobble = Math.sin(animTime * 0.002 + bub.phase) * bub.drift;
+                    ctx.beginPath();
+                    ctx.arc(bub.x + wobble, bub.y, bub.r, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
             // Draw everything
-            function draw() {
-                // Clear canvas
-                ctx.fillStyle = COLORS.background;
+            function draw(dt) {
+                dt = dt || 16;
+
+                // Deep-ocean vertical gradient background (cached)
+                if (!waterGradient) {
+                    waterGradient = ctx.createLinearGradient(0, 0, 0, CANVAS_SIZE);
+                    waterGradient.addColorStop(0, COLORS.waterTop);
+                    waterGradient.addColorStop(0.5, COLORS.waterMid);
+                    waterGradient.addColorStop(1, COLORS.waterBottom);
+                }
+                ctx.fillStyle = waterGradient;
                 ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-                // Draw grid lines (subtle)
+                // Very faint grid to keep a sense of the play field
                 ctx.strokeStyle = COLORS.grid;
                 ctx.lineWidth = 0.5;
                 for (var i = 0; i <= GRID_SIZE; i++) {
@@ -265,72 +337,134 @@
                     ctx.stroke();
                 }
 
-                // Draw food with glow effect
+                // Ambient motion behind gameplay
+                drawLightRays();
+                updateAndDrawBubbles(dt);
+
+                // Only draw gameplay elements once a game is in progress
+                if (!gameStarted || !snake.length) {
+                    return;
+                }
+
+                // Draw food as a glowing pearl
                 var foodX = food.x * CELL_SIZE + CELL_SIZE / 2;
                 var foodY = food.y * CELL_SIZE + CELL_SIZE / 2;
                 var foodRadius = CELL_SIZE / 2 - 2;
 
-                // Glow
-                ctx.shadowColor = COLORS.foodGlow;
-                ctx.shadowBlur = 10;
-                ctx.fillStyle = COLORS.food;
+                ctx.shadowColor = COLORS.pearlGlow;
+                ctx.shadowBlur = 6 + 4 * Math.sin(animTime * 0.006);
+                var pearlGrad = ctx.createRadialGradient(
+                    foodX - foodRadius * 0.3, foodY - foodRadius * 0.3, foodRadius * 0.1,
+                    foodX, foodY, foodRadius
+                );
+                pearlGrad.addColorStop(0, '#ffffff');
+                pearlGrad.addColorStop(0.4, COLORS.pearl);
+                pearlGrad.addColorStop(0.8, COLORS.pearlGlow);
+                pearlGrad.addColorStop(1, 'rgba(57, 230, 200, 0.6)');
+                ctx.fillStyle = pearlGrad;
                 ctx.beginPath();
                 ctx.arc(foodX, foodY, foodRadius, 0, Math.PI * 2);
                 ctx.fill();
                 ctx.shadowBlur = 0;
 
-                // Draw snake
-                for (var index = 0; index < snake.length; index++) {
-                    var segment = snake[index];
-                    var x = segment.x * CELL_SIZE;
-                    var y = segment.y * CELL_SIZE;
-                    var padding = 1;
-
-                    if (index === 0) {
-                        // Head - slightly brighter
-                        ctx.shadowColor = COLORS.snake;
-                        ctx.shadowBlur = 6;
-                        ctx.fillStyle = COLORS.snakeHead;
-                        ctx.fillRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
-                        ctx.shadowBlur = 0;
-
-                        // Eyes
-                        ctx.fillStyle = '#1a1a2e';
-                        var eyeSize = 3;
-                        var eyeX1, eyeY1, eyeX2, eyeY2;
-
-                        if (direction.x === 1) { // right
-                            eyeX1 = x + CELL_SIZE - 7; eyeY1 = y + 5;
-                            eyeX2 = x + CELL_SIZE - 7; eyeY2 = y + CELL_SIZE - 8;
-                        } else if (direction.x === -1) { // left
-                            eyeX1 = x + 4; eyeY1 = y + 5;
-                            eyeX2 = x + 4; eyeY2 = y + CELL_SIZE - 8;
-                        } else if (direction.y === -1) { // up
-                            eyeX1 = x + 5; eyeY1 = y + 4;
-                            eyeX2 = x + CELL_SIZE - 8; eyeY2 = y + 4;
-                        } else { // down
-                            eyeX1 = x + 5; eyeY1 = y + CELL_SIZE - 7;
-                            eyeX2 = x + CELL_SIZE - 8; eyeY2 = y + CELL_SIZE - 7;
-                        }
-
-                        ctx.beginPath();
-                        ctx.arc(eyeX1, eyeY1, eyeSize, 0, Math.PI * 2);
-                        ctx.fill();
-                        ctx.beginPath();
-                        ctx.arc(eyeX2, eyeY2, eyeSize, 0, Math.PI * 2);
-                        ctx.fill();
-                    } else {
-                        // Body - gradient effect based on position
-                        var alpha = 1 - (index / snake.length) * 0.4;
-                        ctx.fillStyle = 'rgba(0, 255, 136, ' + alpha + ')';
-                        ctx.fillRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
-                    }
-
-                    // Border for each segment
-                    ctx.strokeStyle = COLORS.snakeOutline;
-                    ctx.lineWidth = 1;
-                    ctx.strokeRect(x + padding, y + padding, CELL_SIZE - padding * 2, CELL_SIZE - padding * 2);
+                // Build pixel centers for the serpent body
+                var pts = [];
+                for (var s = 0; s < snake.length; s++) {
+                    pts.push({
+                        x: snake[s].x * CELL_SIZE + CELL_SIZE / 2,
+                        y: snake[s].y * CELL_SIZE + CELL_SIZE / 2
+                    });
                 }
+
+                // Head→tail gradient for the serpent body
+                var tail = pts[pts.length - 1];
+                var bodyGrad = ctx.createLinearGradient(pts[0].x, pts[0].y, tail.x, tail.y);
+                bodyGrad.addColorStop(0, COLORS.serpentHead);
+                bodyGrad.addColorStop(1, COLORS.serpent);
+
+                // Draw the body as one smoothed path through the segment centers
+                ctx.shadowColor = COLORS.serpentGlow;
+                ctx.shadowBlur = 8;
+                ctx.strokeStyle = bodyGrad;
+                ctx.lineJoin = 'round';
+                ctx.lineCap = 'round';
+
+                if (pts.length === 1) {
+                    ctx.fillStyle = bodyGrad;
+                    ctx.beginPath();
+                    ctx.arc(pts[0].x, pts[0].y, CELL_SIZE / 2 - 2, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    // Outer glowing body
+                    ctx.lineWidth = CELL_SIZE - 4;
+                    ctx.beginPath();
+                    ctx.moveTo(pts[0].x, pts[0].y);
+                    for (var p = 1; p < pts.length - 1; p++) {
+                        var midX = (pts[p].x + pts[p + 1].x) / 2;
+                        var midY = (pts[p].y + pts[p + 1].y) / 2;
+                        ctx.quadraticCurveTo(pts[p].x, pts[p].y, midX, midY);
+                    }
+                    ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+                    ctx.stroke();
+
+                    // Brighter thinner core for the bioluminescent look
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = 'rgba(230, 255, 245, 0.5)';
+                    ctx.lineWidth = CELL_SIZE / 2 - 3;
+                    ctx.beginPath();
+                    ctx.moveTo(pts[0].x, pts[0].y);
+                    for (var q = 1; q < pts.length - 1; q++) {
+                        var mX = (pts[q].x + pts[q + 1].x) / 2;
+                        var mY = (pts[q].y + pts[q + 1].y) / 2;
+                        ctx.quadraticCurveTo(pts[q].x, pts[q].y, mX, mY);
+                    }
+                    ctx.lineTo(pts[pts.length - 1].x, pts[pts.length - 1].y);
+                    ctx.stroke();
+                }
+                ctx.shadowBlur = 0;
+
+                // Rounded serpent head
+                var headSeg = snake[0];
+                var hx = headSeg.x * CELL_SIZE;
+                var hy = headSeg.y * CELL_SIZE;
+                var hcx = hx + CELL_SIZE / 2;
+                var hcy = hy + CELL_SIZE / 2;
+                var headGrad = ctx.createRadialGradient(hcx, hcy, 1, hcx, hcy, CELL_SIZE / 2);
+                headGrad.addColorStop(0, COLORS.serpentHead);
+                headGrad.addColorStop(1, COLORS.serpent);
+                ctx.shadowColor = COLORS.serpentGlow;
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = headGrad;
+                ctx.beginPath();
+                ctx.arc(hcx, hcy, CELL_SIZE / 2 - 1, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+
+                // Eyes — reuse direction-based placement so they track heading
+                ctx.fillStyle = '#021019';
+                var eyeSize = 3;
+                var eyeX1, eyeY1, eyeX2, eyeY2;
+
+                if (direction.x === 1) { // right
+                    eyeX1 = hx + CELL_SIZE - 7; eyeY1 = hy + 5;
+                    eyeX2 = hx + CELL_SIZE - 7; eyeY2 = hy + CELL_SIZE - 8;
+                } else if (direction.x === -1) { // left
+                    eyeX1 = hx + 4; eyeY1 = hy + 5;
+                    eyeX2 = hx + 4; eyeY2 = hy + CELL_SIZE - 8;
+                } else if (direction.y === -1) { // up
+                    eyeX1 = hx + 5; eyeY1 = hy + 4;
+                    eyeX2 = hx + CELL_SIZE - 8; eyeY2 = hy + 4;
+                } else { // down
+                    eyeX1 = hx + 5; eyeY1 = hy + CELL_SIZE - 7;
+                    eyeX2 = hx + CELL_SIZE - 8; eyeY2 = hy + CELL_SIZE - 7;
+                }
+
+                ctx.beginPath();
+                ctx.arc(eyeX1, eyeY1, eyeSize, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(eyeX2, eyeY2, eyeSize, 0, Math.PI * 2);
+                ctx.fill();
             }
 
             // Game over handler
@@ -351,13 +485,7 @@
                 gameStarted = true;
                 startScreen.classList.add('hidden');
                 gameOverScreen.classList.add('hidden');
-                draw();
-                gameLoop = setInterval(function() {
-                    update();
-                    if (gameRunning) {
-                        draw();
-                    }
-                }, GAME_SPEED);
+                gameLoop = setInterval(update, GAME_SPEED);
             }
 
             // Restart game
@@ -411,8 +539,18 @@
             startBtn.addEventListener('click', startGame);
             restartBtn.addEventListener('click', restartGame);
 
-            // Draw initial state (background)
-            draw();
+            // Continuous render loop (decoupled from the logic tick)
+            function render(now) {
+                var dt = (now - lastFrame) || 16;
+                lastFrame = now;
+                animTime = now;
+                draw(dt);
+                rafId = requestAnimationFrame(render);
+            }
+
+            // Initialize ambient field and start the render loop
+            initBubbles();
+            requestAnimationFrame(render);
         })();
     </script>
 </body>
