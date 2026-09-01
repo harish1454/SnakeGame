@@ -349,7 +349,7 @@
                     <button class="btn" id="restartBtn">Relaunch</button>
                     <button class="btn-secondary" id="changeDifficultyBtn">Change Difficulty</button>
                 </div>
-                <div class="instructions">Press Enter to relaunch</div>
+                <div class="instructions">Press Enter to relaunch or Esc to change difficulty</div>
             </div>
         </div>
     </div>
@@ -357,56 +357,56 @@
     <script>
         (function() {
             // Game constants
-            var CANVAS_SIZE = 400;
-            var GRID_SIZE = 20;
-            var CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
+            const CANVAS_SIZE = 400;
+            const GRID_SIZE = 20;
+            const CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
 
             // Difficulty settings
-            var DIFFICULTY_SETTINGS = {
+            const DIFFICULTY_SETTINGS = {
                 easy:   { speed: 150, multiplier: 1, label: 'Easy',   color: '#69f0ae', cssClass: 'easy' },
                 medium: { speed: 120, multiplier: 2, label: 'Medium', color: '#ffab40', cssClass: 'medium' },
                 hard:   { speed: 80,  multiplier: 3, label: 'Hard',   color: '#ff5252', cssClass: 'hard' }
             };
 
             // Current difficulty state
-            var currentDifficulty = null; // 'easy', 'medium', or 'hard'
-            var gameSpeed = 120;
-            var scoreMultiplier = 1;
+            let currentDifficulty = null; // 'easy', 'medium', or 'hard'
+            let gameSpeed = 120;
+            let scoreMultiplier = 1;
 
             // Game state
-            var snake = [];
-            var food = { x: 0, y: 0 };
-            var direction = { x: 1, y: 0 };
-            var nextDirection = { x: 1, y: 0 };
-            var score = 0;
-            var rawScore = 0; // Score before multiplier
-            var gameRunning = false;
-            var gameLoop = null;
-            var gameStarted = false;
-            var difficultySelected = false;
+            let snake = [];
+            let food = { x: 0, y: 0 };
+            let direction = { x: 1, y: 0 };
+            let nextDirection = { x: 1, y: 0 };
+            let score = 0;
+            let rawScore = 0; // Score before multiplier
+            let gameRunning = false;
+            let gameLoop = null;
+            let gameStarted = false;
+            let difficultySelected = false;
 
             // Space theme state
-            var stars = [];
-            var particles = [];
-            var thrusterParticles = [];
-            var foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
-            var foodPulse = 0;
-            var starfieldOffset = 0;
-            var animationFrame = null;
+            let stars = [];
+            let particles = [];
+            let thrusterParticles = [];
+            let foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
+            let foodPulse = 0;
+            let starfieldOffset = 0;
+            let animationFrame = null;
 
             // DOM elements
-            var canvas = document.getElementById('gameCanvas');
-            var ctx = canvas.getContext('2d');
-            var scoreDisplay = document.getElementById('score');
-            var finalScoreDisplay = document.getElementById('finalScore');
-            var difficultyScreen = document.getElementById('difficultyScreen');
-            var gameOverScreen = document.getElementById('gameOverScreen');
-            var difficultyLabel = document.getElementById('difficultyLabel');
-            var easyBtn = document.getElementById('easyBtn');
-            var mediumBtn = document.getElementById('mediumBtn');
-            var hardBtn = document.getElementById('hardBtn');
-            var restartBtn = document.getElementById('restartBtn');
-            var changeDifficultyBtn = document.getElementById('changeDifficultyBtn');
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const scoreDisplay = document.getElementById('score');
+            const finalScoreDisplay = document.getElementById('finalScore');
+            const difficultyScreen = document.getElementById('difficultyScreen');
+            const gameOverScreen = document.getElementById('gameOverScreen');
+            const difficultyLabel = document.getElementById('difficultyLabel');
+            const easyBtn = document.getElementById('easyBtn');
+            const mediumBtn = document.getElementById('mediumBtn');
+            const hardBtn = document.getElementById('hardBtn');
+            const restartBtn = document.getElementById('restartBtn');
+            const changeDifficultyBtn = document.getElementById('changeDifficultyBtn');
 
             // Generate starfield
             function generateStars() {
@@ -902,6 +902,10 @@
 
             // Start game
             function startGame() {
+                if (gameLoop) {
+                    clearInterval(gameLoop);
+                    gameLoop = null;
+                }
                 initGame();
                 gameRunning = true;
                 gameStarted = true;
@@ -961,9 +965,14 @@
                     }
                 }
 
-                // Restart on Enter when game over
+                // Restart on Enter when game over, Escape to change difficulty
                 if (!gameRunning && gameStarted && e.key === 'Enter') {
                     restartGame();
+                    e.preventDefault();
+                    return;
+                }
+                if (!gameRunning && gameStarted && e.key === 'Escape') {
+                    showDifficultyScreen();
                     e.preventDefault();
                     return;
                 }
