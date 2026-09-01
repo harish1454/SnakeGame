@@ -44,6 +44,44 @@
             letter-spacing: 2px;
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .difficulty-label {
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            border: 1px solid;
+        }
+
+        .difficulty-label.hidden {
+            display: none;
+        }
+
+        .difficulty-label.easy {
+            color: #69f0ae;
+            border-color: #69f0ae;
+            text-shadow: 0 0 6px rgba(105, 240, 174, 0.5);
+        }
+
+        .difficulty-label.medium {
+            color: #ffab40;
+            border-color: #ffab40;
+            text-shadow: 0 0 6px rgba(255, 171, 64, 0.5);
+        }
+
+        .difficulty-label.hard {
+            color: #ff5252;
+            border-color: #ff5252;
+            text-shadow: 0 0 6px rgba(255, 82, 82, 0.5);
+        }
+
         .score-display {
             font-size: 20px;
             color: #ffab40;
@@ -119,6 +157,141 @@
             transform: scale(0.95);
         }
 
+        .difficulty-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 85%;
+        }
+
+        .difficulty-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            background: transparent;
+            border: 2px solid;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .difficulty-btn .diff-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+
+        .difficulty-btn .diff-name {
+            font-size: 16px;
+        }
+
+        .difficulty-btn .diff-desc {
+            font-size: 11px;
+            font-weight: normal;
+            text-transform: none;
+            letter-spacing: 0;
+            opacity: 0.7;
+        }
+
+        .difficulty-btn .diff-key {
+            font-size: 12px;
+            opacity: 0.5;
+            font-weight: normal;
+        }
+
+        .difficulty-btn.easy {
+            color: #69f0ae;
+            border-color: #69f0ae;
+            box-shadow: 0 0 10px rgba(105, 240, 174, 0.3), inset 0 0 10px rgba(105, 240, 174, 0.1);
+        }
+
+        .difficulty-btn.easy:hover {
+            background: rgba(105, 240, 174, 0.15);
+            box-shadow: 0 0 20px rgba(105, 240, 174, 0.6), inset 0 0 15px rgba(105, 240, 174, 0.2);
+            transform: scale(1.03);
+            text-shadow: 0 0 8px rgba(105, 240, 174, 0.8);
+        }
+
+        .difficulty-btn.medium {
+            color: #ffab40;
+            border-color: #ffab40;
+            box-shadow: 0 0 10px rgba(255, 171, 64, 0.3), inset 0 0 10px rgba(255, 171, 64, 0.1);
+        }
+
+        .difficulty-btn.medium:hover {
+            background: rgba(255, 171, 64, 0.15);
+            box-shadow: 0 0 20px rgba(255, 171, 64, 0.6), inset 0 0 15px rgba(255, 171, 64, 0.2);
+            transform: scale(1.03);
+            text-shadow: 0 0 8px rgba(255, 171, 64, 0.8);
+        }
+
+        .difficulty-btn.hard {
+            color: #ff5252;
+            border-color: #ff5252;
+            box-shadow: 0 0 10px rgba(255, 82, 82, 0.3), inset 0 0 10px rgba(255, 82, 82, 0.1);
+        }
+
+        .difficulty-btn.hard:hover {
+            background: rgba(255, 82, 82, 0.15);
+            box-shadow: 0 0 20px rgba(255, 82, 82, 0.6), inset 0 0 15px rgba(255, 82, 82, 0.2);
+            transform: scale(1.03);
+            text-shadow: 0 0 8px rgba(255, 82, 82, 0.8);
+        }
+
+        .difficulty-btn:active {
+            transform: scale(0.97);
+        }
+
+        .overlay-subtitle {
+            font-size: 14px;
+            color: #5c6bc0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .game-over-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .btn-secondary {
+            padding: 10px 28px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #b0bec5;
+            background: transparent;
+            border: 1px solid #5c6bc0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 8px rgba(92, 107, 192, 0.2);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .btn-secondary:hover {
+            color: #e0e0e0;
+            border-color: #7986cb;
+            background: rgba(92, 107, 192, 0.15);
+            box-shadow: 0 0 15px rgba(92, 107, 192, 0.4);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary:active {
+            transform: scale(0.95);
+        }
+
         .instructions {
             font-size: 14px;
             color: #5c6bc0;
@@ -134,21 +307,49 @@
     <div class="game-container">
         <div class="header">
             <div class="title">SPACE SNAKE</div>
-            <div class="score-display">Energy: <span id="score">0</span></div>
+            <div class="header-right">
+                <span class="difficulty-label hidden" id="difficultyLabel"></span>
+                <div class="score-display">Energy: <span id="score">0</span></div>
+            </div>
         </div>
         <div style="position: relative;">
             <canvas id="gameCanvas" width="400" height="400"></canvas>
-            <div class="overlay" id="startScreen">
+            <div class="overlay" id="difficultyScreen">
                 <h2>COSMIC SERPENT</h2>
-                <p>Navigate your ship through the cosmos.<br>Collect cosmic energy to grow stronger.<br>Avoid asteroids (walls) and your own trail!</p>
-                <button class="btn" id="startBtn">Launch Ship</button>
-                <div class="instructions">Press any arrow key to launch</div>
+                <div class="overlay-subtitle">Select Mission Difficulty</div>
+                <div class="difficulty-buttons">
+                    <button class="difficulty-btn easy" id="easyBtn" data-difficulty="easy">
+                        <div class="diff-info">
+                            <span class="diff-name">Easy</span>
+                            <span class="diff-desc">Slow speed, 1x score multiplier</span>
+                        </div>
+                        <span class="diff-key">[ 1 ]</span>
+                    </button>
+                    <button class="difficulty-btn medium" id="mediumBtn" data-difficulty="medium">
+                        <div class="diff-info">
+                            <span class="diff-name">Medium</span>
+                            <span class="diff-desc">Normal speed, 2x score multiplier</span>
+                        </div>
+                        <span class="diff-key">[ 2 ]</span>
+                    </button>
+                    <button class="difficulty-btn hard" id="hardBtn" data-difficulty="hard">
+                        <div class="diff-info">
+                            <span class="diff-name">Hard</span>
+                            <span class="diff-desc">Fast speed, 3x score multiplier</span>
+                        </div>
+                        <span class="diff-key">[ 3 ]</span>
+                    </button>
+                </div>
+                <div class="instructions">Press 1, 2, or 3 to select</div>
             </div>
             <div class="overlay hidden" id="gameOverScreen">
                 <h2>SHIP DESTROYED</h2>
                 <p class="final-score">Energy Collected: <span id="finalScore">0</span></p>
-                <button class="btn" id="restartBtn">Relaunch</button>
-                <div class="instructions">Press Enter or click to relaunch</div>
+                <div class="game-over-buttons">
+                    <button class="btn" id="restartBtn">Relaunch</button>
+                    <button class="btn-secondary" id="changeDifficultyBtn">Change Difficulty</button>
+                </div>
+                <div class="instructions">Press Enter to relaunch</div>
             </div>
         </div>
     </div>
@@ -156,39 +357,56 @@
     <script>
         (function() {
             // Game constants
-            const CANVAS_SIZE = 400;
-            const GRID_SIZE = 20;
-            const CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
-            const GAME_SPEED = 120; // milliseconds between frames
+            var CANVAS_SIZE = 400;
+            var GRID_SIZE = 20;
+            var CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
+
+            // Difficulty settings
+            var DIFFICULTY_SETTINGS = {
+                easy:   { speed: 150, multiplier: 1, label: 'Easy',   color: '#69f0ae', cssClass: 'easy' },
+                medium: { speed: 120, multiplier: 2, label: 'Medium', color: '#ffab40', cssClass: 'medium' },
+                hard:   { speed: 80,  multiplier: 3, label: 'Hard',   color: '#ff5252', cssClass: 'hard' }
+            };
+
+            // Current difficulty state
+            var currentDifficulty = null; // 'easy', 'medium', or 'hard'
+            var gameSpeed = 120;
+            var scoreMultiplier = 1;
 
             // Game state
-            let snake = [];
-            let food = { x: 0, y: 0 };
-            let direction = { x: 1, y: 0 };
-            let nextDirection = { x: 1, y: 0 };
-            let score = 0;
-            let gameRunning = false;
-            let gameLoop = null;
-            let gameStarted = false;
+            var snake = [];
+            var food = { x: 0, y: 0 };
+            var direction = { x: 1, y: 0 };
+            var nextDirection = { x: 1, y: 0 };
+            var score = 0;
+            var rawScore = 0; // Score before multiplier
+            var gameRunning = false;
+            var gameLoop = null;
+            var gameStarted = false;
+            var difficultySelected = false;
 
             // Space theme state
-            let stars = [];
-            let particles = [];
-            let thrusterParticles = [];
-            let foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
-            let foodPulse = 0;
-            let starfieldOffset = 0;
-            let animationFrame = null;
+            var stars = [];
+            var particles = [];
+            var thrusterParticles = [];
+            var foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
+            var foodPulse = 0;
+            var starfieldOffset = 0;
+            var animationFrame = null;
 
             // DOM elements
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            const scoreDisplay = document.getElementById('score');
-            const finalScoreDisplay = document.getElementById('finalScore');
-            const startScreen = document.getElementById('startScreen');
-            const gameOverScreen = document.getElementById('gameOverScreen');
-            const startBtn = document.getElementById('startBtn');
-            const restartBtn = document.getElementById('restartBtn');
+            var canvas = document.getElementById('gameCanvas');
+            var ctx = canvas.getContext('2d');
+            var scoreDisplay = document.getElementById('score');
+            var finalScoreDisplay = document.getElementById('finalScore');
+            var difficultyScreen = document.getElementById('difficultyScreen');
+            var gameOverScreen = document.getElementById('gameOverScreen');
+            var difficultyLabel = document.getElementById('difficultyLabel');
+            var easyBtn = document.getElementById('easyBtn');
+            var mediumBtn = document.getElementById('mediumBtn');
+            var hardBtn = document.getElementById('hardBtn');
+            var restartBtn = document.getElementById('restartBtn');
+            var changeDifficultyBtn = document.getElementById('changeDifficultyBtn');
 
             // Generate starfield
             function generateStars() {
@@ -218,6 +436,7 @@
                 direction = { x: 1, y: 0 };
                 nextDirection = { x: 1, y: 0 };
                 score = 0;
+                rawScore = 0;
                 scoreDisplay.textContent = '0';
                 particles = [];
                 thrusterParticles = [];
@@ -333,7 +552,8 @@
 
                 // Check food collision
                 if (head.x === food.x && head.y === food.y) {
-                    score++;
+                    rawScore++;
+                    score = rawScore * scoreMultiplier;
                     scoreDisplay.textContent = score;
                     // Create particle burst at food position
                     createFoodParticles(
@@ -641,6 +861,34 @@
                 animationFrame = requestAnimationFrame(animateBackground);
             }
 
+            // Select difficulty and start the game
+            function selectDifficulty(level) {
+                var settings = DIFFICULTY_SETTINGS[level];
+                if (!settings) return;
+
+                currentDifficulty = level;
+                gameSpeed = settings.speed;
+                scoreMultiplier = settings.multiplier;
+                difficultySelected = true;
+
+                // Update the difficulty label in the header
+                difficultyLabel.textContent = settings.label;
+                difficultyLabel.className = 'difficulty-label ' + settings.cssClass;
+
+                // Hide difficulty screen and start the game
+                difficultyScreen.classList.add('hidden');
+                startGame();
+            }
+
+            // Show the difficulty selection screen
+            function showDifficultyScreen() {
+                gameStarted = false;
+                difficultySelected = false;
+                gameOverScreen.classList.add('hidden');
+                difficultyScreen.classList.remove('hidden');
+                difficultyLabel.classList.add('hidden');
+            }
+
             // Game over handler
             function gameOver() {
                 gameRunning = false;
@@ -657,7 +905,7 @@
                 initGame();
                 gameRunning = true;
                 gameStarted = true;
-                startScreen.classList.add('hidden');
+                difficultyScreen.classList.add('hidden');
                 gameOverScreen.classList.add('hidden');
                 draw();
                 gameLoop = setInterval(function() {
@@ -665,10 +913,10 @@
                     if (gameRunning) {
                         draw();
                     }
-                }, GAME_SPEED);
+                }, gameSpeed);
             }
 
-            // Restart game
+            // Restart game at same difficulty
             function restartGame() {
                 gameOverScreen.classList.add('hidden');
                 startGame();
@@ -676,21 +924,41 @@
 
             // Input handling
             document.addEventListener('keydown', function(e) {
-                // Start game on arrow key if not started
-                if (!gameStarted && (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight')) {
-                    startGame();
-                    // Set initial direction based on key pressed
-                    if (e.key === 'ArrowUp' && direction.y !== 1) {
-                        nextDirection = { x: 0, y: -1 };
-                    } else if (e.key === 'ArrowDown' && direction.y !== -1) {
-                        nextDirection = { x: 0, y: 1 };
-                    } else if (e.key === 'ArrowLeft' && direction.x !== 1) {
-                        nextDirection = { x: -1, y: 0 };
-                    } else if (e.key === 'ArrowRight' && direction.x !== -1) {
-                        nextDirection = { x: 1, y: 0 };
+                // Difficulty selection keys (1, 2, 3) when on difficulty screen
+                if (!difficultySelected && !gameStarted) {
+                    if (e.key === '1') {
+                        selectDifficulty('easy');
+                        e.preventDefault();
+                        return;
+                    } else if (e.key === '2') {
+                        selectDifficulty('medium');
+                        e.preventDefault();
+                        return;
+                    } else if (e.key === '3') {
+                        selectDifficulty('hard');
+                        e.preventDefault();
+                        return;
                     }
-                    e.preventDefault();
-                    return;
+                }
+
+                // Arrow keys should only work after difficulty is selected
+                // Start game on arrow key if difficulty selected but game not yet started
+                // (This handles the case where the game was just restarted)
+                if (difficultySelected && !gameRunning && !gameStarted) {
+                    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                        startGame();
+                        if (e.key === 'ArrowUp' && direction.y !== 1) {
+                            nextDirection = { x: 0, y: -1 };
+                        } else if (e.key === 'ArrowDown' && direction.y !== -1) {
+                            nextDirection = { x: 0, y: 1 };
+                        } else if (e.key === 'ArrowLeft' && direction.x !== 1) {
+                            nextDirection = { x: -1, y: 0 };
+                        } else if (e.key === 'ArrowRight' && direction.x !== -1) {
+                            nextDirection = { x: 1, y: 0 };
+                        }
+                        e.preventDefault();
+                        return;
+                    }
                 }
 
                 // Restart on Enter when game over
@@ -715,9 +983,14 @@
                 }
             });
 
-            // Button handlers
-            startBtn.addEventListener('click', startGame);
+            // Button handlers - Difficulty selection
+            easyBtn.addEventListener('click', function() { selectDifficulty('easy'); });
+            mediumBtn.addEventListener('click', function() { selectDifficulty('medium'); });
+            hardBtn.addEventListener('click', function() { selectDifficulty('hard'); });
+
+            // Button handlers - Game over
             restartBtn.addEventListener('click', restartGame);
+            changeDifficultyBtn.addEventListener('click', showDifficultyScreen);
 
             // Start background animation
             animateBackground();
