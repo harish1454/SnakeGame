@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Review index.html on save",
+  "description": "When index.html is edited, review the changes for web best practices covering accessibility, semantic HTML, code quality, and performance, and suggest concrete improvements.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "index.html"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "index.html was just edited. Review the current file against web best practices and report concrete, prioritized suggestions. Do not make changes automatically; only recommend them. Check for:\n\n1. Accessibility (a11y): the <html> element has a lang attribute; the page has a meaningful <title>; interactive controls (buttons, links) have accessible names; the <canvas> element has fallback text and/or an aria-label describing the game; color contrast is sufficient; keyboard controls are documented and reachable.\n2. Semantic HTML: use of appropriate elements (button vs div for clickable controls, header/main/footer landmarks) instead of generic containers.\n3. Meta and head hygiene: charset is UTF-8 and declared early; a responsive viewport meta tag is present; a meta description exists.\n4. JavaScript quality: no use of eval or inline event handler attributes that could be replaced with addEventListener; variables declared with const/let (not var); event listeners are cleaned up where appropriate; no obvious memory leaks in the game loop (use requestAnimationFrame or a cleared interval).\n5. Performance and robustness: avoid layout thrashing in the render loop; guard against errors when the canvas context is unavailable; ensure the game pauses or handles loss of focus/visibility.\n6. Security: no untrusted innerHTML assignments; external resources loaded over HTTPS.\n\nSummarize findings grouped by severity (must-fix, should-fix, nice-to-have) with the specific line or snippet each refers to."
+  }
+}
