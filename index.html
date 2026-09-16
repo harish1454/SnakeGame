@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Snake</title>
+    <title>Safari Snake</title>
     <style>
         * {
             margin: 0;
@@ -12,13 +12,13 @@
         }
 
         body {
-            background-color: #0a0a1a;
+            background-color: #1A0E0A;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e0e0e0;
+            color: #E8DCC8;
             overflow: hidden;
         }
 
@@ -39,8 +39,8 @@
         .title {
             font-size: 28px;
             font-weight: bold;
-            color: #00e5ff;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5), 0 0 20px rgba(0, 229, 255, 0.3);
+            color: #E8720C;
+            text-shadow: 0 0 10px rgba(232, 114, 12, 0.5), 0 0 20px rgba(232, 114, 12, 0.3);
             letter-spacing: 2px;
         }
 
@@ -84,15 +84,15 @@
 
         .score-display {
             font-size: 20px;
-            color: #ffab40;
+            color: #F5A623;
             font-weight: bold;
-            text-shadow: 0 0 8px rgba(255, 171, 64, 0.4);
+            text-shadow: 0 0 8px rgba(245, 166, 35, 0.4);
         }
 
         canvas {
-            border: 2px solid #1a237e;
+            border: 2px solid #5C3A1E;
             border-radius: 4px;
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(232, 114, 12, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
             display: block;
         }
 
@@ -104,53 +104,53 @@
             justify-content: center;
             width: 400px;
             height: 400px;
-            background: radial-gradient(ellipse at center, rgba(10, 10, 40, 0.95) 0%, rgba(5, 5, 20, 0.98) 100%);
+            background: radial-gradient(ellipse at center, rgba(26, 14, 10, 0.95) 0%, rgba(15, 8, 5, 0.98) 100%);
             border-radius: 4px;
             gap: 16px;
         }
 
         .overlay h2 {
             font-size: 32px;
-            color: #00e5ff;
-            text-shadow: 0 0 15px rgba(0, 229, 255, 0.7), 0 0 30px rgba(0, 229, 255, 0.4);
+            color: #E8720C;
+            text-shadow: 0 0 15px rgba(232, 114, 12, 0.7), 0 0 30px rgba(232, 114, 12, 0.4);
             letter-spacing: 3px;
         }
 
         .overlay p {
             font-size: 16px;
-            color: #b0bec5;
+            color: #D4C4A8;
             text-align: center;
             line-height: 1.6;
         }
 
         .overlay .final-score {
             font-size: 24px;
-            color: #ffab40;
+            color: #F5A623;
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 171, 64, 0.5);
+            text-shadow: 0 0 10px rgba(245, 166, 35, 0.5);
         }
 
         .btn {
             padding: 12px 32px;
             font-size: 16px;
             font-weight: bold;
-            color: #00e5ff;
+            color: #E8720C;
             background: transparent;
-            border: 2px solid #00e5ff;
+            border: 2px solid #E8720C;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 10px rgba(232, 114, 12, 0.3), inset 0 0 10px rgba(232, 114, 12, 0.1);
         }
 
         .btn:hover {
-            background: rgba(0, 229, 255, 0.15);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.2);
+            background: rgba(232, 114, 12, 0.15);
+            box-shadow: 0 0 20px rgba(232, 114, 12, 0.6), inset 0 0 15px rgba(232, 114, 12, 0.2);
             transform: scale(1.05);
-            text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+            text-shadow: 0 0 8px rgba(232, 114, 12, 0.8);
         }
 
         .btn:active {
@@ -251,7 +251,7 @@
 
         .overlay-subtitle {
             font-size: 14px;
-            color: #5c6bc0;
+            color: #8B6B4A;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 4px;
@@ -268,23 +268,23 @@
             padding: 10px 28px;
             font-size: 14px;
             font-weight: bold;
-            color: #b0bec5;
+            color: #D4C4A8;
             background: transparent;
-            border: 1px solid #5c6bc0;
+            border: 1px solid #6B3A2A;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 8px rgba(92, 107, 192, 0.2);
+            box-shadow: 0 0 8px rgba(107, 58, 42, 0.2);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .btn-secondary:hover {
-            color: #e0e0e0;
-            border-color: #7986cb;
-            background: rgba(92, 107, 192, 0.15);
-            box-shadow: 0 0 15px rgba(92, 107, 192, 0.4);
+            color: #E8DCC8;
+            border-color: #8B5E3C;
+            background: rgba(107, 58, 42, 0.15);
+            box-shadow: 0 0 15px rgba(107, 58, 42, 0.4);
             transform: scale(1.05);
         }
 
@@ -294,7 +294,7 @@
 
         .instructions {
             font-size: 14px;
-            color: #5c6bc0;
+            color: #8B6B4A;
             margin-top: 8px;
         }
 
@@ -306,17 +306,17 @@
 <body>
     <div class="game-container">
         <div class="header">
-            <div class="title">SPACE SNAKE</div>
+            <div class="title">SAFARI SNAKE</div>
             <div class="header-right">
                 <span class="difficulty-label hidden" id="difficultyLabel"></span>
-                <div class="score-display">Energy: <span id="score">0</span></div>
+                <div class="score-display">Gems: <span id="score">0</span></div>
             </div>
         </div>
         <div style="position: relative;">
             <canvas id="gameCanvas" width="400" height="400"></canvas>
             <div class="overlay" id="difficultyScreen">
-                <h2>COSMIC SERPENT</h2>
-                <div class="overlay-subtitle">Select Mission Difficulty</div>
+                <h2>SAVANNA SERPENT</h2>
+                <div class="overlay-subtitle">Choose Your Path</div>
                 <div class="difficulty-buttons">
                     <button class="difficulty-btn easy" id="easyBtn" data-difficulty="easy">
                         <div class="diff-info">
@@ -343,13 +343,13 @@
                 <div class="instructions">Press 1, 2, or 3 to select</div>
             </div>
             <div class="overlay hidden" id="gameOverScreen">
-                <h2>SHIP DESTROYED</h2>
-                <p class="final-score">Energy Collected: <span id="finalScore">0</span></p>
+                <h2>SAFARI OVER</h2>
+                <p class="final-score">Gems Collected: <span id="finalScore">0</span></p>
                 <div class="game-over-buttons">
-                    <button class="btn" id="restartBtn">Relaunch</button>
+                    <button class="btn" id="restartBtn">Play Again</button>
                     <button class="btn-secondary" id="changeDifficultyBtn">Change Difficulty</button>
                 </div>
-                <div class="instructions">Press Enter to relaunch or Esc to change difficulty</div>
+                <div class="instructions">Press Enter to play again or Esc to change difficulty</div>
             </div>
         </div>
     </div>
@@ -385,11 +385,11 @@
             let gameStarted = false;
             let difficultySelected = false;
 
-            // Space theme state
+            // Theme state
             let stars = [];
             let particles = [];
             let thrusterParticles = [];
-            let foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
+            let foodType = 0; // 0 = mango, 1 = diamond gem, 2 = mouse
             let foodPulse = 0;
             let starfieldOffset = 0;
             let animationFrame = null;
@@ -408,7 +408,7 @@
             const restartBtn = document.getElementById('restartBtn');
             const changeDifficultyBtn = document.getElementById('changeDifficultyBtn');
 
-            // Generate starfield
+            // Generate dust particles (replaces starfield)
             function generateStars() {
                 stars = [];
                 for (var i = 0; i < 120; i++) {
@@ -423,7 +423,7 @@
                 }
             }
 
-            // Initialize stars
+            // Initialize dust particles
             generateStars();
 
             // Initialize game
@@ -458,7 +458,7 @@
 
             // Create particle burst when food is collected
             function createFoodParticles(x, y) {
-                var colors = ['#00e5ff', '#7c4dff', '#ff4081', '#ffab40', '#69f0ae'];
+                var colors = ['#E8720C', '#F5A623', '#B7410E', '#FFD93D', '#4A7C2E'];
                 for (var i = 0; i < 12; i++) {
                     var angle = (Math.PI * 2 / 12) * i + Math.random() * 0.5;
                     var speed = Math.random() * 3 + 1.5;
@@ -567,21 +567,149 @@
                 }
             }
 
-            // Draw starfield background
+            // Helper: Draw an acacia tree silhouette
+            function drawAcaciaTree(x, groundY, trunkHeight, canopyWidth) {
+                ctx.fillStyle = '#1A0E0A';
+                // Trunk
+                ctx.fillRect(x - 2, groundY - trunkHeight, 4, trunkHeight);
+                // Canopy (flat-topped ellipse)
+                ctx.beginPath();
+                ctx.ellipse(x, groundY - trunkHeight, canopyWidth / 2, canopyWidth / 6, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Helper: Draw an elephant silhouette
+            function drawElephantSilhouette(x, groundY, scale) {
+                ctx.fillStyle = '#1A0E0A';
+                var s = scale;
+                ctx.beginPath();
+                // Body (large ellipse)
+                ctx.ellipse(x, groundY - 8 * s, 12 * s, 8 * s, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Head (smaller circle forward and up)
+                ctx.beginPath();
+                ctx.ellipse(x + 10 * s, groundY - 12 * s, 6 * s, 6 * s, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Trunk (curved line hanging down from head)
+                ctx.beginPath();
+                ctx.moveTo(x + 15 * s, groundY - 10 * s);
+                ctx.quadraticCurveTo(x + 20 * s, groundY - 4 * s, x + 17 * s, groundY - 2 * s);
+                ctx.lineWidth = 2 * s;
+                ctx.strokeStyle = '#1A0E0A';
+                ctx.stroke();
+                // Legs (4 short rectangles)
+                ctx.fillRect(x - 8 * s, groundY - 2 * s, 3 * s, 4 * s);
+                ctx.fillRect(x - 3 * s, groundY - 2 * s, 3 * s, 4 * s);
+                ctx.fillRect(x + 4 * s, groundY - 2 * s, 3 * s, 4 * s);
+                ctx.fillRect(x + 9 * s, groundY - 2 * s, 3 * s, 4 * s);
+            }
+
+            // Helper: Draw a giraffe silhouette
+            function drawGiraffeSilhouette(x, groundY, scale) {
+                ctx.fillStyle = '#1A0E0A';
+                var s = scale;
+                // Body (horizontal ellipse)
+                ctx.beginPath();
+                ctx.ellipse(x, groundY - 8 * s, 10 * s, 5 * s, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Neck (tall narrow rectangle going up from front of body)
+                ctx.fillRect(x + 6 * s, groundY - 28 * s, 4 * s, 20 * s);
+                // Head (small ellipse at top of neck)
+                ctx.beginPath();
+                ctx.ellipse(x + 8 * s, groundY - 30 * s, 4 * s, 3 * s, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Legs (4 thin rectangles)
+                ctx.fillRect(x - 7 * s, groundY - 4 * s, 2 * s, 6 * s);
+                ctx.fillRect(x - 3 * s, groundY - 4 * s, 2 * s, 6 * s);
+                ctx.fillRect(x + 3 * s, groundY - 4 * s, 2 * s, 6 * s);
+                ctx.fillRect(x + 7 * s, groundY - 4 * s, 2 * s, 6 * s);
+            }
+
+            // Draw savanna background
             function drawStarfield() {
-                // Deep space background
-                ctx.fillStyle = '#0a0a1a';
+                // Sky gradient (sunset)
+                var skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_SIZE);
+                skyGrad.addColorStop(0.0, '#1A0533');
+                skyGrad.addColorStop(0.25, '#B7410E');
+                skyGrad.addColorStop(0.5, '#E8720C');
+                skyGrad.addColorStop(0.7, '#F5A623');
+                skyGrad.addColorStop(0.85, '#FFD93D');
+                ctx.fillStyle = skyGrad;
                 ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-                // Subtle nebula gradient
-                var nebula = ctx.createRadialGradient(200, 200, 50, 200, 200, 250);
-                nebula.addColorStop(0, 'rgba(26, 0, 51, 0.3)');
-                nebula.addColorStop(0.5, 'rgba(10, 10, 40, 0.2)');
-                nebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                ctx.fillStyle = nebula;
-                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+                // Sun disc
+                var sunGrad = ctx.createRadialGradient(300, 270, 0, 300, 270, 35);
+                sunGrad.addColorStop(0, '#FFFFFF');
+                sunGrad.addColorStop(0.5, '#FFD93D');
+                sunGrad.addColorStop(1, 'rgba(232, 114, 12, 0)');
+                ctx.fillStyle = sunGrad;
+                ctx.beginPath();
+                ctx.arc(300, 270, 35, 0, Math.PI * 2);
+                ctx.fill();
 
-                // Draw stars with twinkling
+                // Back hill layer (distant mountains)
+                ctx.fillStyle = '#3D1F0E';
+                ctx.beginPath();
+                ctx.moveTo(0, 310);
+                ctx.quadraticCurveTo(60, 260, 120, 290);
+                ctx.quadraticCurveTo(180, 250, 240, 280);
+                ctx.quadraticCurveTo(310, 255, 360, 270);
+                ctx.quadraticCurveTo(390, 285, 400, 310);
+                ctx.lineTo(400, 310);
+                ctx.closePath();
+                ctx.fill();
+
+                // Front hill layer (closer mountains)
+                ctx.fillStyle = '#5C3A1E';
+                ctx.beginPath();
+                ctx.moveTo(0, 325);
+                ctx.quadraticCurveTo(50, 290, 100, 305);
+                ctx.quadraticCurveTo(160, 280, 210, 300);
+                ctx.quadraticCurveTo(270, 285, 330, 295);
+                ctx.quadraticCurveTo(370, 300, 400, 325);
+                ctx.lineTo(400, 325);
+                ctx.closePath();
+                ctx.fill();
+
+                // Wildlife silhouettes
+                drawElephantSilhouette(80, 333, 0.8);
+                drawGiraffeSilhouette(260, 328, 1.0);
+                drawElephantSilhouette(350, 336, 0.6);
+
+                // Acacia tree silhouettes
+                drawAcaciaTree(50, 335, 30, 40);
+                drawAcaciaTree(130, 330, 45, 55);
+                drawAcaciaTree(220, 338, 25, 35);
+                drawAcaciaTree(310, 325, 55, 65);
+                drawAcaciaTree(370, 336, 20, 30);
+
+                // Ground / savanna floor
+                var groundGrad = ctx.createLinearGradient(0, 340, 0, 400);
+                groundGrad.addColorStop(0, '#5C6B2A');
+                groundGrad.addColorStop(1, '#3D4A1A');
+                ctx.fillStyle = groundGrad;
+                ctx.fillRect(0, 340, CANVAS_SIZE, 60);
+
+                // Ground texture lines
+                ctx.strokeStyle = 'rgba(90, 80, 40, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(0, 355);
+                ctx.quadraticCurveTo(100, 353, 200, 356);
+                ctx.quadraticCurveTo(300, 354, 400, 357);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, 370);
+                ctx.quadraticCurveTo(80, 368, 180, 371);
+                ctx.quadraticCurveTo(280, 369, 400, 372);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(0, 385);
+                ctx.quadraticCurveTo(120, 383, 250, 386);
+                ctx.quadraticCurveTo(350, 384, 400, 387);
+                ctx.stroke();
+
+                // Ambient dust particles (replaces stars)
                 var time = Date.now() * 0.001;
                 for (var i = 0; i < stars.length; i++) {
                     var star = stars[i];
@@ -593,20 +721,20 @@
 
                     ctx.beginPath();
                     ctx.arc(star.x, yPos, star.size * (0.5 + twinkle * 0.5), 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(200, 220, 255, ' + alpha + ')';
+                    ctx.fillStyle = 'rgba(210, 180, 120, ' + alpha + ')';
                     ctx.fill();
 
-                    // Add glow to brighter stars
+                    // Add glow to brighter particles
                     if (star.size > 1.5) {
                         ctx.beginPath();
                         ctx.arc(star.x, yPos, star.size * 2, 0, Math.PI * 2);
-                        ctx.fillStyle = 'rgba(150, 180, 255, ' + (alpha * 0.2) + ')';
+                        ctx.fillStyle = 'rgba(200, 160, 80, ' + (alpha * 0.2) + ')';
                         ctx.fill();
                     }
                 }
 
-                // Very subtle grid (faint blue lines)
-                ctx.strokeStyle = 'rgba(30, 40, 80, 0.15)';
+                // Warm grid overlay
+                ctx.strokeStyle = 'rgba(80, 60, 30, 0.1)';
                 ctx.lineWidth = 0.3;
                 for (var g = 0; g <= GRID_SIZE; g++) {
                     ctx.beginPath();
@@ -620,7 +748,7 @@
                 }
             }
 
-            // Draw food as space objects
+            // Draw food as African items
             function drawFood() {
                 var fx = food.x * CELL_SIZE + CELL_SIZE / 2;
                 var fy = food.y * CELL_SIZE + CELL_SIZE / 2;
@@ -631,72 +759,105 @@
                 ctx.save();
 
                 if (foodType === 0) {
-                    // Planet with rings
-                    // Glow
-                    ctx.shadowColor = '#ff6e40';
-                    ctx.shadowBlur = 12 * pulse;
-                    // Planet body
-                    var planetGrad = ctx.createRadialGradient(fx - 2, fy - 2, 1, fx, fy, radius);
-                    planetGrad.addColorStop(0, '#ff8a65');
-                    planetGrad.addColorStop(0.6, '#d84315');
-                    planetGrad.addColorStop(1, '#bf360c');
-                    ctx.fillStyle = planetGrad;
+                    // Mango (tropical fruit)
+                    ctx.shadowColor = '#F5A623';
+                    ctx.shadowBlur = 10 * pulse;
+                    var mangoGrad = ctx.createRadialGradient(fx, fy, 0, fx, fy, radius * pulse);
+                    mangoGrad.addColorStop(0, '#FFD93D');
+                    mangoGrad.addColorStop(0.6, '#E8720C');
+                    mangoGrad.addColorStop(1, '#CC5500');
+                    ctx.fillStyle = mangoGrad;
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * pulse, 0, Math.PI * 2);
+                    ctx.ellipse(fx, fy, radius * 0.7 * pulse, radius * pulse, 0, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.shadowBlur = 0;
-                    // Ring
-                    ctx.strokeStyle = 'rgba(255, 171, 64, 0.7)';
-                    ctx.lineWidth = 1.5;
+                    // Small green leaf at the top
+                    ctx.fillStyle = '#4A7C2E';
                     ctx.beginPath();
-                    ctx.ellipse(fx, fy, radius * 1.3 * pulse, radius * 0.4 * pulse, -0.3, 0, Math.PI * 2);
-                    ctx.stroke();
+                    ctx.ellipse(fx, fy - radius * pulse, 3, 2, -0.4, 0, Math.PI * 2);
+                    ctx.fill();
                 } else if (foodType === 1) {
-                    // 5-pointed star
-                    ctx.shadowColor = '#ffeb3b';
+                    // Diamond / gem (8-point polygon)
+                    ctx.shadowColor = '#ADD8E6';
                     ctx.shadowBlur = 15 * pulse;
-                    ctx.fillStyle = '#fdd835';
+                    var gemGrad = ctx.createLinearGradient(fx - radius * pulse, fy - radius * pulse, fx + radius * pulse, fy + radius * pulse);
+                    gemGrad.addColorStop(0, '#FFFFFF');
+                    gemGrad.addColorStop(0.5, '#ADD8E6');
+                    gemGrad.addColorStop(1, '#E0E8FF');
+                    ctx.fillStyle = gemGrad;
                     ctx.beginPath();
-                    for (var p = 0; p < 5; p++) {
-                        var outerAngle = (Math.PI * 2 / 5) * p - Math.PI / 2;
-                        var innerAngle = outerAngle + Math.PI / 5;
-                        var outerR = radius * pulse;
-                        var innerR = radius * 0.4 * pulse;
-                        if (p === 0) {
-                            ctx.moveTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        } else {
-                            ctx.lineTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        }
-                        ctx.lineTo(fx + Math.cos(innerAngle) * innerR, fy + Math.sin(innerAngle) * innerR);
-                    }
+                    ctx.moveTo(fx, fy - radius * pulse);
+                    ctx.lineTo(fx + radius * 0.6 * pulse, fy - radius * 0.3 * pulse);
+                    ctx.lineTo(fx + radius * pulse, fy);
+                    ctx.lineTo(fx + radius * 0.5 * pulse, fy + radius * 0.7 * pulse);
+                    ctx.lineTo(fx, fy + radius * pulse);
+                    ctx.lineTo(fx - radius * 0.5 * pulse, fy + radius * 0.7 * pulse);
+                    ctx.lineTo(fx - radius * pulse, fy);
+                    ctx.lineTo(fx - radius * 0.6 * pulse, fy - radius * 0.3 * pulse);
                     ctx.closePath();
                     ctx.fill();
                     ctx.shadowBlur = 0;
+                    // Sparkle lines
+                    ctx.strokeStyle = 'rgba(255, 255, 255, ' + (0.7 * pulse) + ')';
+                    ctx.lineWidth = 1;
+                    var sparkleLen = 4;
+                    // 4 sparkle lines at 45° angles
+                    ctx.beginPath();
+                    ctx.moveTo(fx - sparkleLen, fy - sparkleLen);
+                    ctx.lineTo(fx - sparkleLen * 2, fy - sparkleLen * 2);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(fx + sparkleLen, fy - sparkleLen);
+                    ctx.lineTo(fx + sparkleLen * 2, fy - sparkleLen * 2);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(fx + sparkleLen, fy + sparkleLen);
+                    ctx.lineTo(fx + sparkleLen * 2, fy + sparkleLen * 2);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.moveTo(fx - sparkleLen, fy + sparkleLen);
+                    ctx.lineTo(fx - sparkleLen * 2, fy + sparkleLen * 2);
+                    ctx.stroke();
                 } else {
-                    // Energy orb (pulsating cyan/purple)
-                    ctx.shadowColor = '#00e5ff';
-                    ctx.shadowBlur = 18 * pulse;
-                    var orbGrad = ctx.createRadialGradient(fx, fy, 0, fx, fy, radius * pulse);
-                    orbGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-                    orbGrad.addColorStop(0.3, 'rgba(0, 229, 255, 0.8)');
-                    orbGrad.addColorStop(0.7, 'rgba(124, 77, 255, 0.6)');
-                    orbGrad.addColorStop(1, 'rgba(124, 77, 255, 0)');
-                    ctx.fillStyle = orbGrad;
+                    // Small mouse
+                    ctx.shadowColor = '#E8720C';
+                    ctx.shadowBlur = 8 * pulse;
+                    // Body (horizontal ellipse)
+                    ctx.fillStyle = '#8B6B4A';
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 1.2 * pulse, 0, Math.PI * 2);
+                    ctx.ellipse(fx, fy, radius * 0.6 * pulse, radius * 0.4 * pulse, 0, 0, Math.PI * 2);
                     ctx.fill();
-                    // Inner core
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    // Head (smaller circle forward)
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 0.3, 0, Math.PI * 2);
+                    ctx.arc(fx + radius * 0.5 * pulse, fy, radius * 0.25 * pulse, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Ears (two tiny circles at top of head)
+                    ctx.fillStyle = '#B08860';
+                    ctx.beginPath();
+                    ctx.arc(fx + radius * 0.45 * pulse, fy - radius * 0.25 * pulse, radius * 0.1 * pulse, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(fx + radius * 0.6 * pulse, fy - radius * 0.2 * pulse, radius * 0.1 * pulse, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    // Tail (curved line from back)
+                    ctx.strokeStyle = '#B08860';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(fx - radius * 0.6 * pulse, fy);
+                    ctx.quadraticCurveTo(fx - radius * 0.9 * pulse, fy - radius * 0.5 * pulse, fx - radius * 0.7 * pulse, fy - radius * 0.6 * pulse);
+                    ctx.stroke();
+                    // Eye (small white dot on head)
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.beginPath();
+                    ctx.arc(fx + radius * 0.55 * pulse, fy - radius * 0.05 * pulse, 1, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
                 ctx.restore();
             }
 
-            // Draw snake head as a spaceship
+            // Draw snake head as a snake
             function drawSnakeHead(segment) {
                 var cx = segment.x * CELL_SIZE + CELL_SIZE / 2;
                 var cy = segment.y * CELL_SIZE + CELL_SIZE / 2;
@@ -714,48 +875,75 @@
                 ctx.rotate(angle);
 
                 // Glow effect
-                ctx.shadowColor = '#00e5ff';
-                ctx.shadowBlur = 12;
+                ctx.shadowColor = '#E8720C';
+                ctx.shadowBlur = 8;
 
-                // Ship body (triangle/arrow pointing right)
+                // Head shape (elongated oval)
+                var headGrad = ctx.createLinearGradient(-size, 0, size, 0);
+                headGrad.addColorStop(0, '#4A3728');
+                headGrad.addColorStop(1, '#7B5B3A');
+                ctx.fillStyle = headGrad;
                 ctx.beginPath();
-                ctx.moveTo(size, 0); // Nose
-                ctx.lineTo(-size * 0.7, -size * 0.7); // Top wing
-                ctx.lineTo(-size * 0.3, 0); // Indent
-                ctx.lineTo(-size * 0.7, size * 0.7); // Bottom wing
-                ctx.closePath();
-
-                // Gradient fill
-                var shipGrad = ctx.createLinearGradient(-size, 0, size, 0);
-                shipGrad.addColorStop(0, '#1a237e');
-                shipGrad.addColorStop(0.5, '#00bcd4');
-                shipGrad.addColorStop(1, '#00e5ff');
-                ctx.fillStyle = shipGrad;
+                ctx.ellipse(0, 0, size * 1.0, size * 0.65, 0, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Outline
-                ctx.strokeStyle = '#00e5ff';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-
+                // Reset shadow before fine details
                 ctx.shadowBlur = 0;
 
-                // Cockpit/windshield
+                // Scale pattern on head (two small diamonds)
+                ctx.fillStyle = '#8B6B4A';
                 ctx.beginPath();
-                ctx.arc(size * 0.2, 0, size * 0.25, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.moveTo(-size * 0.3, -size * 0.15 - 1.5);
+                ctx.lineTo(-size * 0.3 + 1.5, -size * 0.15);
+                ctx.lineTo(-size * 0.3, -size * 0.15 + 1.5);
+                ctx.lineTo(-size * 0.3 - 1.5, -size * 0.15);
+                ctx.closePath();
+                ctx.fill();
+                ctx.beginPath();
+                ctx.moveTo(size * 0.1, -size * 0.15 - 1.5);
+                ctx.lineTo(size * 0.1 + 1.5, -size * 0.15);
+                ctx.lineTo(size * 0.1, -size * 0.15 + 1.5);
+                ctx.lineTo(size * 0.1 - 1.5, -size * 0.15);
+                ctx.closePath();
                 ctx.fill();
 
-                // Engine glow at the back
+                // Eyes (white circles with black pupils)
+                ctx.fillStyle = '#FFFFFF';
                 ctx.beginPath();
-                ctx.arc(-size * 0.4, 0, size * 0.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 100, 0, 0.6)';
+                ctx.arc(size * 0.4, -size * 0.35, size * 0.15, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.beginPath();
+                ctx.arc(size * 0.4, size * 0.35, size * 0.15, 0, Math.PI * 2);
+                ctx.fill();
+                // Pupils
+                ctx.fillStyle = '#000000';
+                ctx.beginPath();
+                ctx.arc(size * 0.45, -size * 0.35, size * 0.08, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(size * 0.45, size * 0.35, size * 0.08, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Forked tongue
+                ctx.strokeStyle = '#CC3333';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(size * 0.9, 0);
+                ctx.lineTo(size * 1.2, 0);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(size * 1.2, 0);
+                ctx.lineTo(size * 1.4, -size * 0.2);
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(size * 1.2, 0);
+                ctx.lineTo(size * 1.4, size * 0.2);
+                ctx.stroke();
 
                 ctx.restore();
             }
 
-            // Draw snake body as comet/energy trail
+            // Draw snake body with diamond pattern
             function drawSnakeBody() {
                 for (var index = 1; index < snake.length; index++) {
                     var segment = snake[index];
@@ -763,35 +951,33 @@
                     var y = segment.y * CELL_SIZE + CELL_SIZE / 2;
                     var progress = index / snake.length; // 0 at head, 1 at tail
 
-                    // Fade from bright blue-purple near head to dim toward tail
                     var alpha = 1 - progress * 0.7;
                     var size = (CELL_SIZE / 2 - 2) * (1 - progress * 0.3);
 
                     ctx.save();
+                    ctx.globalAlpha = alpha;
 
-                    // Outer glow
-                    ctx.shadowColor = 'rgba(100, 50, 255, ' + (alpha * 0.5) + ')';
-                    ctx.shadowBlur = 8 * (1 - progress);
+                    // Glow/shadow
+                    ctx.shadowColor = '#E8720C';
+                    ctx.shadowBlur = 6 * (1 - progress);
 
-                    // Gradient orb for each segment
-                    var segGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
-                    // Shift from cyan (near head) to purple (near tail)
-                    var r = Math.floor(30 + progress * 100);
-                    var g = Math.floor(200 - progress * 150);
-                    var b = Math.floor(255);
-                    segGrad.addColorStop(0, 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')');
-                    segGrad.addColorStop(0.6, 'rgba(' + Math.floor(r * 0.5) + ', ' + Math.floor(g * 0.3) + ', ' + b + ', ' + (alpha * 0.7) + ')');
-                    segGrad.addColorStop(1, 'rgba(' + Math.floor(r * 0.3) + ', ' + Math.floor(g * 0.1) + ', ' + Math.floor(b * 0.8) + ', 0)');
-
-                    ctx.fillStyle = segGrad;
+                    // Base segment circle (alternating colors)
+                    ctx.fillStyle = (index % 2 === 0) ? '#6B4A2E' : '#8B6B3A';
                     ctx.beginPath();
-                    ctx.arc(x, y, size * 1.2, 0, Math.PI * 2);
+                    ctx.arc(x, y, size * 1.1, 0, Math.PI * 2);
                     ctx.fill();
 
-                    // Inner bright core
-                    ctx.fillStyle = 'rgba(200, 230, 255, ' + (alpha * 0.4) + ')';
+                    // Reset shadow before diamond overlay
+                    ctx.shadowBlur = 0;
+
+                    // Diamond pattern overlay
+                    ctx.fillStyle = (index % 2 === 0) ? '#8B7B4A' : '#5C4A28';
                     ctx.beginPath();
-                    ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
+                    ctx.moveTo(x, y - size * 0.5);
+                    ctx.lineTo(x + size * 0.4, y);
+                    ctx.lineTo(x, y + size * 0.5);
+                    ctx.lineTo(x - size * 0.4, y);
+                    ctx.closePath();
                     ctx.fill();
 
                     ctx.restore();
@@ -814,12 +1000,12 @@
                     ctx.restore();
                 }
 
-                // Thruster particles
+                // Thruster/dust particles
                 for (var j = 0; j < thrusterParticles.length; j++) {
                     var tp = thrusterParticles[j];
                     ctx.save();
                     ctx.globalAlpha = tp.life * 0.7;
-                    var tpColor = tp.life > 0.5 ? 'rgba(255, 150, 0, ' + tp.life + ')' : 'rgba(255, 50, 0, ' + tp.life + ')';
+                    var tpColor = tp.life > 0.5 ? 'rgba(180, 150, 100, ' + tp.life + ')' : 'rgba(140, 110, 70, ' + tp.life + ')';
                     ctx.fillStyle = tpColor;
                     ctx.beginPath();
                     ctx.arc(tp.x, tp.y, tp.size * tp.life, 0, Math.PI * 2);
@@ -830,7 +1016,7 @@
 
             // Draw everything
             function draw() {
-                // Draw starfield background
+                // Draw savanna background
                 drawStarfield();
 
                 // Draw particles (behind snake and food)
@@ -848,7 +1034,7 @@
                 }
             }
 
-            // Animation loop for starfield scrolling and particle updates (runs independently)
+            // Animation loop for background scrolling and particle updates (runs independently)
             function animateBackground() {
                 starfieldOffset += 0.3;
                 updateParticles();
