@@ -440,8 +440,13 @@
             // Obstacle state (stub for FEAT-002)
             let obstacles = [];
 
-            // High score (in-memory only for FEAT-001; localStorage in FEAT-002)
+            // High score (loaded from localStorage if available)
             let highScore = 0;
+            try {
+                highScore = parseInt(localStorage.getItem('aussieSnakeHighScore')) || 0;
+            } catch (e) {
+                // localStorage unavailable — use in-memory only
+            }
 
             // Slang popup state (stub for FEAT-001)
             let slangTimeoutId = null;
@@ -560,20 +565,189 @@
                 }
             }
 
-            // Stub: show slang popup (no-op for FEAT-001, implemented in FEAT-002)
+            // Show slang popup near the food that was eaten
             function showSlangPopup(pixelX, pixelY) {
-                // No-op stub
+                var phrase = SLANG_PHRASES[Math.floor(Math.random() * SLANG_PHRASES.length)];
+                slangPopup.textContent = phrase;
+                slangPopup.style.left = Math.max(0, Math.min(pixelX - 60, CANVAS_SIZE - 120)) + 'px';
+                slangPopup.style.top = (pixelY - 30) + 'px';
+                slangPopup.style.opacity = '1';
+                if (slangTimeoutId) {
+                    clearTimeout(slangTimeoutId);
+                }
+                slangTimeoutId = setTimeout(function() {
+                    slangPopup.style.opacity = '0';
+                }, 1000);
             }
 
-            // Stub: maybe spawn obstacle (no-op for FEAT-001, implemented in FEAT-002)
+            // Maybe spawn an obstacle after food is eaten
             function maybeSpawnObstacle() {
-                // No-op stub
+                if (rawScore < OBSTACLE_SCORE_THRESHOLD) return;
+                if (obstacles.length >= MAX_OBSTACLES) return;
+
+                var desiredCount = Math.min(MAX_OBSTACLES, Math.floor((rawScore - OBSTACLE_SCORE_THRESHOLD) / 3) + 1);
+                if (obstacles.length >= desiredCount) return;
+
+                var type = Math.random() < 0.5 ? 'kangaroo' : 'spider';
+                var pos = null;
+                for (var attempt = 0; attempt < 50; attempt++) {
+                    var cx = Math.floor(Math.random() * GRID_SIZE);
+                    var cy = Math.floor(Math.random() * GRID_SIZE);
+                    // Must not overlap snake
+                    if (snake.some(function(seg) { return seg.x === cx && seg.y === cy; })) continue;
+                    // Must not overlap food
+                    if (food.x === cx && food.y === cy) continue;
+                    // Must not overlap existing obstacles
+                    if (obstacles.some(function(obs) { return obs.x === cx && obs.y === cy; })) continue;
+                    // Manhattan distance from snake head >= 2
+                    if (Math.abs(snake[0].x - cx) + Math.abs(snake[0].y - cy) < 2) continue;
+                    pos = { x: cx, y: cy };
+                    break;
+                }
+                if (pos) {
+                    obstacles.push({ x: pos.x, y: pos.y, type: type });
+                }
             }
 
-            // Stub: draw obstacles (iterates empty array for FEAT-001)
+            // Draw obstacles: kangaroo silhouettes and redback spiders
             function drawObstacles() {
+                var pulse = Math.sin(Date.now() * 0.005) * 0.2;
                 for (var i = 0; i < obstacles.length; i++) {
-                    // Obstacle drawing will be implemented in FEAT-002
+                    var obs = obstacles[i];
+                    var ox = obs.x * CELL_SIZE + CELL_SIZE / 2;
+                    var oy = obs.y * CELL_SIZE + CELL_SIZE / 2;
+
+                    ctx.save();
+                    ctx.shadowColor = 'rgba(211, 47, 47, ' + (0.3 + pulse) + ')';
+                    ctx.shadowBlur = 4;
+
+                    if (obs.type === 'kangaroo') {
+                        // Kangaroo side-profile silhouette in warm brown
+                        ctx.fillStyle = '#8d6e4c';
+                        ctx.strokeStyle = '#8d6e4c';
+                        ctx.lineWidth = 1;
+
+                        ctx.translate(ox, oy);
+                        var s = CELL_SIZE / 20; // scale factor
+
+                        ctx.beginPath();
+                        // Body — oval
+                        ctx.ellipse(0, 1 * s, 6 * s, 4 * s, 0, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Head — small circle
+                        ctx.beginPath();
+                        ctx.arc(-5 * s, -5 * s, 3 * s, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Left ear — triangle
+                        ctx.beginPath();
+                        ctx.moveTo(-6.5 * s, -7 * s);
+                        ctx.lineTo(-7.5 * s, -10 * s);
+                        ctx.lineTo(-5 * s, -7.5 * s);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // Right ear — triangle
+                        ctx.beginPath();
+                        ctx.moveTo(-4 * s, -7.5 * s);
+                        ctx.lineTo(-3.5 * s, -10 * s);
+                        ctx.lineTo(-2.5 * s, -7 * s);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // Tail — curved thick line
+                        ctx.lineWidth = 2 * s;
+                        ctx.lineCap = 'round';
+                        ctx.beginPath();
+                        ctx.moveTo(6 * s, 0);
+                        ctx.quadraticCurveTo(9 * s, -3 * s, 8 * s, -6 * s);
+                        ctx.stroke();
+
+                        // Back left leg
+                        ctx.lineWidth = 2.5 * s;
+                        ctx.beginPath();
+                        ctx.moveTo(2 * s, 4 * s);
+                        ctx.lineTo(3 * s, 8 * s);
+                        ctx.lineTo(5 * s, 9 * s);
+                        ctx.stroke();
+
+                        // Back right leg
+                        ctx.beginPath();
+                        ctx.moveTo(0, 4 * s);
+                        ctx.lineTo(1 * s, 8 * s);
+                        ctx.lineTo(3 * s, 9 * s);
+                        ctx.stroke();
+
+                        // Front arm (small)
+                        ctx.lineWidth = 1.5 * s;
+                        ctx.beginPath();
+                        ctx.moveTo(-3 * s, -1 * s);
+                        ctx.lineTo(-4 * s, 2 * s);
+                        ctx.stroke();
+
+                    } else {
+                        // Redback spider
+                        ctx.translate(ox, oy);
+                        var ss = CELL_SIZE / 20;
+
+                        // Body — black circle
+                        ctx.fillStyle = '#1a1a1a';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 4 * ss, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Red hourglass / stripe on back
+                        ctx.fillStyle = '#d32f2f';
+                        ctx.beginPath();
+                        ctx.moveTo(-1.5 * ss, -3 * ss);
+                        ctx.lineTo(0, -1 * ss);
+                        ctx.lineTo(1.5 * ss, -3 * ss);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.moveTo(-1.5 * ss, 3 * ss);
+                        ctx.lineTo(0, 1 * ss);
+                        ctx.lineTo(1.5 * ss, 3 * ss);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // 8 legs with quadratic bezier curves
+                        ctx.strokeStyle = '#1a1a1a';
+                        ctx.lineWidth = 1;
+                        ctx.lineCap = 'round';
+                        var legAngles = [-0.8, -0.4, 0.4, 0.8];
+                        // Right side legs
+                        for (var la = 0; la < legAngles.length; la++) {
+                            var baseAngle = legAngles[la];
+                            var startX = Math.cos(baseAngle) * 3 * ss;
+                            var startY = Math.sin(baseAngle) * 3 * ss;
+                            var cpX = Math.cos(baseAngle) * 8 * ss + (la % 2 === 0 ? 2 * ss : -2 * ss);
+                            var cpY = Math.sin(baseAngle) * 8 * ss;
+                            var endX = Math.cos(baseAngle) * 9 * ss;
+                            var endY = Math.sin(baseAngle) * 9 * ss;
+                            ctx.beginPath();
+                            ctx.moveTo(startX, startY);
+                            ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+                            ctx.stroke();
+                        }
+                        // Left side legs (mirror)
+                        for (var lb = 0; lb < legAngles.length; lb++) {
+                            var baseAngle2 = Math.PI - legAngles[lb];
+                            var startX2 = Math.cos(baseAngle2) * 3 * ss;
+                            var startY2 = Math.sin(baseAngle2) * 3 * ss;
+                            var cpX2 = Math.cos(baseAngle2) * 8 * ss + (lb % 2 === 0 ? -2 * ss : 2 * ss);
+                            var cpY2 = Math.sin(baseAngle2) * 8 * ss;
+                            var endX2 = Math.cos(baseAngle2) * 9 * ss;
+                            var endY2 = Math.sin(baseAngle2) * 9 * ss;
+                            ctx.beginPath();
+                            ctx.moveTo(startX2, startY2);
+                            ctx.quadraticCurveTo(cpX2, cpY2, endX2, endY2);
+                            ctx.stroke();
+                        }
+                    }
+
+                    ctx.restore();
                 }
             }
 
@@ -967,10 +1141,15 @@
                     clearInterval(gameLoop);
                     gameLoop = null;
                 }
-                // Update high score (in-memory only for FEAT-001)
+                // Update high score and persist to localStorage
                 if (score > highScore) {
                     highScore = score;
                     highScoreDisplay.textContent = highScore;
+                    try {
+                        localStorage.setItem('aussieSnakeHighScore', highScore.toString());
+                    } catch (e) {
+                        // localStorage unavailable — keep in-memory only
+                    }
                 }
                 finalScoreDisplay.textContent = score;
                 finalHighScoreDisplay.textContent = highScore;
@@ -1087,6 +1266,7 @@
             changeDifficultyBtn.addEventListener('click', showDifficultyScreen);
 
             // Start background animation
+            highScoreDisplay.textContent = highScore;
             animate();
 
             // Draw initial state
