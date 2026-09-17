@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Snake</title>
+    <title>Aussie Serpent</title>
     <style>
         * {
             margin: 0;
@@ -12,13 +12,13 @@
         }
 
         body {
-            background-color: #0a0a1a;
+            background-color: #2b1a0e;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e0e0e0;
+            color: #f0e0c8;
             overflow: hidden;
         }
 
@@ -39,8 +39,8 @@
         .title {
             font-size: 28px;
             font-weight: bold;
-            color: #00e5ff;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5), 0 0 20px rgba(0, 229, 255, 0.3);
+            color: #cc7722;
+            text-shadow: 0 0 10px rgba(204, 119, 34, 0.5), 0 0 20px rgba(204, 119, 34, 0.3);
             letter-spacing: 2px;
         }
 
@@ -65,34 +65,41 @@
         }
 
         .difficulty-label.easy {
-            color: #69f0ae;
-            border-color: #69f0ae;
-            text-shadow: 0 0 6px rgba(105, 240, 174, 0.5);
+            color: #7cb342;
+            border-color: #7cb342;
+            text-shadow: 0 0 6px rgba(124, 179, 66, 0.5);
         }
 
         .difficulty-label.medium {
-            color: #ffab40;
-            border-color: #ffab40;
-            text-shadow: 0 0 6px rgba(255, 171, 64, 0.5);
+            color: #cc7722;
+            border-color: #cc7722;
+            text-shadow: 0 0 6px rgba(204, 119, 34, 0.5);
         }
 
         .difficulty-label.hard {
-            color: #ff5252;
-            border-color: #ff5252;
-            text-shadow: 0 0 6px rgba(255, 82, 82, 0.5);
+            color: #c0532a;
+            border-color: #c0532a;
+            text-shadow: 0 0 6px rgba(192, 83, 42, 0.5);
         }
 
         .score-display {
             font-size: 20px;
-            color: #ffab40;
+            color: #cc7722;
             font-weight: bold;
-            text-shadow: 0 0 8px rgba(255, 171, 64, 0.4);
+            text-shadow: 0 0 8px rgba(204, 119, 34, 0.4);
+        }
+
+        .high-score-display {
+            font-size: 14px;
+            color: #d4a55a;
+            font-weight: bold;
+            text-shadow: 0 0 6px rgba(212, 165, 90, 0.3);
         }
 
         canvas {
-            border: 2px solid #1a237e;
+            border: 2px solid #8b5e3c;
             border-radius: 4px;
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(139, 94, 60, 0.25), inset 0 0 30px rgba(0, 0, 0, 0.5);
             display: block;
         }
 
@@ -104,53 +111,54 @@
             justify-content: center;
             width: 400px;
             height: 400px;
-            background: radial-gradient(ellipse at center, rgba(10, 10, 40, 0.95) 0%, rgba(5, 5, 20, 0.98) 100%);
+            background: radial-gradient(ellipse at center, rgba(43, 26, 14, 0.96) 0%, rgba(30, 15, 5, 0.98) 100%);
             border-radius: 4px;
             gap: 16px;
         }
 
         .overlay h2 {
             font-size: 32px;
-            color: #00e5ff;
-            text-shadow: 0 0 15px rgba(0, 229, 255, 0.7), 0 0 30px rgba(0, 229, 255, 0.4);
+            color: #cc7722;
+            text-shadow: 0 0 15px rgba(204, 119, 34, 0.7), 0 0 30px rgba(204, 119, 34, 0.4);
             letter-spacing: 3px;
         }
 
         .overlay p {
             font-size: 16px;
-            color: #b0bec5;
+            color: #d4a55a;
             text-align: center;
             line-height: 1.6;
         }
 
         .overlay .final-score {
             font-size: 24px;
-            color: #ffab40;
+            color: #cc7722;
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 171, 64, 0.5);
+            text-shadow: 0 0 10px rgba(204, 119, 34, 0.5);
         }
 
         .btn {
             padding: 12px 32px;
             font-size: 16px;
             font-weight: bold;
-            color: #00e5ff;
+            color: #cc7722;
             background: transparent;
-            border: 2px solid #00e5ff;
+            border: 2px solid #cc7722;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 10px rgba(204, 119, 34, 0.3), inset 0 0 10px rgba(204, 119, 34, 0.1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .btn:hover {
-            background: rgba(0, 229, 255, 0.15);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.2);
+            background: rgba(204, 119, 34, 0.15);
+            box-shadow: 0 0 20px rgba(204, 119, 34, 0.6), inset 0 0 15px rgba(204, 119, 34, 0.2);
             transform: scale(1.05);
-            text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+            text-shadow: 0 0 8px rgba(204, 119, 34, 0.8);
         }
 
         .btn:active {
@@ -207,42 +215,42 @@
         }
 
         .difficulty-btn.easy {
-            color: #69f0ae;
-            border-color: #69f0ae;
-            box-shadow: 0 0 10px rgba(105, 240, 174, 0.3), inset 0 0 10px rgba(105, 240, 174, 0.1);
+            color: #7cb342;
+            border-color: #7cb342;
+            box-shadow: 0 0 10px rgba(124, 179, 66, 0.3), inset 0 0 10px rgba(124, 179, 66, 0.1);
         }
 
         .difficulty-btn.easy:hover {
-            background: rgba(105, 240, 174, 0.15);
-            box-shadow: 0 0 20px rgba(105, 240, 174, 0.6), inset 0 0 15px rgba(105, 240, 174, 0.2);
+            background: rgba(124, 179, 66, 0.15);
+            box-shadow: 0 0 20px rgba(124, 179, 66, 0.6), inset 0 0 15px rgba(124, 179, 66, 0.2);
             transform: scale(1.03);
-            text-shadow: 0 0 8px rgba(105, 240, 174, 0.8);
+            text-shadow: 0 0 8px rgba(124, 179, 66, 0.8);
         }
 
         .difficulty-btn.medium {
-            color: #ffab40;
-            border-color: #ffab40;
-            box-shadow: 0 0 10px rgba(255, 171, 64, 0.3), inset 0 0 10px rgba(255, 171, 64, 0.1);
+            color: #cc7722;
+            border-color: #cc7722;
+            box-shadow: 0 0 10px rgba(204, 119, 34, 0.3), inset 0 0 10px rgba(204, 119, 34, 0.1);
         }
 
         .difficulty-btn.medium:hover {
-            background: rgba(255, 171, 64, 0.15);
-            box-shadow: 0 0 20px rgba(255, 171, 64, 0.6), inset 0 0 15px rgba(255, 171, 64, 0.2);
+            background: rgba(204, 119, 34, 0.15);
+            box-shadow: 0 0 20px rgba(204, 119, 34, 0.6), inset 0 0 15px rgba(204, 119, 34, 0.2);
             transform: scale(1.03);
-            text-shadow: 0 0 8px rgba(255, 171, 64, 0.8);
+            text-shadow: 0 0 8px rgba(204, 119, 34, 0.8);
         }
 
         .difficulty-btn.hard {
-            color: #ff5252;
-            border-color: #ff5252;
-            box-shadow: 0 0 10px rgba(255, 82, 82, 0.3), inset 0 0 10px rgba(255, 82, 82, 0.1);
+            color: #c0532a;
+            border-color: #c0532a;
+            box-shadow: 0 0 10px rgba(192, 83, 42, 0.3), inset 0 0 10px rgba(192, 83, 42, 0.1);
         }
 
         .difficulty-btn.hard:hover {
-            background: rgba(255, 82, 82, 0.15);
-            box-shadow: 0 0 20px rgba(255, 82, 82, 0.6), inset 0 0 15px rgba(255, 82, 82, 0.2);
+            background: rgba(192, 83, 42, 0.15);
+            box-shadow: 0 0 20px rgba(192, 83, 42, 0.6), inset 0 0 15px rgba(192, 83, 42, 0.2);
             transform: scale(1.03);
-            text-shadow: 0 0 8px rgba(255, 82, 82, 0.8);
+            text-shadow: 0 0 8px rgba(192, 83, 42, 0.8);
         }
 
         .difficulty-btn:active {
@@ -251,7 +259,7 @@
 
         .overlay-subtitle {
             font-size: 14px;
-            color: #5c6bc0;
+            color: #8b5e3c;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 4px;
@@ -268,23 +276,23 @@
             padding: 10px 28px;
             font-size: 14px;
             font-weight: bold;
-            color: #b0bec5;
+            color: #d4a55a;
             background: transparent;
-            border: 1px solid #5c6bc0;
+            border: 1px solid #8b5e3c;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 8px rgba(92, 107, 192, 0.2);
+            box-shadow: 0 0 8px rgba(139, 94, 60, 0.2);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .btn-secondary:hover {
-            color: #e0e0e0;
-            border-color: #7986cb;
-            background: rgba(92, 107, 192, 0.15);
-            box-shadow: 0 0 15px rgba(92, 107, 192, 0.4);
+            color: #f0e0c8;
+            border-color: #cc7722;
+            background: rgba(139, 94, 60, 0.15);
+            box-shadow: 0 0 15px rgba(139, 94, 60, 0.4);
             transform: scale(1.05);
         }
 
@@ -294,48 +302,60 @@
 
         .instructions {
             font-size: 14px;
-            color: #5c6bc0;
+            color: #8b5e3c;
             margin-top: 8px;
         }
 
         .hidden {
             display: none;
         }
+
+        #slangPopup {
+            position: absolute;
+            font-size: 22px;
+            font-weight: bold;
+            color: #f0e0c8;
+            text-shadow: 0 0 8px rgba(204, 119, 34, 0.8);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
         <div class="header">
-            <div class="title">SPACE SNAKE</div>
+            <div class="title">AUSSIE SERPENT</div>
             <div class="header-right">
                 <span class="difficulty-label hidden" id="difficultyLabel"></span>
-                <div class="score-display">Energy: <span id="score">0</span></div>
+                <div class="score-display">Tucker: <span id="score">0</span></div>
+                <div class="high-score-display">Best: <span id="highScore">0</span></div>
             </div>
         </div>
         <div style="position: relative;">
             <canvas id="gameCanvas" width="400" height="400"></canvas>
             <div class="overlay" id="difficultyScreen">
-                <h2>COSMIC SERPENT</h2>
-                <div class="overlay-subtitle">Select Mission Difficulty</div>
+                <h2>AUSSIE SERPENT</h2>
+                <div class="overlay-subtitle">Choose Yer Challenge, Mate</div>
                 <div class="difficulty-buttons">
                     <button class="difficulty-btn easy" id="easyBtn" data-difficulty="easy">
                         <div class="diff-info">
                             <span class="diff-name">Easy</span>
-                            <span class="diff-desc">Slow speed, 1x score multiplier</span>
+                            <span class="diff-desc">Slow as a sleepy koala, 1× score</span>
                         </div>
                         <span class="diff-key">[ 1 ]</span>
                     </button>
                     <button class="difficulty-btn medium" id="mediumBtn" data-difficulty="medium">
                         <div class="diff-info">
                             <span class="diff-name">Medium</span>
-                            <span class="diff-desc">Normal speed, 2x score multiplier</span>
+                            <span class="diff-desc">Steady as a croc, 2× score</span>
                         </div>
                         <span class="diff-key">[ 2 ]</span>
                     </button>
                     <button class="difficulty-btn hard" id="hardBtn" data-difficulty="hard">
                         <div class="diff-info">
                             <span class="diff-name">Hard</span>
-                            <span class="diff-desc">Fast speed, 3x score multiplier</span>
+                            <span class="diff-desc">Fast as a brown snake, 3× score</span>
                         </div>
                         <span class="diff-key">[ 3 ]</span>
                     </button>
@@ -343,14 +363,17 @@
                 <div class="instructions">Press 1, 2, or 3 to select</div>
             </div>
             <div class="overlay hidden" id="gameOverScreen">
-                <h2>SHIP DESTROYED</h2>
-                <p class="final-score">Energy Collected: <span id="finalScore">0</span></p>
+                <h2>CRIKEY!</h2>
+                <p class="final-score">Tucker Scored: <span id="finalScore">0</span></p>
+                <p>Best: <span id="finalHighScore">0</span></p>
+                <p id="gameOverSlang"></p>
                 <div class="game-over-buttons">
-                    <button class="btn" id="restartBtn">Relaunch</button>
-                    <button class="btn-secondary" id="changeDifficultyBtn">Change Difficulty</button>
+                    <button class="btn" id="restartBtn">Have Another Go</button>
+                    <button class="btn-secondary" id="changeDifficultyBtn">Change Yer Challenge</button>
                 </div>
-                <div class="instructions">Press Enter to relaunch or Esc to change difficulty</div>
+                <div class="instructions">Press Enter to have another go or Esc to change challenge</div>
             </div>
+            <div id="slangPopup"></div>
         </div>
     </div>
 
@@ -361,15 +384,38 @@
             const GRID_SIZE = 20;
             const CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
 
+            // Colour constants — outback palette
+            const BG_DARK = '#2b1a0e';
+            const BG_MID = '#4a2e14';
+            const SAND = '#d4a55a';
+            const DUST_RED = '#c0532a';
+            const OCHRE = '#cc7722';
+            const SKY_BLUE = '#6fb8d4';
+            const SNAKE_BROWN = '#5c3d1e';
+            const SNAKE_TAN = '#a67c4a';
+            const SNAKE_OLIVE = '#6b6632';
+            const DANGER_RED = '#d32f2f';
+            const TEXT_LIGHT = '#f0e0c8';
+
+            // Obstacle constants (stubs for FEAT-002)
+            const MAX_OBSTACLES = 4;
+            const OBSTACLE_SCORE_THRESHOLD = 3;
+
+            // Food types
+            const FOOD_TYPES = ['pie', 'vegemite', 'timtam', 'lamington'];
+
+            // Slang phrases
+            const SLANG_PHRASES = ["G'day mate!", "Bonzer!", "Strewth!", "Ripper!", "Too easy, legend!", "Fair dinkum!", "Noice one!", "Bewdy!"];
+
             // Difficulty settings
             const DIFFICULTY_SETTINGS = {
-                easy:   { speed: 150, multiplier: 1, label: 'Easy',   color: '#69f0ae', cssClass: 'easy' },
-                medium: { speed: 120, multiplier: 2, label: 'Medium', color: '#ffab40', cssClass: 'medium' },
-                hard:   { speed: 80,  multiplier: 3, label: 'Hard',   color: '#ff5252', cssClass: 'hard' }
+                easy:   { speed: 150, multiplier: 1, label: 'Easy',   color: '#7cb342', cssClass: 'easy' },
+                medium: { speed: 120, multiplier: 2, label: 'Medium', color: '#cc7722', cssClass: 'medium' },
+                hard:   { speed: 80,  multiplier: 3, label: 'Hard',   color: '#c0532a', cssClass: 'hard' }
             };
 
             // Current difficulty state
-            let currentDifficulty = null; // 'easy', 'medium', or 'hard'
+            let currentDifficulty = null;
             let gameSpeed = 120;
             let scoreMultiplier = 1;
 
@@ -379,20 +425,34 @@
             let direction = { x: 1, y: 0 };
             let nextDirection = { x: 1, y: 0 };
             let score = 0;
-            let rawScore = 0; // Score before multiplier
+            let rawScore = 0;
             let gameRunning = false;
             let gameLoop = null;
             let gameStarted = false;
             let difficultySelected = false;
 
-            // Space theme state
-            let stars = [];
+            // Visual state
             let particles = [];
-            let thrusterParticles = [];
-            let foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
             let foodPulse = 0;
-            let starfieldOffset = 0;
             let animationFrame = null;
+            let foodTypeIndex = 0;
+
+            // Obstacle state (stub for FEAT-002)
+            let obstacles = [];
+
+            // High score (loaded from localStorage if available)
+            let highScore = 0;
+            try {
+                highScore = parseInt(localStorage.getItem('aussieSnakeHighScore')) || 0;
+            } catch (e) {
+                // localStorage unavailable — use in-memory only
+            }
+
+            // Slang popup state (stub for FEAT-001)
+            let slangTimeoutId = null;
+
+            // Outback background details
+            let outbackDetails = [];
 
             // DOM elements
             const canvas = document.getElementById('gameCanvas');
@@ -407,24 +467,26 @@
             const hardBtn = document.getElementById('hardBtn');
             const restartBtn = document.getElementById('restartBtn');
             const changeDifficultyBtn = document.getElementById('changeDifficultyBtn');
+            const highScoreDisplay = document.getElementById('highScore');
+            const finalHighScoreDisplay = document.getElementById('finalHighScore');
+            const gameOverSlang = document.getElementById('gameOverSlang');
+            const slangPopup = document.getElementById('slangPopup');
 
-            // Generate starfield
-            function generateStars() {
-                stars = [];
-                for (var i = 0; i < 120; i++) {
-                    stars.push({
+            // Generate outback background dot-art details
+            function generateOutbackDetails() {
+                outbackDetails = [];
+                var DOT_COLORS = ['#cc7722', '#d4a55a', '#8b5e3c'];
+                var count = 40 + Math.floor(Math.random() * 21);
+                for (var i = 0; i < count; i++) {
+                    outbackDetails.push({
                         x: Math.random() * CANVAS_SIZE,
                         y: Math.random() * CANVAS_SIZE,
-                        size: Math.random() * 2 + 0.5,
-                        brightness: Math.random(),
-                        twinkleSpeed: Math.random() * 0.03 + 0.01,
-                        twinkleOffset: Math.random() * Math.PI * 2
+                        size: Math.random() * 3 + 1,
+                        color: DOT_COLORS[Math.floor(Math.random() * DOT_COLORS.length)],
+                        alpha: Math.random() * 0.3 + 0.1
                     });
                 }
             }
-
-            // Initialize stars
-            generateStars();
 
             // Initialize game
             function initGame() {
@@ -439,26 +501,40 @@
                 rawScore = 0;
                 scoreDisplay.textContent = '0';
                 particles = [];
-                thrusterParticles = [];
+                obstacles = [];
+                foodPulse = 0;
+                if (slangTimeoutId) {
+                    clearTimeout(slangTimeoutId);
+                    slangTimeoutId = null;
+                }
+                slangPopup.style.opacity = '0';
+                generateOutbackDetails();
                 spawnFood();
             }
 
-            // Spawn food at random position not occupied by snake
+            // Spawn food at random position not occupied by snake or obstacles
             function spawnFood() {
                 var newFood;
+                var attempts = 0;
                 do {
                     newFood = {
                         x: Math.floor(Math.random() * GRID_SIZE),
                         y: Math.floor(Math.random() * GRID_SIZE)
                     };
-                } while (snake.some(function(segment) { return segment.x === newFood.x && segment.y === newFood.y; }));
+                    attempts++;
+                    if (attempts > 100) break;
+                } while (
+                    snake.some(function(segment) { return segment.x === newFood.x && segment.y === newFood.y; }) ||
+                    obstacles.some(function(obs) { return obs.x === newFood.x && obs.y === newFood.y; })
+                );
                 food = newFood;
-                foodType = Math.floor(Math.random() * 3); // cycle through types
+                foodTypeIndex = Math.floor(Math.random() * FOOD_TYPES.length);
+                foodPulse = 0;
             }
 
             // Create particle burst when food is collected
             function createFoodParticles(x, y) {
-                var colors = ['#00e5ff', '#7c4dff', '#ff4081', '#ffab40', '#69f0ae'];
+                var colors = ['#cc7722', '#d4a55a', '#c0532a', '#8b5e3c', '#f0e0c8'];
                 for (var i = 0; i < 12; i++) {
                     var angle = (Math.PI * 2 / 12) * i + Math.random() * 0.5;
                     var speed = Math.random() * 3 + 1.5;
@@ -475,31 +551,8 @@
                 }
             }
 
-            // Create thruster particles behind the snake head
-            function createThrusterParticle() {
-                if (!gameRunning || snake.length === 0) return;
-                var head = snake[0];
-                var cx = head.x * CELL_SIZE + CELL_SIZE / 2;
-                var cy = head.y * CELL_SIZE + CELL_SIZE / 2;
-                // Place particles behind the direction of travel
-                var offsetX = -direction.x * CELL_SIZE * 0.4;
-                var offsetY = -direction.y * CELL_SIZE * 0.4;
-                for (var i = 0; i < 2; i++) {
-                    thrusterParticles.push({
-                        x: cx + offsetX + (Math.random() - 0.5) * 6,
-                        y: cy + offsetY + (Math.random() - 0.5) * 6,
-                        vx: -direction.x * (Math.random() * 1.5 + 0.5) + (Math.random() - 0.5) * 0.8,
-                        vy: -direction.y * (Math.random() * 1.5 + 0.5) + (Math.random() - 0.5) * 0.8,
-                        life: 1.0,
-                        decay: Math.random() * 0.05 + 0.04,
-                        size: Math.random() * 2.5 + 1
-                    });
-                }
-            }
-
             // Update particles
             function updateParticles() {
-                // Food particles
                 for (var i = particles.length - 1; i >= 0; i--) {
                     particles[i].x += particles[i].vx;
                     particles[i].y += particles[i].vy;
@@ -510,14 +563,191 @@
                         particles.splice(i, 1);
                     }
                 }
-                // Thruster particles
-                for (var j = thrusterParticles.length - 1; j >= 0; j--) {
-                    thrusterParticles[j].x += thrusterParticles[j].vx;
-                    thrusterParticles[j].y += thrusterParticles[j].vy;
-                    thrusterParticles[j].life -= thrusterParticles[j].decay;
-                    if (thrusterParticles[j].life <= 0) {
-                        thrusterParticles.splice(j, 1);
+            }
+
+            // Show slang popup near the food that was eaten
+            function showSlangPopup(pixelX, pixelY) {
+                var phrase = SLANG_PHRASES[Math.floor(Math.random() * SLANG_PHRASES.length)];
+                slangPopup.textContent = phrase;
+                slangPopup.style.left = Math.max(0, Math.min(pixelX - 60, CANVAS_SIZE - 120)) + 'px';
+                slangPopup.style.top = (pixelY - 30) + 'px';
+                slangPopup.style.opacity = '1';
+                if (slangTimeoutId) {
+                    clearTimeout(slangTimeoutId);
+                }
+                slangTimeoutId = setTimeout(function() {
+                    slangPopup.style.opacity = '0';
+                }, 1000);
+            }
+
+            // Maybe spawn an obstacle after food is eaten
+            function maybeSpawnObstacle() {
+                if (rawScore < OBSTACLE_SCORE_THRESHOLD) return;
+                if (obstacles.length >= MAX_OBSTACLES) return;
+
+                var desiredCount = Math.min(MAX_OBSTACLES, Math.floor((rawScore - OBSTACLE_SCORE_THRESHOLD) / 3) + 1);
+                if (obstacles.length >= desiredCount) return;
+
+                var type = Math.random() < 0.5 ? 'kangaroo' : 'spider';
+                var pos = null;
+                for (var attempt = 0; attempt < 50; attempt++) {
+                    var cx = Math.floor(Math.random() * GRID_SIZE);
+                    var cy = Math.floor(Math.random() * GRID_SIZE);
+                    // Must not overlap snake
+                    if (snake.some(function(seg) { return seg.x === cx && seg.y === cy; })) continue;
+                    // Must not overlap food
+                    if (food.x === cx && food.y === cy) continue;
+                    // Must not overlap existing obstacles
+                    if (obstacles.some(function(obs) { return obs.x === cx && obs.y === cy; })) continue;
+                    // Manhattan distance from snake head >= 2
+                    if (Math.abs(snake[0].x - cx) + Math.abs(snake[0].y - cy) < 2) continue;
+                    pos = { x: cx, y: cy };
+                    break;
+                }
+                if (pos) {
+                    obstacles.push({ x: pos.x, y: pos.y, type: type });
+                }
+            }
+
+            // Draw obstacles: kangaroo silhouettes and redback spiders
+            function drawObstacles() {
+                var pulse = Math.sin(Date.now() * 0.005) * 0.2;
+                for (var i = 0; i < obstacles.length; i++) {
+                    var obs = obstacles[i];
+                    var ox = obs.x * CELL_SIZE + CELL_SIZE / 2;
+                    var oy = obs.y * CELL_SIZE + CELL_SIZE / 2;
+
+                    ctx.save();
+                    ctx.shadowColor = 'rgba(211, 47, 47, ' + (0.3 + pulse) + ')';
+                    ctx.shadowBlur = 4;
+
+                    if (obs.type === 'kangaroo') {
+                        // Kangaroo side-profile silhouette in warm brown
+                        ctx.fillStyle = '#8d6e4c';
+                        ctx.strokeStyle = '#8d6e4c';
+                        ctx.lineWidth = 1;
+
+                        ctx.translate(ox, oy);
+                        var s = CELL_SIZE / 20; // scale factor
+
+                        ctx.beginPath();
+                        // Body — oval
+                        ctx.ellipse(0, 1 * s, 6 * s, 4 * s, 0, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Head — small circle
+                        ctx.beginPath();
+                        ctx.arc(-5 * s, -5 * s, 3 * s, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Left ear — triangle
+                        ctx.beginPath();
+                        ctx.moveTo(-6.5 * s, -7 * s);
+                        ctx.lineTo(-7.5 * s, -10 * s);
+                        ctx.lineTo(-5 * s, -7.5 * s);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // Right ear — triangle
+                        ctx.beginPath();
+                        ctx.moveTo(-4 * s, -7.5 * s);
+                        ctx.lineTo(-3.5 * s, -10 * s);
+                        ctx.lineTo(-2.5 * s, -7 * s);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // Tail — curved thick line
+                        ctx.lineWidth = 2 * s;
+                        ctx.lineCap = 'round';
+                        ctx.beginPath();
+                        ctx.moveTo(6 * s, 0);
+                        ctx.quadraticCurveTo(9 * s, -3 * s, 8 * s, -6 * s);
+                        ctx.stroke();
+
+                        // Back left leg
+                        ctx.lineWidth = 2.5 * s;
+                        ctx.beginPath();
+                        ctx.moveTo(2 * s, 4 * s);
+                        ctx.lineTo(3 * s, 8 * s);
+                        ctx.lineTo(5 * s, 9 * s);
+                        ctx.stroke();
+
+                        // Back right leg
+                        ctx.beginPath();
+                        ctx.moveTo(0, 4 * s);
+                        ctx.lineTo(1 * s, 8 * s);
+                        ctx.lineTo(3 * s, 9 * s);
+                        ctx.stroke();
+
+                        // Front arm (small)
+                        ctx.lineWidth = 1.5 * s;
+                        ctx.beginPath();
+                        ctx.moveTo(-3 * s, -1 * s);
+                        ctx.lineTo(-4 * s, 2 * s);
+                        ctx.stroke();
+
+                    } else {
+                        // Redback spider
+                        ctx.translate(ox, oy);
+                        var ss = CELL_SIZE / 20;
+
+                        // Body — black circle
+                        ctx.fillStyle = '#1a1a1a';
+                        ctx.beginPath();
+                        ctx.arc(0, 0, 4 * ss, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Red hourglass / stripe on back
+                        ctx.fillStyle = '#d32f2f';
+                        ctx.beginPath();
+                        ctx.moveTo(-1.5 * ss, -3 * ss);
+                        ctx.lineTo(0, -1 * ss);
+                        ctx.lineTo(1.5 * ss, -3 * ss);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.moveTo(-1.5 * ss, 3 * ss);
+                        ctx.lineTo(0, 1 * ss);
+                        ctx.lineTo(1.5 * ss, 3 * ss);
+                        ctx.closePath();
+                        ctx.fill();
+
+                        // 8 legs with quadratic bezier curves
+                        ctx.strokeStyle = '#1a1a1a';
+                        ctx.lineWidth = 1;
+                        ctx.lineCap = 'round';
+                        var legAngles = [-0.8, -0.4, 0.4, 0.8];
+                        // Right side legs
+                        for (var la = 0; la < legAngles.length; la++) {
+                            var baseAngle = legAngles[la];
+                            var startX = Math.cos(baseAngle) * 3 * ss;
+                            var startY = Math.sin(baseAngle) * 3 * ss;
+                            var cpX = Math.cos(baseAngle) * 8 * ss + (la % 2 === 0 ? 2 * ss : -2 * ss);
+                            var cpY = Math.sin(baseAngle) * 8 * ss;
+                            var endX = Math.cos(baseAngle) * 9 * ss;
+                            var endY = Math.sin(baseAngle) * 9 * ss;
+                            ctx.beginPath();
+                            ctx.moveTo(startX, startY);
+                            ctx.quadraticCurveTo(cpX, cpY, endX, endY);
+                            ctx.stroke();
+                        }
+                        // Left side legs (mirror)
+                        for (var lb = 0; lb < legAngles.length; lb++) {
+                            var baseAngle2 = Math.PI - legAngles[lb];
+                            var startX2 = Math.cos(baseAngle2) * 3 * ss;
+                            var startY2 = Math.sin(baseAngle2) * 3 * ss;
+                            var cpX2 = Math.cos(baseAngle2) * 8 * ss + (lb % 2 === 0 ? -2 * ss : 2 * ss);
+                            var cpY2 = Math.sin(baseAngle2) * 8 * ss;
+                            var endX2 = Math.cos(baseAngle2) * 9 * ss;
+                            var endY2 = Math.sin(baseAngle2) * 9 * ss;
+                            ctx.beginPath();
+                            ctx.moveTo(startX2, startY2);
+                            ctx.quadraticCurveTo(cpX2, cpY2, endX2, endY2);
+                            ctx.stroke();
+                        }
                     }
+
+                    ctx.restore();
                 }
             }
 
@@ -544,11 +774,14 @@
                     return;
                 }
 
+                // Check obstacle collision
+                if (obstacles.some(function(obs) { return obs.x === head.x && obs.y === head.y; })) {
+                    gameOver();
+                    return;
+                }
+
                 // Add new head
                 snake.unshift(head);
-
-                // Create thruster particles
-                createThrusterParticle();
 
                 // Check food collision
                 if (head.x === food.x && head.y === food.y) {
@@ -560,6 +793,18 @@
                         food.x * CELL_SIZE + CELL_SIZE / 2,
                         food.y * CELL_SIZE + CELL_SIZE / 2
                     );
+                    // Slang popup (stub)
+                    showSlangPopup(
+                        food.x * CELL_SIZE + CELL_SIZE / 2,
+                        food.y * CELL_SIZE + CELL_SIZE / 2
+                    );
+                    // Maybe spawn obstacle (stub)
+                    maybeSpawnObstacle();
+                    // Live high score update
+                    if (score > highScore) {
+                        highScore = score;
+                        highScoreDisplay.textContent = highScore;
+                    }
                     spawnFood();
                 } else {
                     // Remove tail if no food eaten
@@ -567,46 +812,30 @@
                 }
             }
 
-            // Draw starfield background
-            function drawStarfield() {
-                // Deep space background
-                ctx.fillStyle = '#0a0a1a';
+            // Draw outback background
+            function drawOutbackBackground() {
+                // Sky-to-ground gradient
+                var skyGrad = ctx.createLinearGradient(0, 0, 0, CANVAS_SIZE);
+                skyGrad.addColorStop(0, SKY_BLUE);
+                skyGrad.addColorStop(0.3, SAND);
+                skyGrad.addColorStop(0.55, DUST_RED);
+                skyGrad.addColorStop(1, BG_MID);
+                ctx.fillStyle = skyGrad;
                 ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-                // Subtle nebula gradient
-                var nebula = ctx.createRadialGradient(200, 200, 50, 200, 200, 250);
-                nebula.addColorStop(0, 'rgba(26, 0, 51, 0.3)');
-                nebula.addColorStop(0.5, 'rgba(10, 10, 40, 0.2)');
-                nebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                ctx.fillStyle = nebula;
-                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-                // Draw stars with twinkling
-                var time = Date.now() * 0.001;
-                for (var i = 0; i < stars.length; i++) {
-                    var star = stars[i];
-                    var twinkle = Math.sin(time * star.twinkleSpeed * 60 + star.twinkleOffset) * 0.5 + 0.5;
-                    var alpha = star.brightness * 0.4 + twinkle * 0.6;
-                    // Scroll effect - slight vertical drift
-                    var yPos = (star.y + starfieldOffset * star.size * 0.3) % CANVAS_SIZE;
-                    if (yPos < 0) yPos += CANVAS_SIZE;
-
+                // Dot-art texture
+                for (var i = 0; i < outbackDetails.length; i++) {
+                    var dot = outbackDetails[i];
                     ctx.beginPath();
-                    ctx.arc(star.x, yPos, star.size * (0.5 + twinkle * 0.5), 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(200, 220, 255, ' + alpha + ')';
+                    ctx.arc(dot.x, dot.y, dot.size, 0, Math.PI * 2);
+                    ctx.fillStyle = dot.color;
+                    ctx.globalAlpha = dot.alpha;
                     ctx.fill();
-
-                    // Add glow to brighter stars
-                    if (star.size > 1.5) {
-                        ctx.beginPath();
-                        ctx.arc(star.x, yPos, star.size * 2, 0, Math.PI * 2);
-                        ctx.fillStyle = 'rgba(150, 180, 255, ' + (alpha * 0.2) + ')';
-                        ctx.fill();
-                    }
                 }
+                ctx.globalAlpha = 1.0;
 
-                // Very subtle grid (faint blue lines)
-                ctx.strokeStyle = 'rgba(30, 40, 80, 0.15)';
+                // Subtle grid
+                ctx.strokeStyle = 'rgba(180, 140, 90, 0.12)';
                 ctx.lineWidth = 0.3;
                 for (var g = 0; g <= GRID_SIZE; g++) {
                     ctx.beginPath();
@@ -620,83 +849,110 @@
                 }
             }
 
-            // Draw food as space objects
+            // Draw food as Australian items
             function drawFood() {
                 var fx = food.x * CELL_SIZE + CELL_SIZE / 2;
                 var fy = food.y * CELL_SIZE + CELL_SIZE / 2;
-                var radius = CELL_SIZE / 2 - 2;
                 foodPulse += 0.08;
-                var pulse = Math.sin(foodPulse) * 0.2 + 0.8;
+                var pulse = Math.sin(foodPulse) * 0.15 + 0.85;
 
                 ctx.save();
+                ctx.shadowColor = OCHRE;
+                ctx.shadowBlur = 6 * pulse;
 
-                if (foodType === 0) {
-                    // Planet with rings
-                    // Glow
-                    ctx.shadowColor = '#ff6e40';
-                    ctx.shadowBlur = 12 * pulse;
-                    // Planet body
-                    var planetGrad = ctx.createRadialGradient(fx - 2, fy - 2, 1, fx, fy, radius);
-                    planetGrad.addColorStop(0, '#ff8a65');
-                    planetGrad.addColorStop(0.6, '#d84315');
-                    planetGrad.addColorStop(1, '#bf360c');
-                    ctx.fillStyle = planetGrad;
+                if (foodTypeIndex === 0) {
+                    // Meat pie — golden circle with darker filling and bite
+                    var pieR = (CELL_SIZE / 2 - 2) * pulse;
+                    // Pie crust
+                    ctx.fillStyle = '#d4a55a';
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * pulse, 0, Math.PI * 2);
+                    ctx.arc(fx, fy, pieR, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.shadowBlur = 0;
-                    // Ring
-                    ctx.strokeStyle = 'rgba(255, 171, 64, 0.7)';
-                    ctx.lineWidth = 1.5;
+                    // Filling
+                    ctx.fillStyle = '#8b5e3c';
                     ctx.beginPath();
-                    ctx.ellipse(fx, fy, radius * 1.3 * pulse, radius * 0.4 * pulse, -0.3, 0, Math.PI * 2);
+                    ctx.arc(fx, fy, pieR * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Bite arc (cut out a wedge)
+                    ctx.fillStyle = '#4a2e14';
+                    ctx.beginPath();
+                    ctx.moveTo(fx + pieR * 0.3, fy - pieR * 0.3);
+                    ctx.arc(fx + pieR * 0.5, fy - pieR * 0.5, pieR * 0.35, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Steam lines
+                    ctx.shadowBlur = 0;
+                    ctx.strokeStyle = 'rgba(240, 224, 200, 0.5)';
+                    ctx.lineWidth = 1;
+                    var steamOffset = Math.sin(foodPulse * 2) * 2;
+                    ctx.beginPath();
+                    ctx.moveTo(fx - 2, fy - pieR - 1);
+                    ctx.quadraticCurveTo(fx - 2 + steamOffset, fy - pieR - 4, fx - 2, fy - pieR - 7);
                     ctx.stroke();
-                } else if (foodType === 1) {
-                    // 5-pointed star
-                    ctx.shadowColor = '#ffeb3b';
-                    ctx.shadowBlur = 15 * pulse;
-                    ctx.fillStyle = '#fdd835';
                     ctx.beginPath();
-                    for (var p = 0; p < 5; p++) {
-                        var outerAngle = (Math.PI * 2 / 5) * p - Math.PI / 2;
-                        var innerAngle = outerAngle + Math.PI / 5;
-                        var outerR = radius * pulse;
-                        var innerR = radius * 0.4 * pulse;
-                        if (p === 0) {
-                            ctx.moveTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        } else {
-                            ctx.lineTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        }
-                        ctx.lineTo(fx + Math.cos(innerAngle) * innerR, fy + Math.sin(innerAngle) * innerR);
-                    }
-                    ctx.closePath();
+                    ctx.moveTo(fx + 2, fy - pieR - 1);
+                    ctx.quadraticCurveTo(fx + 2 - steamOffset, fy - pieR - 5, fx + 2, fy - pieR - 9);
+                    ctx.stroke();
+                } else if (foodTypeIndex === 1) {
+                    // Vegemite on toast — light brown rect + dark brown rect
+                    var toastW = (CELL_SIZE - 4) * pulse;
+                    var toastH = (CELL_SIZE - 6) * pulse;
+                    var toastX = fx - toastW / 2;
+                    var toastY = fy - toastH / 2;
+                    // Toast base
+                    ctx.fillStyle = '#c8a86e';
+                    ctx.beginPath();
+                    ctx.roundRect(toastX, toastY, toastW, toastH, 2);
                     ctx.fill();
-                    ctx.shadowBlur = 0;
+                    // Vegemite spread
+                    var vPad = 2;
+                    ctx.fillStyle = '#3e2723';
+                    ctx.beginPath();
+                    ctx.roundRect(toastX + vPad, toastY + vPad, toastW - vPad * 2, toastH - vPad * 2, 1);
+                    ctx.fill();
+                } else if (foodTypeIndex === 2) {
+                    // Tim Tam — dark brown rectangle with cream line + gloss
+                    var ttW = (CELL_SIZE - 4) * pulse;
+                    var ttH = (CELL_SIZE - 8) * pulse;
+                    var ttX = fx - ttW / 2;
+                    var ttY = fy - ttH / 2;
+                    // Body
+                    ctx.fillStyle = '#4e2a1a';
+                    ctx.beginPath();
+                    ctx.roundRect(ttX, ttY, ttW, ttH, 2);
+                    ctx.fill();
+                    // Cream line
+                    ctx.fillStyle = '#d4a55a';
+                    ctx.fillRect(ttX + 1, fy - 1, ttW - 2, 2);
+                    // Gloss highlight
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+                    ctx.fillRect(ttX + 1, ttY + 1, ttW - 2, ttH * 0.3);
                 } else {
-                    // Energy orb (pulsating cyan/purple)
-                    ctx.shadowColor = '#00e5ff';
-                    ctx.shadowBlur = 18 * pulse;
-                    var orbGrad = ctx.createRadialGradient(fx, fy, 0, fx, fy, radius * pulse);
-                    orbGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-                    orbGrad.addColorStop(0.3, 'rgba(0, 229, 255, 0.8)');
-                    orbGrad.addColorStop(0.7, 'rgba(124, 77, 255, 0.6)');
-                    orbGrad.addColorStop(1, 'rgba(124, 77, 255, 0)');
-                    ctx.fillStyle = orbGrad;
+                    // Lamington — brown square with white coconut dots
+                    var lamS = (CELL_SIZE - 6) * pulse;
+                    var lamX = fx - lamS / 2;
+                    var lamY = fy - lamS / 2;
+                    // Chocolate body
+                    ctx.fillStyle = '#5c3320';
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 1.2 * pulse, 0, Math.PI * 2);
+                    ctx.roundRect(lamX, lamY, lamS, lamS, 2);
                     ctx.fill();
-                    // Inner core
-                    ctx.shadowBlur = 0;
+                    // Coconut dots
                     ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 0.3, 0, Math.PI * 2);
-                    ctx.fill();
+                    var dotPositions = [
+                        [-0.3, -0.4], [0.3, -0.4], [-0.4, 0], [0.4, 0],
+                        [-0.3, 0.4], [0.3, 0.4], [0, -0.4], [0, 0.4]
+                    ];
+                    for (var d = 0; d < dotPositions.length; d++) {
+                        ctx.beginPath();
+                        ctx.arc(fx + dotPositions[d][0] * lamS, fy + dotPositions[d][1] * lamS, 1, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
                 }
 
                 ctx.restore();
             }
 
-            // Draw snake head as a spaceship
+            // Draw snake head as triangular brown serpent head
             function drawSnakeHead(segment) {
                 var cx = segment.x * CELL_SIZE + CELL_SIZE / 2;
                 var cy = segment.y * CELL_SIZE + CELL_SIZE / 2;
@@ -713,86 +969,101 @@
                 else if (direction.y === 1) angle = Math.PI / 2;
                 ctx.rotate(angle);
 
-                // Glow effect
-                ctx.shadowColor = '#00e5ff';
-                ctx.shadowBlur = 12;
-
-                // Ship body (triangle/arrow pointing right)
+                // Triangular head pointing right
                 ctx.beginPath();
-                ctx.moveTo(size, 0); // Nose
-                ctx.lineTo(-size * 0.7, -size * 0.7); // Top wing
-                ctx.lineTo(-size * 0.3, 0); // Indent
-                ctx.lineTo(-size * 0.7, size * 0.7); // Bottom wing
+                ctx.moveTo(size, 0);
+                ctx.lineTo(-size * 0.6, -size * 0.7);
+                ctx.lineTo(-size * 0.6, size * 0.7);
                 ctx.closePath();
-
-                // Gradient fill
-                var shipGrad = ctx.createLinearGradient(-size, 0, size, 0);
-                shipGrad.addColorStop(0, '#1a237e');
-                shipGrad.addColorStop(0.5, '#00bcd4');
-                shipGrad.addColorStop(1, '#00e5ff');
-                ctx.fillStyle = shipGrad;
+                ctx.fillStyle = SNAKE_BROWN;
                 ctx.fill();
-
-                // Outline
-                ctx.strokeStyle = '#00e5ff';
+                ctx.strokeStyle = '#7a5530';
                 ctx.lineWidth = 1;
                 ctx.stroke();
 
-                ctx.shadowBlur = 0;
+                // Eyes — two white circles with dark pupils
+                var eyeOffsetX = size * 0.05;
+                var eyeOffsetY = size * 0.35;
+                var eyeR = size * 0.18;
+                var pupilR = size * 0.09;
 
-                // Cockpit/windshield
+                // Left eye (top in local coords)
+                ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                ctx.arc(size * 0.2, 0, size * 0.25, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.arc(eyeOffsetX, -eyeOffsetY, eyeR, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#1a1a1a';
+                ctx.beginPath();
+                ctx.arc(eyeOffsetX + pupilR * 0.3, -eyeOffsetY, pupilR, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Engine glow at the back
+                // Right eye (bottom in local coords)
+                ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                ctx.arc(-size * 0.4, 0, size * 0.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 100, 0, 0.6)';
+                ctx.arc(eyeOffsetX, eyeOffsetY, eyeR, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.fillStyle = '#1a1a1a';
+                ctx.beginPath();
+                ctx.arc(eyeOffsetX + pupilR * 0.3, eyeOffsetY, pupilR, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Forked tongue — flickering
+                if (Date.now() % 400 < 200) {
+                    ctx.strokeStyle = '#cc3333';
+                    ctx.lineWidth = 1;
+                    // Main tongue
+                    ctx.beginPath();
+                    ctx.moveTo(size, 0);
+                    ctx.lineTo(size + 5, 0);
+                    ctx.stroke();
+                    // Fork top
+                    ctx.beginPath();
+                    ctx.moveTo(size + 5, 0);
+                    ctx.lineTo(size + 8, -2);
+                    ctx.stroke();
+                    // Fork bottom
+                    ctx.beginPath();
+                    ctx.moveTo(size + 5, 0);
+                    ctx.lineTo(size + 8, 2);
+                    ctx.stroke();
+                }
 
                 ctx.restore();
             }
 
-            // Draw snake body as comet/energy trail
+            // Draw snake body as rounded rectangles with banding
             function drawSnakeBody() {
                 for (var index = 1; index < snake.length; index++) {
                     var segment = snake[index];
-                    var x = segment.x * CELL_SIZE + CELL_SIZE / 2;
-                    var y = segment.y * CELL_SIZE + CELL_SIZE / 2;
-                    var progress = index / snake.length; // 0 at head, 1 at tail
+                    var x = segment.x * CELL_SIZE + 1;
+                    var y = segment.y * CELL_SIZE + 1;
+                    var w = CELL_SIZE - 2;
+                    var h = CELL_SIZE - 2;
+                    var progress = index / snake.length;
 
-                    // Fade from bright blue-purple near head to dim toward tail
-                    var alpha = 1 - progress * 0.7;
-                    var size = (CELL_SIZE / 2 - 2) * (1 - progress * 0.3);
+                    // Interpolate from SNAKE_TAN (near head) to lighter tan (near tail)
+                    var r = Math.floor(166 + progress * 40);  // 166 → 206
+                    var g = Math.floor(124 + progress * 50);  // 124 → 174
+                    var b = Math.floor(74 + progress * 50);   // 74 → 124
+                    var alpha = 1.0 - progress * 0.4;         // 1.0 → 0.6
 
                     ctx.save();
+                    ctx.globalAlpha = alpha;
 
-                    // Outer glow
-                    ctx.shadowColor = 'rgba(100, 50, 255, ' + (alpha * 0.5) + ')';
-                    ctx.shadowBlur = 8 * (1 - progress);
-
-                    // Gradient orb for each segment
-                    var segGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
-                    // Shift from cyan (near head) to purple (near tail)
-                    var r = Math.floor(30 + progress * 100);
-                    var g = Math.floor(200 - progress * 150);
-                    var b = Math.floor(255);
-                    segGrad.addColorStop(0, 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')');
-                    segGrad.addColorStop(0.6, 'rgba(' + Math.floor(r * 0.5) + ', ' + Math.floor(g * 0.3) + ', ' + b + ', ' + (alpha * 0.7) + ')');
-                    segGrad.addColorStop(1, 'rgba(' + Math.floor(r * 0.3) + ', ' + Math.floor(g * 0.1) + ', ' + Math.floor(b * 0.8) + ', 0)');
-
-                    ctx.fillStyle = segGrad;
+                    // Rounded rectangle body segment
+                    ctx.fillStyle = 'rgb(' + r + ', ' + g + ', ' + b + ')';
                     ctx.beginPath();
-                    ctx.arc(x, y, size * 1.2, 0, Math.PI * 2);
+                    ctx.roundRect(x, y, w, h, 4);
                     ctx.fill();
 
-                    // Inner bright core
-                    ctx.fillStyle = 'rgba(200, 230, 255, ' + (alpha * 0.4) + ')';
+                    // Centre stripe (Eastern Brown Snake banding)
+                    ctx.strokeStyle = SNAKE_OLIVE;
+                    ctx.lineWidth = 1;
+                    ctx.globalAlpha = alpha * 0.6;
                     ctx.beginPath();
-                    ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
-                    ctx.fill();
+                    ctx.moveTo(x, y + h / 2);
+                    ctx.lineTo(x + w, y + h / 2);
+                    ctx.stroke();
 
                     ctx.restore();
                 }
@@ -800,7 +1071,6 @@
 
             // Draw particles
             function drawParticles() {
-                // Food collection particles
                 for (var i = 0; i < particles.length; i++) {
                     var p = particles[i];
                     ctx.save();
@@ -813,52 +1083,27 @@
                     ctx.fill();
                     ctx.restore();
                 }
-
-                // Thruster particles
-                for (var j = 0; j < thrusterParticles.length; j++) {
-                    var tp = thrusterParticles[j];
-                    ctx.save();
-                    ctx.globalAlpha = tp.life * 0.7;
-                    var tpColor = tp.life > 0.5 ? 'rgba(255, 150, 0, ' + tp.life + ')' : 'rgba(255, 50, 0, ' + tp.life + ')';
-                    ctx.fillStyle = tpColor;
-                    ctx.beginPath();
-                    ctx.arc(tp.x, tp.y, tp.size * tp.life, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                }
             }
 
             // Draw everything
             function draw() {
-                // Draw starfield background
-                drawStarfield();
-
-                // Draw particles (behind snake and food)
+                drawOutbackBackground();
                 drawParticles();
-
-                // Draw food
+                drawObstacles();
                 drawFood();
-
-                // Draw snake body (before head so head overlaps)
                 drawSnakeBody();
-
-                // Draw snake head
                 if (snake.length > 0) {
                     drawSnakeHead(snake[0]);
                 }
             }
 
-            // Animation loop for starfield scrolling and particle updates (runs independently)
-            function animateBackground() {
-                starfieldOffset += 0.3;
+            // Animation loop (renamed from animateBackground)
+            function animate() {
                 updateParticles();
-                if (gameRunning) {
-                    // Redraw is handled by the game loop
-                } else {
-                    // When game is not running, still animate the background
+                if (!gameRunning) {
                     draw();
                 }
-                animationFrame = requestAnimationFrame(animateBackground);
+                animationFrame = requestAnimationFrame(animate);
             }
 
             // Select difficulty and start the game
@@ -896,7 +1141,28 @@
                     clearInterval(gameLoop);
                     gameLoop = null;
                 }
+                // Update high score and persist to localStorage
+                if (score > highScore) {
+                    highScore = score;
+                    highScoreDisplay.textContent = highScore;
+                    try {
+                        localStorage.setItem('aussieSnakeHighScore', highScore.toString());
+                    } catch (e) {
+                        // localStorage unavailable — keep in-memory only
+                    }
+                }
                 finalScoreDisplay.textContent = score;
+                finalHighScoreDisplay.textContent = highScore;
+                // Set slang commentary based on score
+                if (score >= 50) {
+                    gameOverSlang.textContent = 'Fair dinkum legend!';
+                } else if (score >= 20) {
+                    gameOverSlang.textContent = 'Ripper!';
+                } else if (score >= 10) {
+                    gameOverSlang.textContent = 'Not bad, mate!';
+                } else {
+                    gameOverSlang.textContent = 'Give it another go!';
+                }
                 gameOverScreen.classList.remove('hidden');
             }
 
@@ -946,8 +1212,6 @@
                 }
 
                 // Arrow keys should only work after difficulty is selected
-                // Start game on arrow key if difficulty selected but game not yet started
-                // (This handles the case where the game was just restarted)
                 if (difficultySelected && !gameRunning && !gameStarted) {
                     if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
                         startGame();
@@ -1002,7 +1266,8 @@
             changeDifficultyBtn.addEventListener('click', showDifficultyScreen);
 
             // Start background animation
-            animateBackground();
+            highScoreDisplay.textContent = highScore;
+            animate();
 
             // Draw initial state
             draw();

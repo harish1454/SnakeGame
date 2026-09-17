@@ -1,0 +1,24 @@
+{
+  "id": "FEAT-003",
+  "type": "docs",
+  "description": "Update README.md to reflect the new Australian-themed Aussie Serpent game. This FEAT is independent of FEAT-002 in terms of code changes (only touches README.md), but should run after FEAT-002 so the README accurately describes the final game. Updates game description, feature list, and how-to-play instructions to mention Australian theme, food types, obstacles, slang popups, difficulty levels, and high-score tracking.",
+  "status": "completed",
+  "steps": [
+    "1. Read context.json and this FEAT file. Read /projects/sandbox/SnakeGame/README.md.",
+    "2. Update README.md: change title to 'Aussie Serpent' or 'Australian Snake Game', update description to mention Australian outback theme, update How to Play section to mention difficulty selection (1/2/3 keys or click), Australian food items (meat pies, vegemite toast, Tim Tams, lamingtons), wildlife obstacles (kangaroos and redback spiders) that appear as score increases, slang popups, and high-score tracking.",
+    "3. Update Features list: outback-themed visuals, four Australian food types, wildlife obstacle system, Australian slang popups, session and persistent high-score tracking, three difficulty levels with score multipliers.",
+    "4. Update Technical Details: mention the canvas is still 400x400 at 20x20 grid, game speeds vary by difficulty (Easy 150ms, Medium 120ms, Hard 80ms), single HTML file with no dependencies.",
+    "5. Commit: git add README.md && git commit -m 'docs: update README for Australian-themed Aussie Serpent game'"
+  ],
+  "acceptance_criteria": [
+    "README.md accurately describes the Aussie Serpent game with all its features",
+    "No references to Space Snake or space theme remain in README.md",
+    "How to Play instructions are correct for the new game mechanics"
+  ],
+  "verification": [
+    "Read /projects/sandbox/SnakeGame/README.md and verify it describes the Australian-themed game",
+    "grep -i 'space\\|cosmic\\|spaceship\\|star.*field' /projects/sandbox/SnakeGame/README.md should return zero matches"
+  ],
+  "blocked_reason": null,
+  "findings": "README.md fully updated. All space-theme references removed. Grep verification confirmed zero matches for space/cosmic/spaceship/starfield. Title changed to 'Aussie Serpent', all features documented including difficulty levels, Australian food types, wildlife obstacles, slang popups, and high-score tracking. Technical details updated with per-difficulty game speeds."
+}
