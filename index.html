@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Snake</title>
+    <title>Aussie Outback Snake</title>
     <style>
         * {
             margin: 0;
@@ -12,13 +12,13 @@
         }
 
         body {
-            background-color: #0a0a1a;
+            background-color: #2B1A0E;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e0e0e0;
+            color: #EDE3D0;
             overflow: hidden;
         }
 
@@ -37,10 +37,10 @@
         }
 
         .title {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: bold;
-            color: #00e5ff;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5), 0 0 20px rgba(0, 229, 255, 0.3);
+            color: #E2711D;
+            text-shadow: 0 0 10px rgba(226, 113, 29, 0.5), 0 0 20px rgba(226, 113, 29, 0.3);
             letter-spacing: 2px;
         }
 
@@ -84,15 +84,15 @@
 
         .score-display {
             font-size: 20px;
-            color: #ffab40;
+            color: #E8B84B;
             font-weight: bold;
-            text-shadow: 0 0 8px rgba(255, 171, 64, 0.4);
+            text-shadow: 0 0 8px rgba(232, 184, 75, 0.4);
         }
 
         canvas {
-            border: 2px solid #1a237e;
+            border: 2px solid #6B3F1D;
             border-radius: 4px;
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(226, 113, 29, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
             display: block;
         }
 
@@ -104,53 +104,53 @@
             justify-content: center;
             width: 400px;
             height: 400px;
-            background: radial-gradient(ellipse at center, rgba(10, 10, 40, 0.95) 0%, rgba(5, 5, 20, 0.98) 100%);
+            background: radial-gradient(ellipse at center, rgba(43, 26, 14, 0.95) 0%, rgba(25, 14, 7, 0.98) 100%);
             border-radius: 4px;
             gap: 16px;
         }
 
         .overlay h2 {
             font-size: 32px;
-            color: #00e5ff;
-            text-shadow: 0 0 15px rgba(0, 229, 255, 0.7), 0 0 30px rgba(0, 229, 255, 0.4);
+            color: #E2711D;
+            text-shadow: 0 0 15px rgba(226, 113, 29, 0.7), 0 0 30px rgba(226, 113, 29, 0.4);
             letter-spacing: 3px;
         }
 
         .overlay p {
             font-size: 16px;
-            color: #b0bec5;
+            color: #D8C6A8;
             text-align: center;
             line-height: 1.6;
         }
 
         .overlay .final-score {
             font-size: 24px;
-            color: #ffab40;
+            color: #E8B84B;
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 171, 64, 0.5);
+            text-shadow: 0 0 10px rgba(232, 184, 75, 0.5);
         }
 
         .btn {
             padding: 12px 32px;
             font-size: 16px;
             font-weight: bold;
-            color: #00e5ff;
+            color: #E2711D;
             background: transparent;
-            border: 2px solid #00e5ff;
+            border: 2px solid #E2711D;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 10px rgba(226, 113, 29, 0.3), inset 0 0 10px rgba(226, 113, 29, 0.1);
         }
 
         .btn:hover {
-            background: rgba(0, 229, 255, 0.15);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.2);
+            background: rgba(226, 113, 29, 0.15);
+            box-shadow: 0 0 20px rgba(226, 113, 29, 0.6), inset 0 0 15px rgba(226, 113, 29, 0.2);
             transform: scale(1.05);
-            text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+            text-shadow: 0 0 8px rgba(226, 113, 29, 0.8);
         }
 
         .btn:active {
@@ -251,7 +251,7 @@
 
         .overlay-subtitle {
             font-size: 14px;
-            color: #5c6bc0;
+            color: #9C7A4E;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 4px;
@@ -268,23 +268,23 @@
             padding: 10px 28px;
             font-size: 14px;
             font-weight: bold;
-            color: #b0bec5;
+            color: #D8C6A8;
             background: transparent;
-            border: 1px solid #5c6bc0;
+            border: 1px solid #6B4A2A;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 8px rgba(92, 107, 192, 0.2);
+            box-shadow: 0 0 8px rgba(107, 74, 42, 0.2);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .btn-secondary:hover {
-            color: #e0e0e0;
-            border-color: #7986cb;
-            background: rgba(92, 107, 192, 0.15);
-            box-shadow: 0 0 15px rgba(92, 107, 192, 0.4);
+            color: #EDE3D0;
+            border-color: #8B5E34;
+            background: rgba(107, 74, 42, 0.15);
+            box-shadow: 0 0 15px rgba(107, 74, 42, 0.4);
             transform: scale(1.05);
         }
 
@@ -294,7 +294,7 @@
 
         .instructions {
             font-size: 14px;
-            color: #5c6bc0;
+            color: #9C7A4E;
             margin-top: 8px;
         }
 
@@ -306,17 +306,17 @@
 <body>
     <div class="game-container">
         <div class="header">
-            <div class="title">SPACE SNAKE</div>
+            <div class="title">OUTBACK SNAKE</div>
             <div class="header-right">
                 <span class="difficulty-label hidden" id="difficultyLabel"></span>
-                <div class="score-display">Energy: <span id="score">0</span></div>
+                <div class="score-display">Tucker: <span id="score">0</span></div>
             </div>
         </div>
         <div style="position: relative;">
             <canvas id="gameCanvas" width="400" height="400"></canvas>
             <div class="overlay" id="difficultyScreen">
-                <h2>COSMIC SERPENT</h2>
-                <div class="overlay-subtitle">Select Mission Difficulty</div>
+                <h2>OUTBACK SERPENT</h2>
+                <div class="overlay-subtitle">Pick Your Track</div>
                 <div class="difficulty-buttons">
                     <button class="difficulty-btn easy" id="easyBtn" data-difficulty="easy">
                         <div class="diff-info">
@@ -343,13 +343,13 @@
                 <div class="instructions">Press 1, 2, or 3 to select</div>
             </div>
             <div class="overlay hidden" id="gameOverScreen">
-                <h2>SHIP DESTROYED</h2>
-                <p class="final-score">Energy Collected: <span id="finalScore">0</span></p>
+                <h2>GONE WALKABOUT</h2>
+                <p class="final-score">Tucker Bagged: <span id="finalScore">0</span></p>
                 <div class="game-over-buttons">
-                    <button class="btn" id="restartBtn">Relaunch</button>
-                    <button class="btn-secondary" id="changeDifficultyBtn">Change Difficulty</button>
+                    <button class="btn" id="restartBtn">Have Another Go</button>
+                    <button class="btn-secondary" id="changeDifficultyBtn">Change Track</button>
                 </div>
-                <div class="instructions">Press Enter to relaunch or Esc to change difficulty</div>
+                <div class="instructions">Press Enter to have another go or Esc to change track</div>
             </div>
         </div>
     </div>
@@ -385,11 +385,11 @@
             let gameStarted = false;
             let difficultySelected = false;
 
-            // Space theme state
+            // Outback theme state
             let stars = [];
             let particles = [];
             let thrusterParticles = [];
-            let foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
+            let foodType = 0; // 0 = witchetty grub, 1 = gum nut, 2 = quandong
             let foodPulse = 0;
             let starfieldOffset = 0;
             let animationFrame = null;
@@ -458,7 +458,7 @@
 
             // Create particle burst when food is collected
             function createFoodParticles(x, y) {
-                var colors = ['#00e5ff', '#7c4dff', '#ff4081', '#ffab40', '#69f0ae'];
+                var colors = ['#E2711D', '#E8B84B', '#C0392B', '#8E7C42', '#6E7B3D'];
                 for (var i = 0; i < 12; i++) {
                     var angle = (Math.PI * 2 / 12) * i + Math.random() * 0.5;
                     var speed = Math.random() * 3 + 1.5;
@@ -567,21 +567,79 @@
                 }
             }
 
-            // Draw starfield background
+            // Draw a simple eucalyptus / spinifex silhouette at the given base point
+            function drawGumTree(x, groundY, h, w) {
+                ctx.save();
+                ctx.fillStyle = '#3E2410';
+                // Trunk
+                ctx.fillRect(x - w * 0.08, groundY - h, w * 0.16, h);
+                // Canopy clumps
+                ctx.beginPath();
+                ctx.arc(x, groundY - h, w * 0.5, 0, Math.PI * 2);
+                ctx.arc(x - w * 0.45, groundY - h * 0.8, w * 0.4, 0, Math.PI * 2);
+                ctx.arc(x + w * 0.45, groundY - h * 0.85, w * 0.42, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            // Draw outback dust background (reuses the drifting star/dust-mote loop)
             function drawStarfield() {
-                // Deep space background
-                ctx.fillStyle = '#0a0a1a';
-                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+                var horizon = CANVAS_SIZE * 0.58;
 
-                // Subtle nebula gradient
-                var nebula = ctx.createRadialGradient(200, 200, 50, 200, 200, 250);
-                nebula.addColorStop(0, 'rgba(26, 0, 51, 0.3)');
-                nebula.addColorStop(0.5, 'rgba(10, 10, 40, 0.2)');
-                nebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                ctx.fillStyle = nebula;
-                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+                // Warm outback sky gradient down to the red horizon
+                var sky = ctx.createLinearGradient(0, 0, 0, horizon);
+                sky.addColorStop(0, '#8FB3C9');
+                sky.addColorStop(0.55, '#E2A45C');
+                sky.addColorStop(1, '#C0562B');
+                ctx.fillStyle = sky;
+                ctx.fillRect(0, 0, CANVAS_SIZE, horizon);
 
-                // Draw stars with twinkling
+                // Low sun / heat disc near the horizon
+                var sun = ctx.createRadialGradient(CANVAS_SIZE * 0.7, horizon - 10, 4, CANVAS_SIZE * 0.7, horizon - 10, 70);
+                sun.addColorStop(0, 'rgba(255, 236, 190, 0.95)');
+                sun.addColorStop(0.4, 'rgba(255, 190, 110, 0.5)');
+                sun.addColorStop(1, 'rgba(255, 190, 110, 0)');
+                ctx.fillStyle = sun;
+                ctx.fillRect(0, 0, CANVAS_SIZE, horizon);
+
+                // Distant red-dirt hill / mesa silhouettes along the horizon
+                ctx.fillStyle = '#A85A2C';
+                ctx.beginPath();
+                ctx.moveTo(0, horizon);
+                ctx.lineTo(0, horizon - 26);
+                ctx.lineTo(70, horizon - 40);
+                ctx.lineTo(150, horizon - 22);
+                ctx.lineTo(240, horizon - 34);
+                ctx.lineTo(330, horizon - 18);
+                ctx.lineTo(CANVAS_SIZE, horizon - 30);
+                ctx.lineTo(CANVAS_SIZE, horizon);
+                ctx.closePath();
+                ctx.fill();
+                ctx.fillStyle = '#8E4A22';
+                ctx.beginPath();
+                ctx.moveTo(0, horizon);
+                ctx.lineTo(40, horizon - 16);
+                ctx.lineTo(120, horizon - 26);
+                ctx.lineTo(210, horizon - 12);
+                ctx.lineTo(300, horizon - 22);
+                ctx.lineTo(CANVAS_SIZE, horizon - 12);
+                ctx.lineTo(CANVAS_SIZE, horizon);
+                ctx.closePath();
+                ctx.fill();
+
+                // Outback ground band
+                var ground = ctx.createLinearGradient(0, horizon, 0, CANVAS_SIZE);
+                ground.addColorStop(0, '#B5642E');
+                ground.addColorStop(1, '#7A3F1C');
+                ctx.fillStyle = ground;
+                ctx.fillRect(0, horizon, CANVAS_SIZE, CANVAS_SIZE - horizon);
+
+                // A few gum-tree / spinifex silhouettes along the horizon line
+                drawGumTree(55, horizon + 4, 30, 24);
+                drawGumTree(200, horizon + 2, 22, 18);
+                drawGumTree(340, horizon + 6, 34, 26);
+
+                // Draw drifting dust motes (reused star loop, recoloured warm gold)
                 var time = Date.now() * 0.001;
                 for (var i = 0; i < stars.length; i++) {
                     var star = stars[i];
@@ -593,20 +651,20 @@
 
                     ctx.beginPath();
                     ctx.arc(star.x, yPos, star.size * (0.5 + twinkle * 0.5), 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(200, 220, 255, ' + alpha + ')';
+                    ctx.fillStyle = 'rgba(220, 190, 120, ' + alpha + ')';
                     ctx.fill();
 
-                    // Add glow to brighter stars
+                    // Add glow to larger dust motes
                     if (star.size > 1.5) {
                         ctx.beginPath();
                         ctx.arc(star.x, yPos, star.size * 2, 0, Math.PI * 2);
-                        ctx.fillStyle = 'rgba(150, 180, 255, ' + (alpha * 0.2) + ')';
+                        ctx.fillStyle = 'rgba(220, 190, 120, ' + (alpha * 0.2) + ')';
                         ctx.fill();
                     }
                 }
 
-                // Very subtle grid (faint blue lines)
-                ctx.strokeStyle = 'rgba(30, 40, 80, 0.15)';
+                // Very subtle grid (faint warm lines)
+                ctx.strokeStyle = 'rgba(90, 60, 30, 0.12)';
                 ctx.lineWidth = 0.3;
                 for (var g = 0; g <= GRID_SIZE; g++) {
                     ctx.beginPath();
@@ -620,7 +678,7 @@
                 }
             }
 
-            // Draw food as space objects
+            // Draw food as bush-tucker items
             function drawFood() {
                 var fx = food.x * CELL_SIZE + CELL_SIZE / 2;
                 var fy = food.y * CELL_SIZE + CELL_SIZE / 2;
@@ -631,72 +689,104 @@
                 ctx.save();
 
                 if (foodType === 0) {
-                    // Planet with rings
-                    // Glow
-                    ctx.shadowColor = '#ff6e40';
+                    // Witchetty grub: plump cream/tan segmented crescent
+                    ctx.shadowColor = '#C9A24B';
                     ctx.shadowBlur = 12 * pulse;
-                    // Planet body
-                    var planetGrad = ctx.createRadialGradient(fx - 2, fy - 2, 1, fx, fy, radius);
-                    planetGrad.addColorStop(0, '#ff8a65');
-                    planetGrad.addColorStop(0.6, '#d84315');
-                    planetGrad.addColorStop(1, '#bf360c');
-                    ctx.fillStyle = planetGrad;
+                    var grubGrad = ctx.createLinearGradient(fx - radius, fy, fx + radius, fy);
+                    grubGrad.addColorStop(0, '#EAD9B0');
+                    grubGrad.addColorStop(1, '#D4BE8A');
+                    ctx.fillStyle = grubGrad;
+                    // Body as a slightly bent (crescent) ellipse
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * pulse, 0, Math.PI * 2);
+                    ctx.ellipse(fx, fy, radius * pulse, radius * 0.7 * pulse, 0.35, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.shadowBlur = 0;
-                    // Ring
-                    ctx.strokeStyle = 'rgba(255, 171, 64, 0.7)';
-                    ctx.lineWidth = 1.5;
+                    // Faint segment arcs across the body
+                    ctx.strokeStyle = 'rgba(150, 120, 70, 0.4)';
+                    ctx.lineWidth = 0.8;
+                    for (var s = -2; s <= 2; s++) {
+                        ctx.beginPath();
+                        ctx.arc(fx + s * radius * 0.35, fy, radius * 0.55 * pulse, Math.PI * 0.15, Math.PI - Math.PI * 0.15);
+                        ctx.stroke();
+                    }
+                    // Small darker head
+                    ctx.fillStyle = '#8A6A3A';
                     ctx.beginPath();
-                    ctx.ellipse(fx, fy, radius * 1.3 * pulse, radius * 0.4 * pulse, -0.3, 0, Math.PI * 2);
-                    ctx.stroke();
+                    ctx.arc(fx + radius * 0.8 * pulse, fy - radius * 0.15, radius * 0.28, 0, Math.PI * 2);
+                    ctx.fill();
                 } else if (foodType === 1) {
-                    // 5-pointed star
-                    ctx.shadowColor = '#ffeb3b';
-                    ctx.shadowBlur = 15 * pulse;
-                    ctx.fillStyle = '#fdd835';
+                    // Gum nut: woody brown capsule with a small star opening on top
+                    ctx.shadowColor = '#C9A24B';
+                    ctx.shadowBlur = 14 * pulse;
+                    var nutGrad = ctx.createRadialGradient(fx - 2, fy, 1, fx, fy, radius * pulse);
+                    nutGrad.addColorStop(0, '#A9713E');
+                    nutGrad.addColorStop(0.6, '#7A4B25');
+                    nutGrad.addColorStop(1, '#5E3719');
+                    ctx.fillStyle = nutGrad;
+                    // Woody capsule body
+                    ctx.beginPath();
+                    ctx.ellipse(fx, fy + radius * 0.1, radius * 0.8 * pulse, radius * pulse, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    // Subtle highlight
+                    ctx.fillStyle = 'rgba(220, 180, 120, 0.35)';
+                    ctx.beginPath();
+                    ctx.ellipse(fx - radius * 0.25, fy - radius * 0.1, radius * 0.22, radius * 0.4, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Small star-shaped opening on top (reuse star-path math)
+                    ctx.fillStyle = '#3E2410';
+                    var starCx = fx;
+                    var starCy = fy - radius * 0.55;
                     ctx.beginPath();
                     for (var p = 0; p < 5; p++) {
                         var outerAngle = (Math.PI * 2 / 5) * p - Math.PI / 2;
                         var innerAngle = outerAngle + Math.PI / 5;
-                        var outerR = radius * pulse;
-                        var innerR = radius * 0.4 * pulse;
+                        var outerR = radius * 0.35 * pulse;
+                        var innerR = radius * 0.14 * pulse;
                         if (p === 0) {
-                            ctx.moveTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
+                            ctx.moveTo(starCx + Math.cos(outerAngle) * outerR, starCy + Math.sin(outerAngle) * outerR);
                         } else {
-                            ctx.lineTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
+                            ctx.lineTo(starCx + Math.cos(outerAngle) * outerR, starCy + Math.sin(outerAngle) * outerR);
                         }
-                        ctx.lineTo(fx + Math.cos(innerAngle) * innerR, fy + Math.sin(innerAngle) * innerR);
+                        ctx.lineTo(starCx + Math.cos(innerAngle) * innerR, starCy + Math.sin(innerAngle) * innerR);
                     }
                     ctx.closePath();
                     ctx.fill();
-                    ctx.shadowBlur = 0;
                 } else {
-                    // Energy orb (pulsating cyan/purple)
-                    ctx.shadowColor = '#00e5ff';
-                    ctx.shadowBlur = 18 * pulse;
-                    var orbGrad = ctx.createRadialGradient(fx, fy, 0, fx, fy, radius * pulse);
-                    orbGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-                    orbGrad.addColorStop(0.3, 'rgba(0, 229, 255, 0.8)');
-                    orbGrad.addColorStop(0.7, 'rgba(124, 77, 255, 0.6)');
-                    orbGrad.addColorStop(1, 'rgba(124, 77, 255, 0)');
-                    ctx.fillStyle = orbGrad;
+                    // Quandong: glossy round red native fruit
+                    ctx.shadowColor = '#C9A24B';
+                    ctx.shadowBlur = 14 * pulse;
+                    var fruitGrad = ctx.createRadialGradient(fx - 3, fy - 3, 1, fx, fy, radius * pulse);
+                    fruitGrad.addColorStop(0, '#E86A5C');
+                    fruitGrad.addColorStop(0.6, '#C0392B');
+                    fruitGrad.addColorStop(1, '#8E241A');
+                    ctx.fillStyle = fruitGrad;
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 1.2 * pulse, 0, Math.PI * 2);
+                    ctx.arc(fx, fy, radius * pulse, 0, Math.PI * 2);
                     ctx.fill();
-                    // Inner core
                     ctx.shadowBlur = 0;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                    // White specular highlight
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 0.3, 0, Math.PI * 2);
+                    ctx.arc(fx - radius * 0.35, fy - radius * 0.35, radius * 0.18, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Small stem / leaf
+                    ctx.strokeStyle = '#5E3719';
+                    ctx.lineWidth = 1.5;
+                    ctx.beginPath();
+                    ctx.moveTo(fx, fy - radius * pulse);
+                    ctx.lineTo(fx, fy - radius * pulse - 3);
+                    ctx.stroke();
+                    ctx.fillStyle = '#4C7A34';
+                    ctx.beginPath();
+                    ctx.ellipse(fx + 3, fy - radius * pulse - 2, 3, 1.6, -0.6, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
                 ctx.restore();
             }
 
-            // Draw snake head as a spaceship
+            // Draw snake head as a carpet python head
             function drawSnakeHead(segment) {
                 var cx = segment.x * CELL_SIZE + CELL_SIZE / 2;
                 var cy = segment.y * CELL_SIZE + CELL_SIZE / 2;
@@ -713,49 +803,63 @@
                 else if (direction.y === 1) angle = Math.PI / 2;
                 ctx.rotate(angle);
 
-                // Glow effect
-                ctx.shadowColor = '#00e5ff';
+                // Warm glow effect
+                ctx.shadowColor = '#E2711D';
                 ctx.shadowBlur = 12;
 
-                // Ship body (triangle/arrow pointing right)
+                // Elongated rounded python head (nose points right / travel direction)
+                var headGrad = ctx.createLinearGradient(-size, 0, size, 0);
+                headGrad.addColorStop(0, '#6E7B3D');
+                headGrad.addColorStop(1, '#B7A55A');
+                ctx.fillStyle = headGrad;
                 ctx.beginPath();
-                ctx.moveTo(size, 0); // Nose
-                ctx.lineTo(-size * 0.7, -size * 0.7); // Top wing
-                ctx.lineTo(-size * 0.3, 0); // Indent
-                ctx.lineTo(-size * 0.7, size * 0.7); // Bottom wing
-                ctx.closePath();
-
-                // Gradient fill
-                var shipGrad = ctx.createLinearGradient(-size, 0, size, 0);
-                shipGrad.addColorStop(0, '#1a237e');
-                shipGrad.addColorStop(0.5, '#00bcd4');
-                shipGrad.addColorStop(1, '#00e5ff');
-                ctx.fillStyle = shipGrad;
+                ctx.ellipse(0, 0, size, size * 0.8, 0, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Outline
-                ctx.strokeStyle = '#00e5ff';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-
+                // Reset shadow before drawing detail so eyes/tongue stay crisp
                 ctx.shadowBlur = 0;
 
-                // Cockpit/windshield
-                ctx.beginPath();
-                ctx.arc(size * 0.2, 0, size * 0.25, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.fill();
+                // Two dark diamond scale marks on top of the head
+                ctx.fillStyle = 'rgba(60, 45, 20, 0.8)';
+                var dm = [[-size * 0.15, -size * 0.35], [size * 0.35, -size * 0.15]];
+                for (var d = 0; d < dm.length; d++) {
+                    ctx.beginPath();
+                    ctx.moveTo(dm[d][0], dm[d][1] - size * 0.16);
+                    ctx.lineTo(dm[d][0] + size * 0.16, dm[d][1]);
+                    ctx.lineTo(dm[d][0], dm[d][1] + size * 0.16);
+                    ctx.lineTo(dm[d][0] - size * 0.16, dm[d][1]);
+                    ctx.closePath();
+                    ctx.fill();
+                }
 
-                // Engine glow at the back
+                // Short forked red tongue at the nose
+                ctx.strokeStyle = '#C0392B';
+                ctx.lineWidth = 1;
                 ctx.beginPath();
-                ctx.arc(-size * 0.4, 0, size * 0.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 100, 0, 0.6)';
+                ctx.moveTo(size * 0.9, 0);
+                ctx.lineTo(size * 1.4, 0);
+                ctx.moveTo(size * 1.4, 0);
+                ctx.lineTo(size * 1.7, -size * 0.18);
+                ctx.moveTo(size * 1.4, 0);
+                ctx.lineTo(size * 1.7, size * 0.18);
+                ctx.stroke();
+
+                // Two white eyes with dark pupils
+                ctx.fillStyle = '#FFFFFF';
+                ctx.beginPath();
+                ctx.arc(size * 0.25, -size * 0.4, size * 0.2, 0, Math.PI * 2);
+                ctx.arc(size * 0.25, size * 0.4, size * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#1A1206';
+                ctx.beginPath();
+                ctx.arc(size * 0.32, -size * 0.4, size * 0.1, 0, Math.PI * 2);
+                ctx.arc(size * 0.32, size * 0.4, size * 0.1, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.restore();
             }
 
-            // Draw snake body as comet/energy trail
+            // Draw snake body as a patterned carpet python
             function drawSnakeBody() {
                 for (var index = 1; index < snake.length; index++) {
                     var segment = snake[index];
@@ -763,35 +867,38 @@
                     var y = segment.y * CELL_SIZE + CELL_SIZE / 2;
                     var progress = index / snake.length; // 0 at head, 1 at tail
 
-                    // Fade from bright blue-purple near head to dim toward tail
-                    var alpha = 1 - progress * 0.7;
+                    // Fade subtly toward the tail (baked into rgba strings)
+                    var alpha = 1 - progress * 0.55;
                     var size = (CELL_SIZE / 2 - 2) * (1 - progress * 0.3);
+                    // Alternate olive / tan base for the banded python look
+                    var base = (index % 2 === 0) ? [94, 107, 52] : [142, 124, 66]; // #5E6B34 / #8E7C42
 
                     ctx.save();
 
-                    // Outer glow
-                    ctx.shadowColor = 'rgba(100, 50, 255, ' + (alpha * 0.5) + ')';
+                    // Subtle warm ochre glow fading toward the tail
+                    ctx.shadowColor = 'rgba(226, 113, 29, ' + (alpha * 0.5) + ')';
                     ctx.shadowBlur = 8 * (1 - progress);
 
-                    // Gradient orb for each segment
+                    // Radial gradient body circle
                     var segGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
-                    // Shift from cyan (near head) to purple (near tail)
-                    var r = Math.floor(30 + progress * 100);
-                    var g = Math.floor(200 - progress * 150);
-                    var b = Math.floor(255);
-                    segGrad.addColorStop(0, 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')');
-                    segGrad.addColorStop(0.6, 'rgba(' + Math.floor(r * 0.5) + ', ' + Math.floor(g * 0.3) + ', ' + b + ', ' + (alpha * 0.7) + ')');
-                    segGrad.addColorStop(1, 'rgba(' + Math.floor(r * 0.3) + ', ' + Math.floor(g * 0.1) + ', ' + Math.floor(b * 0.8) + ', 0)');
-
+                    segGrad.addColorStop(0, 'rgba(' + base[0] + ', ' + base[1] + ', ' + base[2] + ', ' + alpha + ')');
+                    segGrad.addColorStop(0.7, 'rgba(' + Math.floor(base[0] * 0.8) + ', ' + Math.floor(base[1] * 0.8) + ', ' + Math.floor(base[2] * 0.8) + ', ' + (alpha * 0.9) + ')');
+                    segGrad.addColorStop(1, 'rgba(' + Math.floor(base[0] * 0.6) + ', ' + Math.floor(base[1] * 0.6) + ', ' + Math.floor(base[2] * 0.6) + ', 0)');
                     ctx.fillStyle = segGrad;
                     ctx.beginPath();
                     ctx.arc(x, y, size * 1.2, 0, Math.PI * 2);
                     ctx.fill();
 
-                    // Inner bright core
-                    ctx.fillStyle = 'rgba(200, 230, 255, ' + (alpha * 0.4) + ')';
+                    ctx.shadowBlur = 0;
+
+                    // Darker diamond pattern overlay per segment
+                    ctx.fillStyle = 'rgba(50, 38, 16, ' + (alpha * 0.7) + ')';
                     ctx.beginPath();
-                    ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
+                    ctx.moveTo(x, y - size * 0.7);
+                    ctx.lineTo(x + size * 0.7, y);
+                    ctx.lineTo(x, y + size * 0.7);
+                    ctx.lineTo(x - size * 0.7, y);
+                    ctx.closePath();
                     ctx.fill();
 
                     ctx.restore();
@@ -819,7 +926,7 @@
                     var tp = thrusterParticles[j];
                     ctx.save();
                     ctx.globalAlpha = tp.life * 0.7;
-                    var tpColor = tp.life > 0.5 ? 'rgba(255, 150, 0, ' + tp.life + ')' : 'rgba(255, 50, 0, ' + tp.life + ')';
+                    var tpColor = tp.life > 0.5 ? 'rgba(180, 120, 70, ' + tp.life + ')' : 'rgba(140, 90, 50, ' + tp.life + ')';
                     ctx.fillStyle = tpColor;
                     ctx.beginPath();
                     ctx.arc(tp.x, tp.y, tp.size * tp.life, 0, Math.PI * 2);
