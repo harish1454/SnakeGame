@@ -1,1012 +1,881 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Snake</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zero Gravity Snake</title>
+  <style>
+    /* --- Section A: Reset & full-viewport canvas --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            background-color: #0a0a1a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e0e0e0;
-            overflow: hidden;
-        }
+    body {
+      overflow: hidden;
+      background: #0a0a1a;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-        }
+    canvas {
+      display: block;
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
 
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 400px;
-        }
+    /* --- Section B: Overlay screens (start, game-over) --- */
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      opacity: 1;
+      transition: opacity 0.4s ease;
+      pointer-events: auto;
+    }
 
-        .title {
-            font-size: 28px;
-            font-weight: bold;
-            color: #00e5ff;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5), 0 0 20px rgba(0, 229, 255, 0.3);
-            letter-spacing: 2px;
-        }
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+    .overlay-title {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #00e5ff;
+      text-shadow: 0 0 20px #00e5ff, 0 0 40px #00e5ff, 0 0 80px #7c4dff;
+      margin-bottom: 1rem;
+      letter-spacing: 0.2em;
+      text-align: center;
+    }
 
-        .difficulty-label {
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 2px 8px;
-            border-radius: 3px;
-            border: 1px solid;
-        }
+    .overlay-subtitle {
+      font-size: 1.1rem;
+      color: #b0bec5;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
 
-        .difficulty-label.hidden {
-            display: none;
-        }
+    .overlay-action {
+      font-size: 1.3rem;
+      color: #ffab40;
+      margin-top: 1.5rem;
+      text-shadow: 0 0 10px #ffab40;
+      animation: pulse 1.5s ease-in-out infinite;
+      text-align: center;
+    }
 
-        .difficulty-label.easy {
-            color: #69f0ae;
-            border-color: #69f0ae;
-            text-shadow: 0 0 6px rgba(105, 240, 174, 0.5);
-        }
+    .overlay-score {
+      font-size: 2rem;
+      color: #ff5252;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 0 12px #ff5252;
+      text-align: center;
+    }
 
-        .difficulty-label.medium {
-            color: #ffab40;
-            border-color: #ffab40;
-            text-shadow: 0 0 6px rgba(255, 171, 64, 0.5);
-        }
+    .overlay-highscore {
+      font-size: 1.2rem;
+      color: #ffab40;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
 
-        .difficulty-label.hard {
-            color: #ff5252;
-            border-color: #ff5252;
-            text-shadow: 0 0 6px rgba(255, 82, 82, 0.5);
-        }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
 
-        .score-display {
-            font-size: 20px;
-            color: #ffab40;
-            font-weight: bold;
-            text-shadow: 0 0 8px rgba(255, 171, 64, 0.4);
-        }
+    /* --- Section C: HUD --- */
+    #hud {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 5;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+    }
 
-        canvas {
-            border: 2px solid #1a237e;
-            border-radius: 4px;
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
-            display: block;
-        }
+    .hud-left, .hud-right {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
 
-        .overlay {
-            position: absolute;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(ellipse at center, rgba(10, 10, 40, 0.95) 0%, rgba(5, 5, 20, 0.98) 100%);
-            border-radius: 4px;
-            gap: 16px;
-        }
+    .hud-label {
+      font-size: 14px;
+      color: #b0bec5;
+    }
 
-        .overlay h2 {
-            font-size: 32px;
-            color: #00e5ff;
-            text-shadow: 0 0 15px rgba(0, 229, 255, 0.7), 0 0 30px rgba(0, 229, 255, 0.4);
-            letter-spacing: 3px;
-        }
+    .hud-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffab40;
+      text-shadow: 0 0 6px rgba(255, 171, 64, 0.5);
+    }
 
-        .overlay p {
-            font-size: 16px;
-            color: #b0bec5;
-            text-align: center;
-            line-height: 1.6;
-        }
+    .speed-bar-container {
+      width: 100px;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
 
-        .overlay .final-score {
-            font-size: 24px;
-            color: #ffab40;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 171, 64, 0.5);
-        }
-
-        .btn {
-            padding: 12px 32px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #00e5ff;
-            background: transparent;
-            border: 2px solid #00e5ff;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
-        }
-
-        .btn:hover {
-            background: rgba(0, 229, 255, 0.15);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.2);
-            transform: scale(1.05);
-            text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
-        }
-
-        .btn:active {
-            transform: scale(0.95);
-        }
-
-        .difficulty-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 85%;
-        }
-
-        .difficulty-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            font-size: 14px;
-            font-weight: bold;
-            background: transparent;
-            border: 2px solid;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .difficulty-btn .diff-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 2px;
-        }
-
-        .difficulty-btn .diff-name {
-            font-size: 16px;
-        }
-
-        .difficulty-btn .diff-desc {
-            font-size: 11px;
-            font-weight: normal;
-            text-transform: none;
-            letter-spacing: 0;
-            opacity: 0.7;
-        }
-
-        .difficulty-btn .diff-key {
-            font-size: 12px;
-            opacity: 0.5;
-            font-weight: normal;
-        }
-
-        .difficulty-btn.easy {
-            color: #69f0ae;
-            border-color: #69f0ae;
-            box-shadow: 0 0 10px rgba(105, 240, 174, 0.3), inset 0 0 10px rgba(105, 240, 174, 0.1);
-        }
-
-        .difficulty-btn.easy:hover {
-            background: rgba(105, 240, 174, 0.15);
-            box-shadow: 0 0 20px rgba(105, 240, 174, 0.6), inset 0 0 15px rgba(105, 240, 174, 0.2);
-            transform: scale(1.03);
-            text-shadow: 0 0 8px rgba(105, 240, 174, 0.8);
-        }
-
-        .difficulty-btn.medium {
-            color: #ffab40;
-            border-color: #ffab40;
-            box-shadow: 0 0 10px rgba(255, 171, 64, 0.3), inset 0 0 10px rgba(255, 171, 64, 0.1);
-        }
-
-        .difficulty-btn.medium:hover {
-            background: rgba(255, 171, 64, 0.15);
-            box-shadow: 0 0 20px rgba(255, 171, 64, 0.6), inset 0 0 15px rgba(255, 171, 64, 0.2);
-            transform: scale(1.03);
-            text-shadow: 0 0 8px rgba(255, 171, 64, 0.8);
-        }
-
-        .difficulty-btn.hard {
-            color: #ff5252;
-            border-color: #ff5252;
-            box-shadow: 0 0 10px rgba(255, 82, 82, 0.3), inset 0 0 10px rgba(255, 82, 82, 0.1);
-        }
-
-        .difficulty-btn.hard:hover {
-            background: rgba(255, 82, 82, 0.15);
-            box-shadow: 0 0 20px rgba(255, 82, 82, 0.6), inset 0 0 15px rgba(255, 82, 82, 0.2);
-            transform: scale(1.03);
-            text-shadow: 0 0 8px rgba(255, 82, 82, 0.8);
-        }
-
-        .difficulty-btn:active {
-            transform: scale(0.97);
-        }
-
-        .overlay-subtitle {
-            font-size: 14px;
-            color: #5c6bc0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 4px;
-        }
-
-        .game-over-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .btn-secondary {
-            padding: 10px 28px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #b0bec5;
-            background: transparent;
-            border: 1px solid #5c6bc0;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 0 8px rgba(92, 107, 192, 0.2);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .btn-secondary:hover {
-            color: #e0e0e0;
-            border-color: #7986cb;
-            background: rgba(92, 107, 192, 0.15);
-            box-shadow: 0 0 15px rgba(92, 107, 192, 0.4);
-            transform: scale(1.05);
-        }
-
-        .btn-secondary:active {
-            transform: scale(0.95);
-        }
-
-        .instructions {
-            font-size: 14px;
-            color: #5c6bc0;
-            margin-top: 8px;
-        }
-
-        .hidden {
-            display: none;
-        }
-    </style>
+    .speed-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00e5ff, #7c4dff);
+      border-radius: 4px;
+      transition: width 0.1s ease;
+      width: 0%;
+    }
+  </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="header">
-            <div class="title">SPACE SNAKE</div>
-            <div class="header-right">
-                <span class="difficulty-label hidden" id="difficultyLabel"></span>
-                <div class="score-display">Energy: <span id="score">0</span></div>
-            </div>
-        </div>
-        <div style="position: relative;">
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
-            <div class="overlay" id="difficultyScreen">
-                <h2>COSMIC SERPENT</h2>
-                <div class="overlay-subtitle">Select Mission Difficulty</div>
-                <div class="difficulty-buttons">
-                    <button class="difficulty-btn easy" id="easyBtn" data-difficulty="easy">
-                        <div class="diff-info">
-                            <span class="diff-name">Easy</span>
-                            <span class="diff-desc">Slow speed, 1x score multiplier</span>
-                        </div>
-                        <span class="diff-key">[ 1 ]</span>
-                    </button>
-                    <button class="difficulty-btn medium" id="mediumBtn" data-difficulty="medium">
-                        <div class="diff-info">
-                            <span class="diff-name">Medium</span>
-                            <span class="diff-desc">Normal speed, 2x score multiplier</span>
-                        </div>
-                        <span class="diff-key">[ 2 ]</span>
-                    </button>
-                    <button class="difficulty-btn hard" id="hardBtn" data-difficulty="hard">
-                        <div class="diff-info">
-                            <span class="diff-name">Hard</span>
-                            <span class="diff-desc">Fast speed, 3x score multiplier</span>
-                        </div>
-                        <span class="diff-key">[ 3 ]</span>
-                    </button>
-                </div>
-                <div class="instructions">Press 1, 2, or 3 to select</div>
-            </div>
-            <div class="overlay hidden" id="gameOverScreen">
-                <h2>SHIP DESTROYED</h2>
-                <p class="final-score">Energy Collected: <span id="finalScore">0</span></p>
-                <div class="game-over-buttons">
-                    <button class="btn" id="restartBtn">Relaunch</button>
-                    <button class="btn-secondary" id="changeDifficultyBtn">Change Difficulty</button>
-                </div>
-                <div class="instructions">Press Enter to relaunch or Esc to change difficulty</div>
-            </div>
-        </div>
+  <canvas id="gameCanvas"></canvas>
+
+  <div id="hud">
+    <div class="hud-left">
+      <div><span class="hud-label">SCORE: </span><span class="hud-value" id="hudScore">0</span></div>
+      <div><span class="hud-label">HIGH: </span><span class="hud-value" id="hudHigh">0</span></div>
     </div>
+    <div class="hud-right">
+      <div class="hud-label">SPEED</div>
+      <div class="speed-bar-container">
+        <div class="speed-bar-fill" id="hudSpeedBar"></div>
+      </div>
+    </div>
+  </div>
 
-    <script>
-        (function() {
-            // Game constants
-            const CANVAS_SIZE = 400;
-            const GRID_SIZE = 20;
-            const CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
+  <div class="overlay" id="startScreen">
+    <div class="overlay-title">ZERO GRAVITY SNAKE</div>
+    <div class="overlay-subtitle">Arrow keys or WASD to thrust</div>
+    <div class="overlay-subtitle">No friction — you drift in space!</div>
+    <div class="overlay-subtitle">Eat glowing orbs to grow. Avoid yourself.</div>
+    <div class="overlay-action">Press SPACE to start</div>
+  </div>
 
-            // Difficulty settings
-            const DIFFICULTY_SETTINGS = {
-                easy:   { speed: 150, multiplier: 1, label: 'Easy',   color: '#69f0ae', cssClass: 'easy' },
-                medium: { speed: 120, multiplier: 2, label: 'Medium', color: '#ffab40', cssClass: 'medium' },
-                hard:   { speed: 80,  multiplier: 3, label: 'Hard',   color: '#ff5252', cssClass: 'hard' }
-            };
+  <div class="overlay hidden" id="gameOverScreen">
+    <div class="overlay-title" style="color: #ff5252; text-shadow: 0 0 20px #ff5252, 0 0 40px #ff5252;">GAME OVER</div>
+    <div class="overlay-score" id="finalScore">Score: 0</div>
+    <div class="overlay-highscore" id="finalHigh">High Score: 0</div>
+    <div class="overlay-action">Press SPACE to restart</div>
+  </div>
 
-            // Current difficulty state
-            let currentDifficulty = null; // 'easy', 'medium', or 'hard'
-            let gameSpeed = 120;
-            let scoreMultiplier = 1;
+  <script>
+    (function () {
+      'use strict';
 
-            // Game state
-            let snake = [];
-            let food = { x: 0, y: 0 };
-            let direction = { x: 1, y: 0 };
-            let nextDirection = { x: 1, y: 0 };
-            let score = 0;
-            let rawScore = 0; // Score before multiplier
-            let gameRunning = false;
-            let gameLoop = null;
-            let gameStarted = false;
-            let difficultySelected = false;
+      // --- Section 1: Constants & tuning ---
+      // Physics constants in per-second units, scaled by dt each frame
+      var THRUST_PER_SEC = 9;        // px/s² (was 0.15 px/frame × 60 fps)
+      var MAX_SPEED_PER_SEC = 300;   // px/s  (was 5 px/frame × 60 fps)
+      var REFERENCE_DT = 1 / 60;     // 16.67 ms — reference frame time
+      var HEAD_RADIUS = 8;
+      var SEGMENT_SPACING = 14;
+      var COLLISION_SKIP = 5;
+      var COLLISION_SKIP_TIME = (COLLISION_SKIP + 1) * SEGMENT_SPACING * REFERENCE_DT; // spawn protection in seconds
+      var FOOD_RADIUS = 10;
+      var STAR_COUNT = 150;
+      var INITIAL_LENGTH = 5;
+      var GROW_AMOUNT = 3;
 
-            // Space theme state
-            let stars = [];
-            let particles = [];
-            let thrusterParticles = [];
-            let foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
-            let foodPulse = 0;
-            let starfieldOffset = 0;
-            let animationFrame = null;
+      // --- Section 2: State variables ---
+      var canvas = document.getElementById('gameCanvas');
+      var ctx = canvas.getContext('2d');
 
-            // DOM elements
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            const scoreDisplay = document.getElementById('score');
-            const finalScoreDisplay = document.getElementById('finalScore');
-            const difficultyScreen = document.getElementById('difficultyScreen');
-            const gameOverScreen = document.getElementById('gameOverScreen');
-            const difficultyLabel = document.getElementById('difficultyLabel');
-            const easyBtn = document.getElementById('easyBtn');
-            const mediumBtn = document.getElementById('mediumBtn');
-            const hardBtn = document.getElementById('hardBtn');
-            const restartBtn = document.getElementById('restartBtn');
-            const changeDifficultyBtn = document.getElementById('changeDifficultyBtn');
+      var hudScore = document.getElementById('hudScore');
+      var hudHigh = document.getElementById('hudHigh');
+      var hudSpeedBar = document.getElementById('hudSpeedBar');
+      var startScreen = document.getElementById('startScreen');
+      var gameOverScreen = document.getElementById('gameOverScreen');
+      var finalScoreEl = document.getElementById('finalScore');
+      var finalHighEl = document.getElementById('finalHigh');
+      var hudEl = document.getElementById('hud');
 
-            // Generate starfield
-            function generateStars() {
-                stars = [];
-                for (var i = 0; i < 120; i++) {
-                    stars.push({
-                        x: Math.random() * CANVAS_SIZE,
-                        y: Math.random() * CANVAS_SIZE,
-                        size: Math.random() * 2 + 0.5,
-                        brightness: Math.random(),
-                        twinkleSpeed: Math.random() * 0.03 + 0.01,
-                        twinkleOffset: Math.random() * Math.PI * 2
-                    });
-                }
+      var canvasW = 800;
+      var canvasH = 600;
+
+      var snake = {
+        headX: 0,
+        headY: 0,
+        vx: 0,
+        vy: 0,
+        trail: [],
+        length: INITIAL_LENGTH
+      };
+
+      var food = { x: 0, y: 0, pulsePhase: 0 };
+      var particles = [];
+      var stars = [];
+      var keys = {};
+
+      var gameState = 'START';
+      var score = 0;
+      var highScore = 0;
+      var gameOverDelay = 0;
+      var elapsedTimeSinceStart = 0;
+
+      // Try to load high score
+      try {
+        highScore = parseInt(localStorage.getItem('zeroGravitySnake_highScore')) || 0;
+      } catch (e) {
+        highScore = 0;
+      }
+
+      // --- Section 3: Utility functions ---
+      function wrap(val, max) {
+        return ((val % max) + max) % max;
+      }
+
+      function wrappedDist(x1, y1, x2, y2, w, h) {
+        var dx = Math.abs(x1 - x2);
+        var dy = Math.abs(y1 - y2);
+        dx = Math.min(dx, w - dx);
+        dy = Math.min(dy, h - dy);
+        return Math.sqrt(dx * dx + dy * dy);
+      }
+
+      function clamp(val, lo, hi) {
+        return Math.max(lo, Math.min(hi, val));
+      }
+
+      function vecLen(vx, vy) {
+        return Math.sqrt(vx * vx + vy * vy);
+      }
+
+      function lerp(a, b, t) {
+        return a + (b - a) * t;
+      }
+
+      function segRadius(i, totalLength) {
+        var t = totalLength > 1 ? i / (totalLength - 1) : 0;
+        return lerp(7, 3, t);
+      }
+
+      // --- Section 4: Audio (Web Audio API beeps) ---
+      var audioCtx = null;
+
+      function ensureAudio() {
+        if (audioCtx) return;
+        try {
+          var AC = window.AudioContext || window.webkitAudioContext;
+          if (AC) audioCtx = new AC();
+        } catch (e) {
+          // Audio not available
+        }
+      }
+
+      function playEatSound() {
+        if (!audioCtx) return;
+        try {
+          var osc = audioCtx.createOscillator();
+          var gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+          osc.frequency.linearRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+          osc.start(audioCtx.currentTime);
+          osc.stop(audioCtx.currentTime + 0.1);
+        } catch (e) {
+          // Ignore audio errors
+        }
+      }
+
+      function playDeathSound() {
+        if (!audioCtx) return;
+        try {
+          var osc = audioCtx.createOscillator();
+          var gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+          osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.4);
+          gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+          gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4);
+          osc.start(audioCtx.currentTime);
+          osc.stop(audioCtx.currentTime + 0.4);
+        } catch (e) {
+          // Ignore audio errors
+        }
+      }
+
+      // --- Section 5: Stars (background) ---
+      function generateStars(w, h) {
+        stars = [];
+        for (var i = 0; i < STAR_COUNT; i++) {
+          stars.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            size: Math.random() * 2 + 0.5,
+            brightness: Math.random(),
+            twinkleOffset: Math.random() * Math.PI * 2
+          });
+        }
+      }
+
+      function drawStars(time) {
+        for (var i = 0; i < stars.length; i++) {
+          var s = stars[i];
+          var alpha = 0.3 + 0.7 * Math.abs(Math.sin(time * 0.002 + s.twinkleOffset));
+          alpha *= s.brightness;
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+          ctx.fill();
+          if (s.size > 1.5) {
+            ctx.globalAlpha = alpha * 0.15;
+            ctx.beginPath();
+            ctx.arc(s.x, s.y, s.size * 3, 0, Math.PI * 2);
+            ctx.fill();
+          }
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      // --- Section 6: Snake data structure & physics ---
+      function resetSnake() {
+        snake.headX = canvasW / 2;
+        snake.headY = canvasH / 2;
+        snake.vx = 0;
+        snake.vy = 0;
+        snake.length = INITIAL_LENGTH;
+        snake.trail = [];
+        // Pre-fill trail so body segments exist immediately
+        for (var i = 0; i < snake.length * SEGMENT_SPACING + SEGMENT_SPACING; i++) {
+          snake.trail.push({ x: snake.headX, y: snake.headY });
+        }
+      }
+
+      function updateSnake(dtSec) {
+        // Thrust (scaled by delta time)
+        var thrustDelta = THRUST_PER_SEC * dtSec;
+        if (keys['ArrowUp'] || keys['w'] || keys['W'] || keys['KeyW']) {
+          snake.vy -= thrustDelta;
+        }
+        if (keys['ArrowDown'] || keys['s'] || keys['S'] || keys['KeyS']) {
+          snake.vy += thrustDelta;
+        }
+        if (keys['ArrowLeft'] || keys['a'] || keys['A'] || keys['KeyA']) {
+          snake.vx -= thrustDelta;
+        }
+        if (keys['ArrowRight'] || keys['d'] || keys['D'] || keys['KeyD']) {
+          snake.vx += thrustDelta;
+        }
+
+        // Speed cap (in px/s)
+        var speed = vecLen(snake.vx, snake.vy);
+        var maxSpd = MAX_SPEED_PER_SEC;
+        if (speed > maxSpd) {
+          snake.vx *= maxSpd / speed;
+          snake.vy *= maxSpd / speed;
+        }
+
+        // No friction — velocity persists
+
+        // Position update (velocity is px/s, multiply by dtSec)
+        snake.headX += snake.vx * dtSec;
+        snake.headY += snake.vy * dtSec;
+
+        // Wrap-around
+        snake.headX = wrap(snake.headX, canvasW);
+        snake.headY = wrap(snake.headY, canvasH);
+
+        // Trail recording — distance-based to maintain consistent spacing across frame rates
+        if (snake.trail.length === 0) {
+          snake.trail.unshift({ x: snake.headX, y: snake.headY });
+        } else {
+          var lastT = snake.trail[0];
+          var distFromLast = wrappedDist(snake.headX, snake.headY, lastT.x, lastT.y, canvasW, canvasH);
+          // Record a new point whenever we've moved at least 1 px
+          // Interpolate points at even intervals for consistent segment spacing
+          if (distFromLast >= 1) {
+            snake.trail.unshift({ x: snake.headX, y: snake.headY });
+            var maxTrail = snake.length * SEGMENT_SPACING + SEGMENT_SPACING;
+            while (snake.trail.length > maxTrail) {
+              snake.trail.pop();
             }
+          }
+        }
 
-            // Initialize stars
-            generateStars();
+        // Accumulate elapsed time since start (used for spawn protection)
+        elapsedTimeSinceStart += dtSec;
+      }
 
-            // Initialize game
-            function initGame() {
-                snake = [
-                    { x: 10, y: 10 },
-                    { x: 9, y: 10 },
-                    { x: 8, y: 10 }
-                ];
-                direction = { x: 1, y: 0 };
-                nextDirection = { x: 1, y: 0 };
-                score = 0;
-                rawScore = 0;
-                scoreDisplay.textContent = '0';
-                particles = [];
-                thrusterParticles = [];
-                spawnFood();
+      // --- Section 7: Food spawning & collection ---
+      function spawnFood() {
+        var attempts = 0;
+        do {
+          food.x = FOOD_RADIUS + Math.random() * (canvasW - 2 * FOOD_RADIUS);
+          food.y = FOOD_RADIUS + Math.random() * (canvasH - 2 * FOOD_RADIUS);
+          attempts++;
+        } while (attempts < 20 && wrappedDist(food.x, food.y, snake.headX, snake.headY, canvasW, canvasH) < 50);
+        food.pulsePhase = 0;
+      }
+
+      function checkFoodCollection() {
+        var dist = wrappedDist(snake.headX, snake.headY, food.x, food.y, canvasW, canvasH);
+        if (dist < HEAD_RADIUS + FOOD_RADIUS) {
+          score++;
+          snake.length += GROW_AMOUNT;
+          if (score > highScore) {
+            highScore = score;
+            try {
+              localStorage.setItem('zeroGravitySnake_highScore', String(highScore));
+            } catch (e) {
+              // Ignore storage errors
             }
+          }
+          emitFoodParticles(food.x, food.y);
+          playEatSound();
+          spawnFood();
+          return true;
+        }
+        return false;
+      }
 
-            // Spawn food at random position not occupied by snake
-            function spawnFood() {
-                var newFood;
-                do {
-                    newFood = {
-                        x: Math.floor(Math.random() * GRID_SIZE),
-                        y: Math.floor(Math.random() * GRID_SIZE)
-                    };
-                } while (snake.some(function(segment) { return segment.x === newFood.x && segment.y === newFood.y; }));
-                food = newFood;
-                foodType = Math.floor(Math.random() * 3); // cycle through types
+      // --- Section 8: Particle system ---
+      function emitParticles(x, y, count, speedMin, speedMax, lifeMin, lifeMax, colors) {
+        for (var i = 0; i < count; i++) {
+          var angle = Math.random() * Math.PI * 2;
+          var spd = speedMin + Math.random() * (speedMax - speedMin);
+          var life = lifeMin + Math.random() * (lifeMax - lifeMin);
+          particles.push({
+            x: x,
+            y: y,
+            vx: Math.cos(angle) * spd,
+            vy: Math.sin(angle) * spd,
+            life: life,
+            maxLife: life,
+            size: 1 + Math.random() * 3,
+            color: colors[Math.floor(Math.random() * colors.length)]
+          });
+        }
+      }
+
+      function emitFoodParticles(x, y) {
+        emitParticles(x, y, 15, 1, 4, 0.5, 1.0, ['#00e5ff', '#ffab40', '#7c4dff', '#ffffff']);
+      }
+
+      function emitDeathParticles(x, y) {
+        emitParticles(x, y, 40, 2, 6, 1.0, 1.5, ['#ff5252', '#ffab40', '#ffffff', '#ff8a65']);
+      }
+
+      function updateParticles(dt) {
+        for (var i = particles.length - 1; i >= 0; i--) {
+          var p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vx *= 0.98;
+          p.vy *= 0.98;
+          p.life -= dt;
+          if (p.life <= 0) {
+            particles.splice(i, 1);
+          }
+        }
+      }
+
+      function drawParticles() {
+        for (var i = 0; i < particles.length; i++) {
+          var p = particles[i];
+          var alpha = clamp(p.life / p.maxLife, 0, 1);
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.globalAlpha = 1;
+      }
+
+      // --- Section 9: Collision detection ---
+      function checkSelfCollision() {
+        // Spawn protection: don't check collision until enough time has elapsed for segments to spread
+        if (elapsedTimeSinceStart < COLLISION_SKIP_TIME) return false;
+        if (snake.length <= COLLISION_SKIP) return false;
+        for (var i = COLLISION_SKIP; i < snake.length; i++) {
+          var idx = i * SEGMENT_SPACING;
+          if (idx >= snake.trail.length) continue;
+          var seg = snake.trail[idx];
+          var r = segRadius(i, snake.length);
+          var dist = wrappedDist(snake.headX, snake.headY, seg.x, seg.y, canvasW, canvasH);
+          if (dist < HEAD_RADIUS + r - 2) {
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // --- Section 10: Input handling ---
+      document.addEventListener('keydown', function (e) {
+        ensureAudio();
+        keys[e.key] = true;
+        keys[e.code] = true;
+
+        if (e.key === ' ' || e.code === 'Space') {
+          if (gameState === 'START') {
+            startGame();
+          } else if (gameState === 'GAME_OVER' && gameOverDelay <= 0) {
+            transitionTo('START');
+          }
+          e.preventDefault();
+        }
+
+        // Prevent default for game keys during play
+        if (gameState === 'PLAYING') {
+          var gameKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '];
+          if (gameKeys.indexOf(e.key) !== -1) {
+            e.preventDefault();
+          }
+        }
+      });
+
+      document.addEventListener('keyup', function (e) {
+        delete keys[e.key];
+        delete keys[e.code];
+      });
+
+      // --- Section 11: HUD & screen state machine ---
+      function startGame() {
+        transitionTo('PLAYING');
+      }
+
+      function transitionTo(newState) {
+        gameState = newState;
+
+        if (newState === 'START') {
+          startScreen.classList.remove('hidden');
+          gameOverScreen.classList.add('hidden');
+          hudEl.style.display = 'none';
+          score = 0;
+          resetSnake();
+          spawnFood();
+          particles = [];
+        } else if (newState === 'PLAYING') {
+          startScreen.classList.add('hidden');
+          gameOverScreen.classList.add('hidden');
+          hudEl.style.display = 'flex';
+          score = 0;
+          elapsedTimeSinceStart = 0;
+          // Clear held keys so no residual thrust on first frame
+          for (var k in keys) { delete keys[k]; }
+          resetSnake();
+          spawnFood();
+          particles = [];
+        } else if (newState === 'GAME_OVER') {
+          gameOverDelay = 90; // ~1.5s at 60fps before allowing restart
+          gameOverScreen.classList.remove('hidden');
+          finalScoreEl.textContent = 'Score: ' + score;
+          finalHighEl.textContent = 'High Score: ' + highScore;
+        }
+      }
+
+      function updateHUD() {
+        hudScore.textContent = score;
+        hudHigh.textContent = highScore;
+        var speed = vecLen(snake.vx, snake.vy);
+        var pct = clamp(speed / MAX_SPEED_PER_SEC * 100, 0, 100);
+        hudSpeedBar.style.width = pct + '%';
+      }
+
+      // --- Section 12: Rendering ---
+      function drawFoodAt(x, y, r) {
+        // Outer glow
+        ctx.save();
+        ctx.shadowColor = '#ffab40';
+        ctx.shadowBlur = 20;
+
+        var grad = ctx.createRadialGradient(x, y, 0, x, y, r * 1.5);
+        grad.addColorStop(0, 'rgba(255, 171, 64, 0.8)');
+        grad.addColorStop(0.5, 'rgba(255, 171, 64, 0.3)');
+        grad.addColorStop(1, 'rgba(255, 171, 64, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, r * 1.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Core
+        var coreGrad = ctx.createRadialGradient(x, y, 0, x, y, r);
+        coreGrad.addColorStop(0, '#ffffff');
+        coreGrad.addColorStop(0.4, '#ffab40');
+        coreGrad.addColorStop(1, '#ff8a65');
+        ctx.fillStyle = coreGrad;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawFood(time) {
+        var pulse = Math.sin(time * 0.004) * 0.15 + 0.85;
+        var r = FOOD_RADIUS * pulse;
+        var glowR = r * 1.5; // outer glow extent for wrap detection
+
+        drawFoodAt(food.x, food.y, r);
+
+        // Wrap-safe rendering: cardinal ghost copies at edges
+        if (food.x < glowR) drawFoodAt(food.x + canvasW, food.y, r);
+        if (food.x > canvasW - glowR) drawFoodAt(food.x - canvasW, food.y, r);
+        if (food.y < glowR) drawFoodAt(food.x, food.y + canvasH, r);
+        if (food.y > canvasH - glowR) drawFoodAt(food.x, food.y - canvasH, r);
+        // Corner ghost copies
+        if (food.x < glowR && food.y < glowR) drawFoodAt(food.x + canvasW, food.y + canvasH, r);
+        if (food.x > canvasW - glowR && food.y < glowR) drawFoodAt(food.x - canvasW, food.y + canvasH, r);
+        if (food.x < glowR && food.y > canvasH - glowR) drawFoodAt(food.x + canvasW, food.y - canvasH, r);
+        if (food.x > canvasW - glowR && food.y > canvasH - glowR) drawFoodAt(food.x - canvasW, food.y - canvasH, r);
+      }
+
+      function drawSegmentAt(x, y, r, hue) {
+        ctx.save();
+        ctx.shadowColor = 'hsl(' + hue + ', 100%, 60%)';
+        ctx.shadowBlur = 12;
+        ctx.fillStyle = 'hsl(' + hue + ', 100%, 60%)';
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function drawSnake() {
+        // Draw body segments from tail to head (so head renders on top)
+        for (var i = snake.length - 1; i >= 1; i--) {
+          var idx = i * SEGMENT_SPACING;
+          if (idx >= snake.trail.length) continue;
+          var seg = snake.trail[idx];
+          var r = segRadius(i, snake.length);
+          var t = snake.length > 1 ? i / (snake.length - 1) : 0;
+          // HSL interpolation: 180 (cyan) at head-end to 270 (purple) at tail-end
+          var hue = lerp(180, 270, t);
+
+          drawSegmentAt(seg.x, seg.y, r, hue);
+
+          // Wrap-safe rendering: ghost copies at edges
+          if (seg.x < r) drawSegmentAt(seg.x + canvasW, seg.y, r, hue);
+          if (seg.x > canvasW - r) drawSegmentAt(seg.x - canvasW, seg.y, r, hue);
+          if (seg.y < r) drawSegmentAt(seg.x, seg.y + canvasH, r, hue);
+          if (seg.y > canvasH - r) drawSegmentAt(seg.x, seg.y - canvasH, r, hue);
+          // Corner wraps
+          if (seg.x < r && seg.y < r) drawSegmentAt(seg.x + canvasW, seg.y + canvasH, r, hue);
+          if (seg.x > canvasW - r && seg.y < r) drawSegmentAt(seg.x - canvasW, seg.y + canvasH, r, hue);
+          if (seg.x < r && seg.y > canvasH - r) drawSegmentAt(seg.x + canvasW, seg.y - canvasH, r, hue);
+          if (seg.x > canvasW - r && seg.y > canvasH - r) drawSegmentAt(seg.x - canvasW, seg.y - canvasH, r, hue);
+        }
+
+        // Draw head
+        ctx.save();
+        ctx.shadowColor = '#00e5ff';
+        ctx.shadowBlur = 20;
+
+        var headGrad = ctx.createRadialGradient(snake.headX, snake.headY, 0, snake.headX, snake.headY, HEAD_RADIUS);
+        headGrad.addColorStop(0, '#ffffff');
+        headGrad.addColorStop(0.3, '#00e5ff');
+        headGrad.addColorStop(1, '#0088aa');
+        ctx.fillStyle = headGrad;
+        ctx.beginPath();
+        ctx.arc(snake.headX, snake.headY, HEAD_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Direction indicator
+        var speed = vecLen(snake.vx, snake.vy);
+        if (speed > 0.1) {
+          var dx = snake.vx / speed;
+          var dy = snake.vy / speed;
+          ctx.fillStyle = '#ffffff';
+          ctx.globalAlpha = 0.9;
+          ctx.beginPath();
+          ctx.arc(snake.headX + dx * HEAD_RADIUS * 0.6, snake.headY + dy * HEAD_RADIUS * 0.6, 2, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
+        }
+        ctx.restore();
+
+        // Head wrap-safe rendering (cardinal + diagonal corners)
+        var hr = HEAD_RADIUS;
+        if (snake.headX < hr) { drawHeadGhost(snake.headX + canvasW, snake.headY); }
+        if (snake.headX > canvasW - hr) { drawHeadGhost(snake.headX - canvasW, snake.headY); }
+        if (snake.headY < hr) { drawHeadGhost(snake.headX, snake.headY + canvasH); }
+        if (snake.headY > canvasH - hr) { drawHeadGhost(snake.headX, snake.headY - canvasH); }
+        // Diagonal corner ghosts
+        if (snake.headX < hr && snake.headY < hr) { drawHeadGhost(snake.headX + canvasW, snake.headY + canvasH); }
+        if (snake.headX > canvasW - hr && snake.headY < hr) { drawHeadGhost(snake.headX - canvasW, snake.headY + canvasH); }
+        if (snake.headX < hr && snake.headY > canvasH - hr) { drawHeadGhost(snake.headX + canvasW, snake.headY - canvasH); }
+        if (snake.headX > canvasW - hr && snake.headY > canvasH - hr) { drawHeadGhost(snake.headX - canvasW, snake.headY - canvasH); }
+      }
+
+      function drawHeadGhost(x, y) {
+        ctx.save();
+        ctx.shadowColor = '#00e5ff';
+        ctx.shadowBlur = 20;
+        var headGrad = ctx.createRadialGradient(x, y, 0, x, y, HEAD_RADIUS);
+        headGrad.addColorStop(0, '#ffffff');
+        headGrad.addColorStop(0.3, '#00e5ff');
+        headGrad.addColorStop(1, '#0088aa');
+        ctx.fillStyle = headGrad;
+        ctx.beginPath();
+        ctx.arc(x, y, HEAD_RADIUS, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      function render(time) {
+        // Clear
+        ctx.clearRect(0, 0, canvasW, canvasH);
+        ctx.fillStyle = '#0a0a1a';
+        ctx.fillRect(0, 0, canvasW, canvasH);
+
+        // Stars
+        drawStars(time);
+
+        if (gameState === 'PLAYING' || gameState === 'GAME_OVER') {
+          // Food (only during playing)
+          if (gameState === 'PLAYING') {
+            drawFood(time);
+          }
+
+          // Snake
+          drawSnake();
+
+          // Particles
+          drawParticles();
+
+          // HUD
+          updateHUD();
+        }
+      }
+
+      // --- Section 13: Game loop ---
+      var lastTime = 0;
+
+      function gameLoop(timestamp) {
+        requestAnimationFrame(gameLoop);
+
+        var dt = timestamp - lastTime;
+        if (dt > 32) dt = 16;
+        lastTime = timestamp;
+        var dtSec = dt / 1000;
+
+        if (gameState === 'PLAYING') {
+          updateSnake(dtSec);
+          checkFoodCollection();
+          if (checkSelfCollision()) {
+            emitDeathParticles(snake.headX, snake.headY);
+            playDeathSound();
+            transitionTo('GAME_OVER');
+          }
+        }
+
+        if (gameState === 'GAME_OVER') {
+          if (gameOverDelay > 0) gameOverDelay--;
+        }
+
+        // Always update particles
+        updateParticles(dtSec);
+
+        render(timestamp);
+      }
+
+      // --- Section 14: Canvas resize handler ---
+      function resizeCanvas() {
+        canvasW = window.innerWidth;
+        canvasH = window.innerHeight;
+        canvas.width = canvasW;
+        canvas.height = canvasH;
+        generateStars(canvasW, canvasH);
+
+        // If food is out of bounds, respawn it
+        if (food.x < 0 || food.x > canvasW || food.y < 0 || food.y > canvasH) {
+          spawnFood();
+        }
+      }
+
+      window.addEventListener('resize', resizeCanvas);
+
+      // --- Section 15: Init & boot ---
+      resizeCanvas();
+      resetSnake();
+      spawnFood();
+
+      // Update HUD initial values
+      hudScore.textContent = '0';
+      hudHigh.textContent = String(highScore);
+      hudEl.style.display = 'none';
+
+      transitionTo('START');
+      requestAnimationFrame(gameLoop);
+
+      // --- Test hooks (for automated testing) ---
+      if (typeof window !== 'undefined') {
+        window.__TEST_HOOKS__ = {
+          getSnake: function () { return snake; },
+          setKeys: function (obj) {
+            // Clear existing keys and set new ones
+            for (var k in keys) { delete keys[k]; }
+            for (var k2 in obj) { keys[k2] = obj[k2]; }
+          },
+          tick: function () {
+            var dtSec = REFERENCE_DT; // simulate one frame at 60fps
+            if (gameState === 'PLAYING') {
+              updateSnake(dtSec);
+              checkFoodCollection();
+              if (checkSelfCollision()) {
+                emitDeathParticles(snake.headX, snake.headY);
+                playDeathSound();
+                transitionTo('GAME_OVER');
+              }
             }
-
-            // Create particle burst when food is collected
-            function createFoodParticles(x, y) {
-                var colors = ['#00e5ff', '#7c4dff', '#ff4081', '#ffab40', '#69f0ae'];
-                for (var i = 0; i < 12; i++) {
-                    var angle = (Math.PI * 2 / 12) * i + Math.random() * 0.5;
-                    var speed = Math.random() * 3 + 1.5;
-                    particles.push({
-                        x: x,
-                        y: y,
-                        vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed,
-                        life: 1.0,
-                        decay: Math.random() * 0.03 + 0.02,
-                        size: Math.random() * 3 + 2,
-                        color: colors[Math.floor(Math.random() * colors.length)]
-                    });
-                }
+            updateParticles(dtSec);
+          },
+          getScore: function () { return score; },
+          getHighScore: function () {
+            try {
+              return parseInt(localStorage.getItem('zeroGravitySnake_highScore')) || 0;
+            } catch (e) {
+              return highScore;
             }
-
-            // Create thruster particles behind the snake head
-            function createThrusterParticle() {
-                if (!gameRunning || snake.length === 0) return;
-                var head = snake[0];
-                var cx = head.x * CELL_SIZE + CELL_SIZE / 2;
-                var cy = head.y * CELL_SIZE + CELL_SIZE / 2;
-                // Place particles behind the direction of travel
-                var offsetX = -direction.x * CELL_SIZE * 0.4;
-                var offsetY = -direction.y * CELL_SIZE * 0.4;
-                for (var i = 0; i < 2; i++) {
-                    thrusterParticles.push({
-                        x: cx + offsetX + (Math.random() - 0.5) * 6,
-                        y: cy + offsetY + (Math.random() - 0.5) * 6,
-                        vx: -direction.x * (Math.random() * 1.5 + 0.5) + (Math.random() - 0.5) * 0.8,
-                        vy: -direction.y * (Math.random() * 1.5 + 0.5) + (Math.random() - 0.5) * 0.8,
-                        life: 1.0,
-                        decay: Math.random() * 0.05 + 0.04,
-                        size: Math.random() * 2.5 + 1
-                    });
-                }
-            }
-
-            // Update particles
-            function updateParticles() {
-                // Food particles
-                for (var i = particles.length - 1; i >= 0; i--) {
-                    particles[i].x += particles[i].vx;
-                    particles[i].y += particles[i].vy;
-                    particles[i].life -= particles[i].decay;
-                    particles[i].vx *= 0.96;
-                    particles[i].vy *= 0.96;
-                    if (particles[i].life <= 0) {
-                        particles.splice(i, 1);
-                    }
-                }
-                // Thruster particles
-                for (var j = thrusterParticles.length - 1; j >= 0; j--) {
-                    thrusterParticles[j].x += thrusterParticles[j].vx;
-                    thrusterParticles[j].y += thrusterParticles[j].vy;
-                    thrusterParticles[j].life -= thrusterParticles[j].decay;
-                    if (thrusterParticles[j].life <= 0) {
-                        thrusterParticles.splice(j, 1);
-                    }
-                }
-            }
-
-            // Update game state
-            function update() {
-                // Apply buffered direction
-                direction = { x: nextDirection.x, y: nextDirection.y };
-
-                // Calculate new head position
-                var head = {
-                    x: snake[0].x + direction.x,
-                    y: snake[0].y + direction.y
-                };
-
-                // Check wall collision
-                if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-                    gameOver();
-                    return;
-                }
-
-                // Check self collision
-                if (snake.some(function(segment) { return segment.x === head.x && segment.y === head.y; })) {
-                    gameOver();
-                    return;
-                }
-
-                // Add new head
-                snake.unshift(head);
-
-                // Create thruster particles
-                createThrusterParticle();
-
-                // Check food collision
-                if (head.x === food.x && head.y === food.y) {
-                    rawScore++;
-                    score = rawScore * scoreMultiplier;
-                    scoreDisplay.textContent = score;
-                    // Create particle burst at food position
-                    createFoodParticles(
-                        food.x * CELL_SIZE + CELL_SIZE / 2,
-                        food.y * CELL_SIZE + CELL_SIZE / 2
-                    );
-                    spawnFood();
-                } else {
-                    // Remove tail if no food eaten
-                    snake.pop();
-                }
-            }
-
-            // Draw starfield background
-            function drawStarfield() {
-                // Deep space background
-                ctx.fillStyle = '#0a0a1a';
-                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-                // Subtle nebula gradient
-                var nebula = ctx.createRadialGradient(200, 200, 50, 200, 200, 250);
-                nebula.addColorStop(0, 'rgba(26, 0, 51, 0.3)');
-                nebula.addColorStop(0.5, 'rgba(10, 10, 40, 0.2)');
-                nebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                ctx.fillStyle = nebula;
-                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
-
-                // Draw stars with twinkling
-                var time = Date.now() * 0.001;
-                for (var i = 0; i < stars.length; i++) {
-                    var star = stars[i];
-                    var twinkle = Math.sin(time * star.twinkleSpeed * 60 + star.twinkleOffset) * 0.5 + 0.5;
-                    var alpha = star.brightness * 0.4 + twinkle * 0.6;
-                    // Scroll effect - slight vertical drift
-                    var yPos = (star.y + starfieldOffset * star.size * 0.3) % CANVAS_SIZE;
-                    if (yPos < 0) yPos += CANVAS_SIZE;
-
-                    ctx.beginPath();
-                    ctx.arc(star.x, yPos, star.size * (0.5 + twinkle * 0.5), 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(200, 220, 255, ' + alpha + ')';
-                    ctx.fill();
-
-                    // Add glow to brighter stars
-                    if (star.size > 1.5) {
-                        ctx.beginPath();
-                        ctx.arc(star.x, yPos, star.size * 2, 0, Math.PI * 2);
-                        ctx.fillStyle = 'rgba(150, 180, 255, ' + (alpha * 0.2) + ')';
-                        ctx.fill();
-                    }
-                }
-
-                // Very subtle grid (faint blue lines)
-                ctx.strokeStyle = 'rgba(30, 40, 80, 0.15)';
-                ctx.lineWidth = 0.3;
-                for (var g = 0; g <= GRID_SIZE; g++) {
-                    ctx.beginPath();
-                    ctx.moveTo(g * CELL_SIZE, 0);
-                    ctx.lineTo(g * CELL_SIZE, CANVAS_SIZE);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(0, g * CELL_SIZE);
-                    ctx.lineTo(CANVAS_SIZE, g * CELL_SIZE);
-                    ctx.stroke();
-                }
-            }
-
-            // Draw food as space objects
-            function drawFood() {
-                var fx = food.x * CELL_SIZE + CELL_SIZE / 2;
-                var fy = food.y * CELL_SIZE + CELL_SIZE / 2;
-                var radius = CELL_SIZE / 2 - 2;
-                foodPulse += 0.08;
-                var pulse = Math.sin(foodPulse) * 0.2 + 0.8;
-
-                ctx.save();
-
-                if (foodType === 0) {
-                    // Planet with rings
-                    // Glow
-                    ctx.shadowColor = '#ff6e40';
-                    ctx.shadowBlur = 12 * pulse;
-                    // Planet body
-                    var planetGrad = ctx.createRadialGradient(fx - 2, fy - 2, 1, fx, fy, radius);
-                    planetGrad.addColorStop(0, '#ff8a65');
-                    planetGrad.addColorStop(0.6, '#d84315');
-                    planetGrad.addColorStop(1, '#bf360c');
-                    ctx.fillStyle = planetGrad;
-                    ctx.beginPath();
-                    ctx.arc(fx, fy, radius * pulse, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                    // Ring
-                    ctx.strokeStyle = 'rgba(255, 171, 64, 0.7)';
-                    ctx.lineWidth = 1.5;
-                    ctx.beginPath();
-                    ctx.ellipse(fx, fy, radius * 1.3 * pulse, radius * 0.4 * pulse, -0.3, 0, Math.PI * 2);
-                    ctx.stroke();
-                } else if (foodType === 1) {
-                    // 5-pointed star
-                    ctx.shadowColor = '#ffeb3b';
-                    ctx.shadowBlur = 15 * pulse;
-                    ctx.fillStyle = '#fdd835';
-                    ctx.beginPath();
-                    for (var p = 0; p < 5; p++) {
-                        var outerAngle = (Math.PI * 2 / 5) * p - Math.PI / 2;
-                        var innerAngle = outerAngle + Math.PI / 5;
-                        var outerR = radius * pulse;
-                        var innerR = radius * 0.4 * pulse;
-                        if (p === 0) {
-                            ctx.moveTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        } else {
-                            ctx.lineTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        }
-                        ctx.lineTo(fx + Math.cos(innerAngle) * innerR, fy + Math.sin(innerAngle) * innerR);
-                    }
-                    ctx.closePath();
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-                } else {
-                    // Energy orb (pulsating cyan/purple)
-                    ctx.shadowColor = '#00e5ff';
-                    ctx.shadowBlur = 18 * pulse;
-                    var orbGrad = ctx.createRadialGradient(fx, fy, 0, fx, fy, radius * pulse);
-                    orbGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-                    orbGrad.addColorStop(0.3, 'rgba(0, 229, 255, 0.8)');
-                    orbGrad.addColorStop(0.7, 'rgba(124, 77, 255, 0.6)');
-                    orbGrad.addColorStop(1, 'rgba(124, 77, 255, 0)');
-                    ctx.fillStyle = orbGrad;
-                    ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 1.2 * pulse, 0, Math.PI * 2);
-                    ctx.fill();
-                    // Inner core
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 0.3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                ctx.restore();
-            }
-
-            // Draw snake head as a spaceship
-            function drawSnakeHead(segment) {
-                var cx = segment.x * CELL_SIZE + CELL_SIZE / 2;
-                var cy = segment.y * CELL_SIZE + CELL_SIZE / 2;
-                var size = CELL_SIZE / 2 - 1;
-
-                ctx.save();
-
-                // Translate and rotate based on direction
-                ctx.translate(cx, cy);
-                var angle = 0;
-                if (direction.x === 1) angle = 0;
-                else if (direction.x === -1) angle = Math.PI;
-                else if (direction.y === -1) angle = -Math.PI / 2;
-                else if (direction.y === 1) angle = Math.PI / 2;
-                ctx.rotate(angle);
-
-                // Glow effect
-                ctx.shadowColor = '#00e5ff';
-                ctx.shadowBlur = 12;
-
-                // Ship body (triangle/arrow pointing right)
-                ctx.beginPath();
-                ctx.moveTo(size, 0); // Nose
-                ctx.lineTo(-size * 0.7, -size * 0.7); // Top wing
-                ctx.lineTo(-size * 0.3, 0); // Indent
-                ctx.lineTo(-size * 0.7, size * 0.7); // Bottom wing
-                ctx.closePath();
-
-                // Gradient fill
-                var shipGrad = ctx.createLinearGradient(-size, 0, size, 0);
-                shipGrad.addColorStop(0, '#1a237e');
-                shipGrad.addColorStop(0.5, '#00bcd4');
-                shipGrad.addColorStop(1, '#00e5ff');
-                ctx.fillStyle = shipGrad;
-                ctx.fill();
-
-                // Outline
-                ctx.strokeStyle = '#00e5ff';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-
-                ctx.shadowBlur = 0;
-
-                // Cockpit/windshield
-                ctx.beginPath();
-                ctx.arc(size * 0.2, 0, size * 0.25, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-                ctx.fill();
-
-                // Engine glow at the back
-                ctx.beginPath();
-                ctx.arc(-size * 0.4, 0, size * 0.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 100, 0, 0.6)';
-                ctx.fill();
-
-                ctx.restore();
-            }
-
-            // Draw snake body as comet/energy trail
-            function drawSnakeBody() {
-                for (var index = 1; index < snake.length; index++) {
-                    var segment = snake[index];
-                    var x = segment.x * CELL_SIZE + CELL_SIZE / 2;
-                    var y = segment.y * CELL_SIZE + CELL_SIZE / 2;
-                    var progress = index / snake.length; // 0 at head, 1 at tail
-
-                    // Fade from bright blue-purple near head to dim toward tail
-                    var alpha = 1 - progress * 0.7;
-                    var size = (CELL_SIZE / 2 - 2) * (1 - progress * 0.3);
-
-                    ctx.save();
-
-                    // Outer glow
-                    ctx.shadowColor = 'rgba(100, 50, 255, ' + (alpha * 0.5) + ')';
-                    ctx.shadowBlur = 8 * (1 - progress);
-
-                    // Gradient orb for each segment
-                    var segGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
-                    // Shift from cyan (near head) to purple (near tail)
-                    var r = Math.floor(30 + progress * 100);
-                    var g = Math.floor(200 - progress * 150);
-                    var b = Math.floor(255);
-                    segGrad.addColorStop(0, 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')');
-                    segGrad.addColorStop(0.6, 'rgba(' + Math.floor(r * 0.5) + ', ' + Math.floor(g * 0.3) + ', ' + b + ', ' + (alpha * 0.7) + ')');
-                    segGrad.addColorStop(1, 'rgba(' + Math.floor(r * 0.3) + ', ' + Math.floor(g * 0.1) + ', ' + Math.floor(b * 0.8) + ', 0)');
-
-                    ctx.fillStyle = segGrad;
-                    ctx.beginPath();
-                    ctx.arc(x, y, size * 1.2, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // Inner bright core
-                    ctx.fillStyle = 'rgba(200, 230, 255, ' + (alpha * 0.4) + ')';
-                    ctx.beginPath();
-                    ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    ctx.restore();
-                }
-            }
-
-            // Draw particles
-            function drawParticles() {
-                // Food collection particles
-                for (var i = 0; i < particles.length; i++) {
-                    var p = particles[i];
-                    ctx.save();
-                    ctx.globalAlpha = p.life;
-                    ctx.shadowColor = p.color;
-                    ctx.shadowBlur = 5;
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                }
-
-                // Thruster particles
-                for (var j = 0; j < thrusterParticles.length; j++) {
-                    var tp = thrusterParticles[j];
-                    ctx.save();
-                    ctx.globalAlpha = tp.life * 0.7;
-                    var tpColor = tp.life > 0.5 ? 'rgba(255, 150, 0, ' + tp.life + ')' : 'rgba(255, 50, 0, ' + tp.life + ')';
-                    ctx.fillStyle = tpColor;
-                    ctx.beginPath();
-                    ctx.arc(tp.x, tp.y, tp.size * tp.life, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                }
-            }
-
-            // Draw everything
-            function draw() {
-                // Draw starfield background
-                drawStarfield();
-
-                // Draw particles (behind snake and food)
-                drawParticles();
-
-                // Draw food
-                drawFood();
-
-                // Draw snake body (before head so head overlaps)
-                drawSnakeBody();
-
-                // Draw snake head
-                if (snake.length > 0) {
-                    drawSnakeHead(snake[0]);
-                }
-            }
-
-            // Animation loop for starfield scrolling and particle updates (runs independently)
-            function animateBackground() {
-                starfieldOffset += 0.3;
-                updateParticles();
-                if (gameRunning) {
-                    // Redraw is handled by the game loop
-                } else {
-                    // When game is not running, still animate the background
-                    draw();
-                }
-                animationFrame = requestAnimationFrame(animateBackground);
-            }
-
-            // Select difficulty and start the game
-            function selectDifficulty(level) {
-                var settings = DIFFICULTY_SETTINGS[level];
-                if (!settings) return;
-
-                currentDifficulty = level;
-                gameSpeed = settings.speed;
-                scoreMultiplier = settings.multiplier;
-                difficultySelected = true;
-
-                // Update the difficulty label in the header
-                difficultyLabel.textContent = settings.label;
-                difficultyLabel.className = 'difficulty-label ' + settings.cssClass;
-
-                // Hide difficulty screen and start the game
-                difficultyScreen.classList.add('hidden');
-                startGame();
-            }
-
-            // Show the difficulty selection screen
-            function showDifficultyScreen() {
-                gameStarted = false;
-                difficultySelected = false;
-                gameOverScreen.classList.add('hidden');
-                difficultyScreen.classList.remove('hidden');
-                difficultyLabel.classList.add('hidden');
-            }
-
-            // Game over handler
-            function gameOver() {
-                gameRunning = false;
-                if (gameLoop) {
-                    clearInterval(gameLoop);
-                    gameLoop = null;
-                }
-                finalScoreDisplay.textContent = score;
-                gameOverScreen.classList.remove('hidden');
-            }
-
-            // Start game
-            function startGame() {
-                if (gameLoop) {
-                    clearInterval(gameLoop);
-                    gameLoop = null;
-                }
-                initGame();
-                gameRunning = true;
-                gameStarted = true;
-                difficultyScreen.classList.add('hidden');
-                gameOverScreen.classList.add('hidden');
-                draw();
-                gameLoop = setInterval(function() {
-                    update();
-                    if (gameRunning) {
-                        draw();
-                    }
-                }, gameSpeed);
-            }
-
-            // Restart game at same difficulty
-            function restartGame() {
-                gameOverScreen.classList.add('hidden');
-                startGame();
-            }
-
-            // Input handling
-            document.addEventListener('keydown', function(e) {
-                // Difficulty selection keys (1, 2, 3) when on difficulty screen
-                if (!difficultySelected && !gameStarted) {
-                    if (e.key === '1') {
-                        selectDifficulty('easy');
-                        e.preventDefault();
-                        return;
-                    } else if (e.key === '2') {
-                        selectDifficulty('medium');
-                        e.preventDefault();
-                        return;
-                    } else if (e.key === '3') {
-                        selectDifficulty('hard');
-                        e.preventDefault();
-                        return;
-                    }
-                }
-
-                // Arrow keys should only work after difficulty is selected
-                // Start game on arrow key if difficulty selected but game not yet started
-                // (This handles the case where the game was just restarted)
-                if (difficultySelected && !gameRunning && !gameStarted) {
-                    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                        startGame();
-                        if (e.key === 'ArrowUp' && direction.y !== 1) {
-                            nextDirection = { x: 0, y: -1 };
-                        } else if (e.key === 'ArrowDown' && direction.y !== -1) {
-                            nextDirection = { x: 0, y: 1 };
-                        } else if (e.key === 'ArrowLeft' && direction.x !== 1) {
-                            nextDirection = { x: -1, y: 0 };
-                        } else if (e.key === 'ArrowRight' && direction.x !== -1) {
-                            nextDirection = { x: 1, y: 0 };
-                        }
-                        e.preventDefault();
-                        return;
-                    }
-                }
-
-                // Restart on Enter when game over, Escape to change difficulty
-                if (!gameRunning && gameStarted && e.key === 'Enter') {
-                    restartGame();
-                    e.preventDefault();
-                    return;
-                }
-                if (!gameRunning && gameStarted && e.key === 'Escape') {
-                    showDifficultyScreen();
-                    e.preventDefault();
-                    return;
-                }
-
-                // Direction controls during gameplay
-                if (gameRunning) {
-                    if (e.key === 'ArrowUp' && direction.y !== 1) {
-                        nextDirection = { x: 0, y: -1 };
-                    } else if (e.key === 'ArrowDown' && direction.y !== -1) {
-                        nextDirection = { x: 0, y: 1 };
-                    } else if (e.key === 'ArrowLeft' && direction.x !== 1) {
-                        nextDirection = { x: -1, y: 0 };
-                    } else if (e.key === 'ArrowRight' && direction.x !== -1) {
-                        nextDirection = { x: 1, y: 0 };
-                    }
-                    e.preventDefault();
-                }
-            });
-
-            // Button handlers - Difficulty selection
-            easyBtn.addEventListener('click', function() { selectDifficulty('easy'); });
-            mediumBtn.addEventListener('click', function() { selectDifficulty('medium'); });
-            hardBtn.addEventListener('click', function() { selectDifficulty('hard'); });
-
-            // Button handlers - Game over
-            restartBtn.addEventListener('click', restartGame);
-            changeDifficultyBtn.addEventListener('click', showDifficultyScreen);
-
-            // Start background animation
-            animateBackground();
-
-            // Draw initial state
-            draw();
-        })();
-    </script>
+          },
+          getFood: function () { return food; },
+          setFood: function (x, y) { food.x = x; food.y = y; },
+          getGameState: function () { return gameState; },
+          startGame: function () { startGame(); },
+          getCanvasSize: function () { return { w: canvasW, h: canvasH }; },
+          getParticles: function () { return particles; },
+          // Expose constants for testing
+          MAX_SPEED: MAX_SPEED_PER_SEC,
+          THRUST: THRUST_PER_SEC,
+          COLLISION_SKIP: COLLISION_SKIP,
+          SEGMENT_SPACING: SEGMENT_SPACING,
+          HEAD_RADIUS: HEAD_RADIUS,
+          FOOD_RADIUS: FOOD_RADIUS,
+          REFERENCE_DT: REFERENCE_DT,
+          getElapsedTimeSinceStart: function () { return elapsedTimeSinceStart; },
+          setElapsedTimeSinceStart: function (v) { elapsedTimeSinceStart = v; }
+        };
+      }
+    })();
+  </script>
 </body>
 </html>
