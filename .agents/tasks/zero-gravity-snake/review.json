@@ -1,0 +1,30 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    {
+      "severity": "BLOCKING",
+      "label": "Physics not delta-time-scaled",
+      "description": "updateSnake() applies constant THRUST and MAX_SPEED per call with no dt factor. On monitors above or below 60 Hz the game runs proportionally faster or slower. Multiply thrust and position deltas by dt/16.67 or refactor to per-second units scaled by dtSec.",
+      "confidence": "confirmed"
+    },
+    {
+      "severity": "MINOR",
+      "label": "Food not wrap-rendered",
+      "description": "drawFood() draws the orb at its raw coordinates with no ghost copies at edges. Add the same cardinal+corner ghost pattern used for body segments.",
+      "confidence": "confirmed"
+    },
+    {
+      "severity": "MINOR",
+      "label": "Head missing diagonal corner ghosts",
+      "description": "drawSnake() draws head ghosts for the four cardinal edges but not the four corner cases. Add diagonal ghost draws matching the body segment pattern.",
+      "confidence": "confirmed"
+    },
+    {
+      "severity": "MINOR",
+      "label": "keys object not cleared on restart",
+      "description": "transitionTo('PLAYING') resets snake, score, and particles but does not clear the keys map. If a player holds a movement key while pressing SPACE to restart, thrust is applied on the very first physics tick.",
+      "confidence": "confirmed"
+    }
+  ],
+  "reviewDoc": "/projects/sandbox/SnakeGame/.agents/tasks/zero-gravity-snake/2026-09-19-001757-review.md"
+}

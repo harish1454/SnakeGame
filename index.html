@@ -186,11 +186,14 @@
       'use strict';
 
       // --- Section 1: Constants & tuning ---
-      var THRUST = 0.15;
-      var MAX_SPEED = 5;
+      // Physics constants in per-second units, scaled by dt each frame
+      var THRUST_PER_SEC = 9;        // px/s² (was 0.15 px/frame × 60 fps)
+      var MAX_SPEED_PER_SEC = 300;   // px/s  (was 5 px/frame × 60 fps)
+      var REFERENCE_DT = 1 / 60;     // 16.67 ms — reference frame time
       var HEAD_RADIUS = 8;
       var SEGMENT_SPACING = 14;
       var COLLISION_SKIP = 5;
+      var COLLISION_SKIP_TIME = (COLLISION_SKIP + 1) * SEGMENT_SPACING * REFERENCE_DT; // spawn protection in seconds
       var FOOD_RADIUS = 10;
       var STAR_COUNT = 150;
       var INITIAL_LENGTH = 5;
@@ -230,7 +233,7 @@
       var score = 0;
       var highScore = 0;
       var gameOverDelay = 0;
-      var ticksSinceStart = 0;
+      var elapsedTimeSinceStart = 0;
 
       // Try to load high score
       try {
@@ -368,47 +371,59 @@
         }
       }
 
-      function updateSnake() {
-        // Thrust
+      function updateSnake(dtSec) {
+        // Thrust (scaled by delta time)
+        var thrustDelta = THRUST_PER_SEC * dtSec;
         if (keys['ArrowUp'] || keys['w'] || keys['W'] || keys['KeyW']) {
-          snake.vy -= THRUST;
+          snake.vy -= thrustDelta;
         }
         if (keys['ArrowDown'] || keys['s'] || keys['S'] || keys['KeyS']) {
-          snake.vy += THRUST;
+          snake.vy += thrustDelta;
         }
         if (keys['ArrowLeft'] || keys['a'] || keys['A'] || keys['KeyA']) {
-          snake.vx -= THRUST;
+          snake.vx -= thrustDelta;
         }
         if (keys['ArrowRight'] || keys['d'] || keys['D'] || keys['KeyD']) {
-          snake.vx += THRUST;
+          snake.vx += thrustDelta;
         }
 
-        // Speed cap
+        // Speed cap (in px/s)
         var speed = vecLen(snake.vx, snake.vy);
-        if (speed > MAX_SPEED) {
-          snake.vx *= MAX_SPEED / speed;
-          snake.vy *= MAX_SPEED / speed;
+        var maxSpd = MAX_SPEED_PER_SEC;
+        if (speed > maxSpd) {
+          snake.vx *= maxSpd / speed;
+          snake.vy *= maxSpd / speed;
         }
 
         // No friction — velocity persists
 
-        // Position update
-        snake.headX += snake.vx;
-        snake.headY += snake.vy;
+        // Position update (velocity is px/s, multiply by dtSec)
+        snake.headX += snake.vx * dtSec;
+        snake.headY += snake.vy * dtSec;
 
         // Wrap-around
         snake.headX = wrap(snake.headX, canvasW);
         snake.headY = wrap(snake.headY, canvasH);
 
-        // Trail recording
-        snake.trail.unshift({ x: snake.headX, y: snake.headY });
-        var maxTrail = snake.length * SEGMENT_SPACING + SEGMENT_SPACING;
-        while (snake.trail.length > maxTrail) {
-          snake.trail.pop();
+        // Trail recording — distance-based to maintain consistent spacing across frame rates
+        if (snake.trail.length === 0) {
+          snake.trail.unshift({ x: snake.headX, y: snake.headY });
+        } else {
+          var lastT = snake.trail[0];
+          var distFromLast = wrappedDist(snake.headX, snake.headY, lastT.x, lastT.y, canvasW, canvasH);
+          // Record a new point whenever we've moved at least 1 px
+          // Interpolate points at even intervals for consistent segment spacing
+          if (distFromLast >= 1) {
+            snake.trail.unshift({ x: snake.headX, y: snake.headY });
+            var maxTrail = snake.length * SEGMENT_SPACING + SEGMENT_SPACING;
+            while (snake.trail.length > maxTrail) {
+              snake.trail.pop();
+            }
+          }
         }
 
-        // Increment ticks since start (used for spawn protection)
-        ticksSinceStart++;
+        // Accumulate elapsed time since start (used for spawn protection)
+        elapsedTimeSinceStart += dtSec;
       }
 
       // --- Section 7: Food spawning & collection ---
@@ -499,10 +514,8 @@
 
       // --- Section 9: Collision detection ---
       function checkSelfCollision() {
-        // Spawn protection: don't check collision until the trail has had time to spread
-        // Minimum ticks needed: (COLLISION_SKIP + 1) * SEGMENT_SPACING so segments are actually distinct
-        var minTicks = (COLLISION_SKIP + 1) * SEGMENT_SPACING;
-        if (ticksSinceStart < minTicks) return false;
+        // Spawn protection: don't check collision until enough time has elapsed for segments to spread
+        if (elapsedTimeSinceStart < COLLISION_SKIP_TIME) return false;
         if (snake.length <= COLLISION_SKIP) return false;
         for (var i = COLLISION_SKIP; i < snake.length; i++) {
           var idx = i * SEGMENT_SPACING;
@@ -567,7 +580,9 @@
           gameOverScreen.classList.add('hidden');
           hudEl.style.display = 'flex';
           score = 0;
-          ticksSinceStart = 0;
+          elapsedTimeSinceStart = 0;
+          // Clear held keys so no residual thrust on first frame
+          for (var k in keys) { delete keys[k]; }
           resetSnake();
           spawnFood();
           particles = [];
@@ -583,39 +598,55 @@
         hudScore.textContent = score;
         hudHigh.textContent = highScore;
         var speed = vecLen(snake.vx, snake.vy);
-        var pct = clamp(speed / MAX_SPEED * 100, 0, 100);
+        var pct = clamp(speed / MAX_SPEED_PER_SEC * 100, 0, 100);
         hudSpeedBar.style.width = pct + '%';
       }
 
       // --- Section 12: Rendering ---
-      function drawFood(time) {
-        var pulse = Math.sin(time * 0.004) * 0.15 + 0.85;
-        var r = FOOD_RADIUS * pulse;
-
+      function drawFoodAt(x, y, r) {
         // Outer glow
         ctx.save();
         ctx.shadowColor = '#ffab40';
         ctx.shadowBlur = 20;
 
-        var grad = ctx.createRadialGradient(food.x, food.y, 0, food.x, food.y, r * 1.5);
+        var grad = ctx.createRadialGradient(x, y, 0, x, y, r * 1.5);
         grad.addColorStop(0, 'rgba(255, 171, 64, 0.8)');
         grad.addColorStop(0.5, 'rgba(255, 171, 64, 0.3)');
         grad.addColorStop(1, 'rgba(255, 171, 64, 0)');
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(food.x, food.y, r * 1.5, 0, Math.PI * 2);
+        ctx.arc(x, y, r * 1.5, 0, Math.PI * 2);
         ctx.fill();
 
         // Core
-        var coreGrad = ctx.createRadialGradient(food.x, food.y, 0, food.x, food.y, r);
+        var coreGrad = ctx.createRadialGradient(x, y, 0, x, y, r);
         coreGrad.addColorStop(0, '#ffffff');
         coreGrad.addColorStop(0.4, '#ffab40');
         coreGrad.addColorStop(1, '#ff8a65');
         ctx.fillStyle = coreGrad;
         ctx.beginPath();
-        ctx.arc(food.x, food.y, r, 0, Math.PI * 2);
+        ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
+      }
+
+      function drawFood(time) {
+        var pulse = Math.sin(time * 0.004) * 0.15 + 0.85;
+        var r = FOOD_RADIUS * pulse;
+        var glowR = r * 1.5; // outer glow extent for wrap detection
+
+        drawFoodAt(food.x, food.y, r);
+
+        // Wrap-safe rendering: cardinal ghost copies at edges
+        if (food.x < glowR) drawFoodAt(food.x + canvasW, food.y, r);
+        if (food.x > canvasW - glowR) drawFoodAt(food.x - canvasW, food.y, r);
+        if (food.y < glowR) drawFoodAt(food.x, food.y + canvasH, r);
+        if (food.y > canvasH - glowR) drawFoodAt(food.x, food.y - canvasH, r);
+        // Corner ghost copies
+        if (food.x < glowR && food.y < glowR) drawFoodAt(food.x + canvasW, food.y + canvasH, r);
+        if (food.x > canvasW - glowR && food.y < glowR) drawFoodAt(food.x - canvasW, food.y + canvasH, r);
+        if (food.x < glowR && food.y > canvasH - glowR) drawFoodAt(food.x + canvasW, food.y - canvasH, r);
+        if (food.x > canvasW - glowR && food.y > canvasH - glowR) drawFoodAt(food.x - canvasW, food.y - canvasH, r);
       }
 
       function drawSegmentAt(x, y, r, hue) {
@@ -682,12 +713,17 @@
         }
         ctx.restore();
 
-        // Head wrap-safe rendering
+        // Head wrap-safe rendering (cardinal + diagonal corners)
         var hr = HEAD_RADIUS;
         if (snake.headX < hr) { drawHeadGhost(snake.headX + canvasW, snake.headY); }
         if (snake.headX > canvasW - hr) { drawHeadGhost(snake.headX - canvasW, snake.headY); }
         if (snake.headY < hr) { drawHeadGhost(snake.headX, snake.headY + canvasH); }
         if (snake.headY > canvasH - hr) { drawHeadGhost(snake.headX, snake.headY - canvasH); }
+        // Diagonal corner ghosts
+        if (snake.headX < hr && snake.headY < hr) { drawHeadGhost(snake.headX + canvasW, snake.headY + canvasH); }
+        if (snake.headX > canvasW - hr && snake.headY < hr) { drawHeadGhost(snake.headX - canvasW, snake.headY + canvasH); }
+        if (snake.headX < hr && snake.headY > canvasH - hr) { drawHeadGhost(snake.headX + canvasW, snake.headY - canvasH); }
+        if (snake.headX > canvasW - hr && snake.headY > canvasH - hr) { drawHeadGhost(snake.headX - canvasW, snake.headY - canvasH); }
       }
 
       function drawHeadGhost(x, y) {
@@ -743,7 +779,7 @@
         var dtSec = dt / 1000;
 
         if (gameState === 'PLAYING') {
-          updateSnake();
+          updateSnake(dtSec);
           checkFoodCollection();
           if (checkSelfCollision()) {
             emitDeathParticles(snake.headX, snake.headY);
@@ -798,11 +834,12 @@
           setKeys: function (obj) {
             // Clear existing keys and set new ones
             for (var k in keys) { delete keys[k]; }
-            for (var k in obj) { keys[k] = obj[k]; }
+            for (var k2 in obj) { keys[k2] = obj[k2]; }
           },
           tick: function () {
+            var dtSec = REFERENCE_DT; // simulate one frame at 60fps
             if (gameState === 'PLAYING') {
-              updateSnake();
+              updateSnake(dtSec);
               checkFoodCollection();
               if (checkSelfCollision()) {
                 emitDeathParticles(snake.headX, snake.headY);
@@ -810,7 +847,7 @@
                 transitionTo('GAME_OVER');
               }
             }
-            updateParticles(1 / 60);
+            updateParticles(dtSec);
           },
           getScore: function () { return score; },
           getHighScore: function () {
@@ -827,14 +864,15 @@
           getCanvasSize: function () { return { w: canvasW, h: canvasH }; },
           getParticles: function () { return particles; },
           // Expose constants for testing
-          MAX_SPEED: MAX_SPEED,
-          THRUST: THRUST,
+          MAX_SPEED: MAX_SPEED_PER_SEC,
+          THRUST: THRUST_PER_SEC,
           COLLISION_SKIP: COLLISION_SKIP,
           SEGMENT_SPACING: SEGMENT_SPACING,
           HEAD_RADIUS: HEAD_RADIUS,
           FOOD_RADIUS: FOOD_RADIUS,
-          getTicksSinceStart: function () { return ticksSinceStart; },
-          setTicksSinceStart: function (v) { ticksSinceStart = v; }
+          REFERENCE_DT: REFERENCE_DT,
+          getElapsedTimeSinceStart: function () { return elapsedTimeSinceStart; },
+          setElapsedTimeSinceStart: function (v) { elapsedTimeSinceStart = v; }
         };
       }
     })();

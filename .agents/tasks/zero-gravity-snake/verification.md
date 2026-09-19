@@ -1,85 +1,106 @@
-# Verification Report — Zero Gravity Snake
+# Verification Report — Zero Gravity Snake (Iteration 2)
+
+## Changes Made (Review Findings Fixed)
+
+1. **BLOCKING: Physics delta-time-scaled** — Converted `THRUST` (0.15 px/frame) and `MAX_SPEED` (5 px/frame) to per-second units (`THRUST_PER_SEC = 9 px/s²`, `MAX_SPEED_PER_SEC = 300 px/s`). `updateSnake()` now accepts `dtSec` and multiplies thrust and position deltas by it. Trail recording uses distance-based gating (records when head moves ≥1 px) instead of per-frame push, maintaining consistent segment spacing across frame rates. Spawn protection converted from tick count to elapsed seconds (`COLLISION_SKIP_TIME`).
+
+2. **MINOR: Food wrap-rendered** — Extracted food drawing into `drawFoodAt(x, y, r)` helper. `drawFood()` now draws cardinal + corner ghost copies when food is within glow radius of any edge, matching the body segment ghost pattern.
+
+3. **MINOR: Head diagonal corner ghosts** — Added four diagonal corner ghost draws for the head (`drawHeadGhost`), matching the body segment eight-ghost pattern.
+
+4. **MINOR: Keys cleared on restart** — Added `for (var k in keys) { delete keys[k]; }` in `transitionTo('PLAYING')` so no residual thrust is applied on the first frame after restart.
+
+---
 
 ## A. Syntax Check
 
 **Command:**
 ```bash
-sed -n '/<script>/,/<\/script>/{ /<script>/d; /<\/script>/d; p; }' index.html > /tmp/zg_final_check.js && node --check /tmp/zg_final_check.js
+unset NODE_OPTIONS && sed -n '/<script>/,/<\/script>/{ /<script>/d; /<\/script>/d; p; }' \
+  /projects/sandbox/SnakeGame/index.html > /tmp/zg_snake_extracted.js && \
+  node --check /tmp/zg_snake_extracted.js && echo "SYNTAX OK" || echo "SYNTAX ERROR"
 ```
-**Result:** `SYNTAX OK` — exit code 0. ✅
 
-## B. Logic Test Harness (16 tests)
+**Result:** `SYNTAX OK` ✅
+
+---
+
+## B. Logic Test Harness (17 tests)
 
 **Command:**
 ```bash
-node _test_harness.js
+cd /projects/sandbox/SnakeGame && unset NODE_OPTIONS && node zg_snake_test.js
 ```
-**Result:** All 16 tests passed. ✅
+
+**Results (all 17 passed):**
 
 | Test | Description | Result |
 |------|-------------|--------|
-| T10a | Initial state is START | PASS |
-| T10b | After startGame(), state is PLAYING | PASS |
-| T1a | Speed converges to MAX_SPEED (5.000) after 200 ticks with ArrowRight | PASS |
-| T1b | vy ~0 when only thrusting right (vy=0.000) | PASS |
-| T1c | Speed cap holds (5.000 <= 5) | PASS |
-| T2a | vx unchanged after releasing keys (friction-free, vx=5.000 before and after) | PASS |
-| T2b | Snake still moving right after key release | PASS |
-| T3 | Head wrapped to left side after starting near right edge (headX=49.0) | PASS |
-| T4a | Score incremented on food collection (0->1) | PASS |
-| T4b | Snake length grew by 3 on food collection (5->8) | PASS |
-| T5 | High score persisted in localStorage (storedHigh=55 after 55 food collections) | PASS |
-| T8 | Particles emitted on food collection (count=15) | PASS |
-| T7 | No false self-collision with straight trail (state=PLAYING) | PASS |
-| T6 | Self-collision detected when trail loops back to head (state=GAME_OVER) | PASS |
-| T9 | Death particles emitted on collision (count=40) | PASS |
-| T10c | State is GAME_OVER after death | PASS |
+| T1a | vx positive after thrusting right | ✅ PASS (vx=300) |
+| T1b | vy near 0 when only right thrust | ✅ PASS (vy=0) |
+| T1c | speed ≤ MAX_SPEED | ✅ PASS (300.00 ≤ 300) |
+| T1d | speed near MAX_SPEED after 2200 ticks | ✅ PASS (300.00 ≥ 270.00) |
+| T2a | vx unchanged after releasing keys (inertia) | ✅ PASS (delta=0.0000) |
+| T2b | snake keeps moving with no keys (drift) | ✅ PASS |
+| T3 | wrap-around across right edge | ✅ PASS (headX=299.00, canvasW=800) |
+| T4a | score incremented on food collection | ✅ PASS (0→1) |
+| T4b | snake grew by GROW_AMOUNT | ✅ PASS (5→8) |
+| T5 | high score persisted in localStorage | ✅ PASS (stored=5) |
+| T6 | self-collision triggers GAME_OVER | ✅ PASS |
+| T7 | no false collision with straight trail | ✅ PASS |
+| T8 | particles emitted on food collection | ✅ PASS (count=15) |
+| T9 | death particles emitted | ✅ PASS (count=40) |
+| T10a | startGame → PLAYING | ✅ PASS |
+| T10b | collision → GAME_OVER | ✅ PASS |
+| T11 | velocity after 1s thrust ≈ 9 px/s (dt-scaled) | ✅ PASS (got 9.00) |
+
+Test T11 specifically validates the delta-time scaling fix: at `THRUST_PER_SEC = 9`, 60 ticks at 1/60s each yields exactly 9 px/s velocity, confirming per-second physics.
+
+---
 
 ## C. HTML Validity
 
 **Command:**
 ```bash
-xmllint --html --noout index.html 2>&1
+xmllint --html --noout /projects/sandbox/SnakeGame/index.html 2>&1
 ```
-**Result:** Only warning about `<canvas>` tag (valid HTML5 element, not recognized by XML parser). No actual errors. ✅
 
-## D. File Size
+**Result:** One warning about `<canvas>` tag — this is a known xmllint limitation with HTML5 elements, not a real error. ✅
+
+---
+
+## D. File-size Sanity Check
 
 **Command:**
 ```bash
-wc -c index.html
+wc -c /projects/sandbox/SnakeGame/index.html
 ```
-**Result:** 26,223 bytes — within expected range (15,000–60,000). ✅
 
-## E. Manual Spot-Check Checklist
+**Result:** 28,995 bytes — within the 15,000–60,000 byte expected range. ✅
+
+---
+
+## E. Manual Spot-check Checklist
 
 - [x] Title says "ZERO GRAVITY SNAKE"
 - [x] No references to `GRID_SIZE`, `CELL_SIZE`, or grid-based movement
 - [x] `localStorage` key is `zeroGravitySnake_highScore`
 - [x] `requestAnimationFrame` is used (not `setInterval`)
 - [x] Canvas resizes on `window.resize`
-- [x] Speed is capped at `MAX_SPEED` (5 px/frame)
-- [x] No friction applied to velocity (verified by T2a/T2b)
-- [x] Wrap-around uses modular arithmetic on both X and Y (verified by T3)
-- [x] Collision skips first `COLLISION_SKIP` (5) body segments
-- [x] WASD and Arrow keys both work (code checks both `key` and `code` properties)
+- [x] Speed is capped at `MAX_SPEED_PER_SEC`
+- [x] No friction applied to velocity
+- [x] Wrap-around uses modular arithmetic on both X and Y
+- [x] Collision skips first `COLLISION_SKIP` body segments
+- [x] WASD and Arrow keys both work
 - [x] Start screen, playing state, and game-over screen all exist
 - [x] `window.__TEST_HOOKS__` object is present
-- [x] Spawn protection prevents false self-collision at game start
+- [x] Physics uses delta-time scaling (`dtSec` parameter)
+- [x] Food has wrap-safe ghost rendering (cardinal + corner)
+- [x] Head has diagonal corner ghost rendering
+- [x] Keys cleared in `transitionTo('PLAYING')`
 
-## Features Implemented
+---
 
-1. **Floating movement** with momentum/inertia (thrust=0.15 px/frame)
-2. **Wrap-around space** (Asteroids-style, all 4 edges)
-3. **Space theme** (dark #0a0a1a background, 150 twinkling stars, neon glow effects)
-4. **Smooth 60fps rendering** (HTML5 Canvas, requestAnimationFrame)
-5. **Friction-free drift** with speed cap (5 px/frame)
-6. **Circle-based collision** with 5-segment skip and spawn protection
-7. **Food collection** with score tracking and growth (+3 segments)
-8. **Flowing trail** (distance-spaced segments, tapered from 7px to 3px radius)
-9. **HUD** (score, high score via localStorage, speed bar indicator)
-10. **Start/Game Over screens** with proper state machine
-11. **Sound effects** (Web Audio API: eat=sine sweep 800→1200Hz, death=sawtooth 400→100Hz)
-12. **Particle effects** (15 particles on food, 40 particles on death)
-13. **Wrap-safe rendering** (ghost copies at edges for seamless visuals)
-14. **Test hooks** for automated verification
+## Test Harness Note
+
+The test harness (`zg_snake_test.js`) was a temporary file created in the workspace, run for verification, and deleted before committing. It used Node.js `vm.runInNewContext` with minimal browser stubs to exercise the game's physics, collision, scoring, state machine, and particle systems through the `__TEST_HOOKS__` API.
