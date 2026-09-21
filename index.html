@@ -3,1010 +3,1687 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Snake</title>
+    <title>ANACONDA — Tales of the Amazon</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background-color: #0a0a1a;
+            background: #0d1f0d;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e0e0e0;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            color: #e8dcc8;
             overflow: hidden;
         }
-
-        .game-container {
+        #game-container {
+            position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 16px;
         }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 400px;
-        }
-
-        .title {
-            font-size: 28px;
-            font-weight: bold;
-            color: #00e5ff;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5), 0 0 20px rgba(0, 229, 255, 0.3);
-            letter-spacing: 2px;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-
-        .difficulty-label {
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 2px 8px;
-            border-radius: 3px;
-            border: 1px solid;
-        }
-
-        .difficulty-label.hidden {
-            display: none;
-        }
-
-        .difficulty-label.easy {
-            color: #69f0ae;
-            border-color: #69f0ae;
-            text-shadow: 0 0 6px rgba(105, 240, 174, 0.5);
-        }
-
-        .difficulty-label.medium {
-            color: #ffab40;
-            border-color: #ffab40;
-            text-shadow: 0 0 6px rgba(255, 171, 64, 0.5);
-        }
-
-        .difficulty-label.hard {
-            color: #ff5252;
-            border-color: #ff5252;
-            text-shadow: 0 0 6px rgba(255, 82, 82, 0.5);
-        }
-
-        .score-display {
-            font-size: 20px;
-            color: #ffab40;
-            font-weight: bold;
-            text-shadow: 0 0 8px rgba(255, 171, 64, 0.4);
-        }
-
         canvas {
-            border: 2px solid #1a237e;
-            border-radius: 4px;
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
             display: block;
+            max-width: 96vw;
+            max-height: 88vh;
+            aspect-ratio: 1/1;
+            border: 3px solid #2d1a0a;
+            border-radius: 4px;
+            box-shadow: 0 0 40px rgba(26,77,26,0.5), inset 0 0 20px rgba(0,0,0,0.4);
         }
-
         .overlay {
             position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(ellipse at center, rgba(10, 10, 40, 0.95) 0%, rgba(5, 5, 20, 0.98) 100%);
             border-radius: 4px;
-            gap: 16px;
+            z-index: 10;
         }
+        .hidden { display: none !important; }
 
-        .overlay h2 {
-            font-size: 32px;
-            color: #00e5ff;
-            text-shadow: 0 0 15px rgba(0, 229, 255, 0.7), 0 0 30px rgba(0, 229, 255, 0.4);
+        /* Start Screen */
+        #startScreen {
+            background: radial-gradient(ellipse at center, rgba(26,77,26,0.96) 0%, rgba(13,31,13,0.99) 100%);
+        }
+        #startScreen h1 {
+            font-size: clamp(22px, 4vw, 38px);
+            color: #f4a261;
+            text-shadow: 0 0 20px rgba(244,162,97,0.6), 2px 2px 4px #000;
+            letter-spacing: 4px;
+            text-align: center;
+            margin-bottom: 4px;
+        }
+        #startScreen .subtitle {
+            font-size: clamp(11px, 1.8vw, 16px);
+            color: #87ceeb;
             letter-spacing: 3px;
+            margin-bottom: 24px;
+            text-shadow: 0 0 8px rgba(135,206,235,0.4);
         }
-
-        .overlay p {
-            font-size: 16px;
-            color: #b0bec5;
+        .stone-btn {
+            padding: 14px 40px;
+            font-size: clamp(14px, 2vw, 18px);
+            font-weight: bold;
+            font-family: 'Georgia', serif;
+            color: #f4a261;
+            background: linear-gradient(180deg, #6b3a1f 0%, #4a2c0a 40%, #3a1f08 100%);
+            border: 3px solid #8b5e3c;
+            border-radius: 8px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -2px 0 rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            margin: 8px 0;
+        }
+        .stone-btn:hover {
+            background: linear-gradient(180deg, #7d4a2a 0%, #5a3510 40%, #4a2810 100%);
+            transform: scale(1.04);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .stone-btn:active { transform: scale(0.97); }
+        .instructions {
+            font-size: clamp(10px, 1.4vw, 13px);
+            color: #6b8a6b;
+            margin-top: 16px;
             text-align: center;
             line-height: 1.6;
         }
-
-        .overlay .final-score {
-            font-size: 24px;
-            color: #ffab40;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 171, 64, 0.5);
+        .high-score-display {
+            font-size: clamp(12px, 1.6vw, 15px);
+            color: #f4a261;
+            margin-top: 12px;
+            text-shadow: 0 0 6px rgba(244,162,97,0.3);
         }
 
-        .btn {
-            padding: 12px 32px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #00e5ff;
-            background: transparent;
-            border: 2px solid #00e5ff;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
+        /* Game Over Screen */
+        #gameOverScreen {
+            background: radial-gradient(ellipse at center, rgba(26,20,10,0.96) 0%, rgba(10,8,4,0.99) 100%);
         }
-
-        .btn:hover {
-            background: rgba(0, 229, 255, 0.15);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.2);
-            transform: scale(1.05);
-            text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
-        }
-
-        .btn:active {
-            transform: scale(0.95);
-        }
-
-        .difficulty-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 85%;
-        }
-
-        .difficulty-btn {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 16px;
-            font-size: 14px;
-            font-weight: bold;
-            background: transparent;
-            border: 2px solid;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        .difficulty-btn .diff-info {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 2px;
-        }
-
-        .difficulty-btn .diff-name {
-            font-size: 16px;
-        }
-
-        .difficulty-btn .diff-desc {
-            font-size: 11px;
-            font-weight: normal;
-            text-transform: none;
-            letter-spacing: 0;
-            opacity: 0.7;
-        }
-
-        .difficulty-btn .diff-key {
-            font-size: 12px;
-            opacity: 0.5;
-            font-weight: normal;
-        }
-
-        .difficulty-btn.easy {
-            color: #69f0ae;
-            border-color: #69f0ae;
-            box-shadow: 0 0 10px rgba(105, 240, 174, 0.3), inset 0 0 10px rgba(105, 240, 174, 0.1);
-        }
-
-        .difficulty-btn.easy:hover {
-            background: rgba(105, 240, 174, 0.15);
-            box-shadow: 0 0 20px rgba(105, 240, 174, 0.6), inset 0 0 15px rgba(105, 240, 174, 0.2);
-            transform: scale(1.03);
-            text-shadow: 0 0 8px rgba(105, 240, 174, 0.8);
-        }
-
-        .difficulty-btn.medium {
-            color: #ffab40;
-            border-color: #ffab40;
-            box-shadow: 0 0 10px rgba(255, 171, 64, 0.3), inset 0 0 10px rgba(255, 171, 64, 0.1);
-        }
-
-        .difficulty-btn.medium:hover {
-            background: rgba(255, 171, 64, 0.15);
-            box-shadow: 0 0 20px rgba(255, 171, 64, 0.6), inset 0 0 15px rgba(255, 171, 64, 0.2);
-            transform: scale(1.03);
-            text-shadow: 0 0 8px rgba(255, 171, 64, 0.8);
-        }
-
-        .difficulty-btn.hard {
-            color: #ff5252;
-            border-color: #ff5252;
-            box-shadow: 0 0 10px rgba(255, 82, 82, 0.3), inset 0 0 10px rgba(255, 82, 82, 0.1);
-        }
-
-        .difficulty-btn.hard:hover {
-            background: rgba(255, 82, 82, 0.15);
-            box-shadow: 0 0 20px rgba(255, 82, 82, 0.6), inset 0 0 15px rgba(255, 82, 82, 0.2);
-            transform: scale(1.03);
-            text-shadow: 0 0 8px rgba(255, 82, 82, 0.8);
-        }
-
-        .difficulty-btn:active {
-            transform: scale(0.97);
-        }
-
-        .overlay-subtitle {
-            font-size: 14px;
-            color: #5c6bc0;
-            text-transform: uppercase;
+        #gameOverScreen h2 {
+            font-size: clamp(16px, 3vw, 28px);
+            color: #e63946;
+            text-shadow: 0 0 15px rgba(230,57,70,0.5), 2px 2px 4px #000;
             letter-spacing: 2px;
             margin-bottom: 4px;
         }
-
-        .game-over-buttons {
+        #gameOverScreen .themed-msg {
+            font-size: clamp(11px, 1.5vw, 14px);
+            color: #6b8a6b;
+            font-style: italic;
+            margin-bottom: 14px;
+        }
+        .score-breakdown {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .btn-secondary {
-            padding: 10px 28px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #b0bec5;
-            background: transparent;
-            border: 1px solid #5c6bc0;
+            gap: 4px;
+            margin: 8px 0;
+            padding: 10px 18px;
+            background: rgba(74,44,10,0.4);
+            border: 1px solid rgba(139,94,60,0.4);
             border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            box-shadow: 0 0 8px rgba(92, 107, 192, 0.2);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: clamp(10px, 1.3vw, 13px);
         }
-
-        .btn-secondary:hover {
-            color: #e0e0e0;
-            border-color: #7986cb;
-            background: rgba(92, 107, 192, 0.15);
-            box-shadow: 0 0 15px rgba(92, 107, 192, 0.4);
-            transform: scale(1.05);
+        .score-breakdown .fruit-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            color: #c8b89a;
         }
-
-        .btn-secondary:active {
-            transform: scale(0.95);
+        .score-breakdown .fruit-line .pts { color: #f4a261; font-weight: bold; }
+        .final-total {
+            font-size: clamp(16px, 2.5vw, 22px);
+            color: #f4a261;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(244,162,97,0.5);
+            margin: 6px 0;
         }
-
-        .instructions {
-            font-size: 14px;
-            color: #5c6bc0;
-            margin-top: 8px;
-        }
-
-        .hidden {
-            display: none;
+        .go-high-score {
+            font-size: clamp(11px, 1.4vw, 14px);
+            color: #87ceeb;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="header">
-            <div class="title">SPACE SNAKE</div>
-            <div class="header-right">
-                <span class="difficulty-label hidden" id="difficultyLabel"></span>
-                <div class="score-display">Energy: <span id="score">0</span></div>
+    <div id="game-container">
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+
+        <!-- Start Screen -->
+        <div class="overlay" id="startScreen">
+            <h1>🐍 ANACONDA</h1>
+            <div class="subtitle">Tales of the Amazon</div>
+            <button class="stone-btn" id="playBtn">Enter the Jungle</button>
+            <div class="instructions">
+                Arrow Keys or WASD to move<br>
+                Collect tropical fruits · Avoid jaguars &amp; dart frogs<br>
+                Rivers slow you down · The jungle grows wilder each level
             </div>
+            <div class="high-score-display" id="startHighScore"></div>
         </div>
-        <div style="position: relative;">
-            <canvas id="gameCanvas" width="400" height="400"></canvas>
-            <div class="overlay" id="difficultyScreen">
-                <h2>COSMIC SERPENT</h2>
-                <div class="overlay-subtitle">Select Mission Difficulty</div>
-                <div class="difficulty-buttons">
-                    <button class="difficulty-btn easy" id="easyBtn" data-difficulty="easy">
-                        <div class="diff-info">
-                            <span class="diff-name">Easy</span>
-                            <span class="diff-desc">Slow speed, 1x score multiplier</span>
-                        </div>
-                        <span class="diff-key">[ 1 ]</span>
-                    </button>
-                    <button class="difficulty-btn medium" id="mediumBtn" data-difficulty="medium">
-                        <div class="diff-info">
-                            <span class="diff-name">Medium</span>
-                            <span class="diff-desc">Normal speed, 2x score multiplier</span>
-                        </div>
-                        <span class="diff-key">[ 2 ]</span>
-                    </button>
-                    <button class="difficulty-btn hard" id="hardBtn" data-difficulty="hard">
-                        <div class="diff-info">
-                            <span class="diff-name">Hard</span>
-                            <span class="diff-desc">Fast speed, 3x score multiplier</span>
-                        </div>
-                        <span class="diff-key">[ 3 ]</span>
-                    </button>
-                </div>
-                <div class="instructions">Press 1, 2, or 3 to select</div>
-            </div>
-            <div class="overlay hidden" id="gameOverScreen">
-                <h2>SHIP DESTROYED</h2>
-                <p class="final-score">Energy Collected: <span id="finalScore">0</span></p>
-                <div class="game-over-buttons">
-                    <button class="btn" id="restartBtn">Relaunch</button>
-                    <button class="btn-secondary" id="changeDifficultyBtn">Change Difficulty</button>
-                </div>
-                <div class="instructions">Press Enter to relaunch or Esc to change difficulty</div>
-            </div>
+
+        <!-- Game Over Screen -->
+        <div class="overlay hidden" id="gameOverScreen">
+            <h2>💀 GAME OVER</h2>
+            <div class="themed-msg">The jungle reclaims all...</div>
+            <div class="score-breakdown" id="scoreBreakdown"></div>
+            <div class="final-total" id="finalTotal"></div>
+            <div class="go-high-score" id="goHighScore"></div>
+            <button class="stone-btn" id="restartBtn">Return to the Jungle</button>
+            <div class="instructions">Press Enter to restart</div>
         </div>
     </div>
 
     <script>
-        (function() {
-            // Game constants
-            const CANVAS_SIZE = 400;
-            const GRID_SIZE = 20;
-            const CELL_SIZE = CANVAS_SIZE / GRID_SIZE;
+    (function() {
+        'use strict';
 
-            // Difficulty settings
-            const DIFFICULTY_SETTINGS = {
-                easy:   { speed: 150, multiplier: 1, label: 'Easy',   color: '#69f0ae', cssClass: 'easy' },
-                medium: { speed: 120, multiplier: 2, label: 'Medium', color: '#ffab40', cssClass: 'medium' },
-                hard:   { speed: 80,  multiplier: 3, label: 'Hard',   color: '#ff5252', cssClass: 'hard' }
-            };
+        // ===== SECTION A: CONSTANTS & CONFIG =====
+        const GRID_COLS = 30, GRID_ROWS = 30;
+        const CANVAS_W = 600, CANVAS_H = 600;
+        const CELL_W = CANVAS_W / GRID_COLS, CELL_H = CANVAS_H / GRID_ROWS;
 
-            // Current difficulty state
-            let currentDifficulty = null; // 'easy', 'medium', or 'hard'
-            let gameSpeed = 120;
-            let scoreMultiplier = 1;
+        const COLORS = {
+            jungleDeep: '#1a4d1a', jungleMid: '#2d5a27', jungleLight: '#3a7d44',
+            earthDark: '#4a2c0a', earthMid: '#6b3a1f',
+            red: '#e63946', gold: '#f4a261', purple: '#7b2d8e',
+            waterDark: '#264653', waterLight: '#2a9d8f',
+            sky: '#87ceeb',
+            rock: '#4a4a3a', log: '#5c3a1a'
+        };
 
-            // Game state
-            let snake = [];
-            let food = { x: 0, y: 0 };
-            let direction = { x: 1, y: 0 };
-            let nextDirection = { x: 1, y: 0 };
-            let score = 0;
-            let rawScore = 0; // Score before multiplier
-            let gameRunning = false;
-            let gameLoop = null;
-            let gameStarted = false;
-            let difficultySelected = false;
+        // Terrain types
+        const T_EMPTY = 0, T_RIVER = 1, T_ROCK = 2, T_LOG = 3, T_CLEARING = 4;
 
-            // Space theme state
-            let stars = [];
-            let particles = [];
-            let thrusterParticles = [];
-            let foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
-            let foodPulse = 0;
-            let starfieldOffset = 0;
-            let animationFrame = null;
+        const FRUIT_DEFS = {
+            acai:    { points: 10, color1: '#7b2d8e', color2: '#5a1d6b', name: 'Açaí Berry', weight: 30 },
+            passion: { points: 15, color1: '#f4a261', color2: '#7b2d8e', name: 'Passion Fruit', weight: 25 },
+            guava:   { points: 20, color1: '#e63946', color2: '#3a7d44', name: 'Guava', weight: 20 },
+            mango:   { points: 25, color1: '#f4a261', color2: '#ff8c00', name: 'Mango', weight: 15 },
+            cacao:   { points: 30, color1: '#6b3a1f', color2: '#e63946', name: 'Cacao Pod', weight: 10 },
+        };
+        const FRUIT_KEYS = Object.keys(FRUIT_DEFS);
+        const FRUIT_TOTAL_WEIGHT = FRUIT_KEYS.reduce((s,k) => s + FRUIT_DEFS[k].weight, 0);
 
-            // DOM elements
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
-            const scoreDisplay = document.getElementById('score');
-            const finalScoreDisplay = document.getElementById('finalScore');
-            const difficultyScreen = document.getElementById('difficultyScreen');
-            const gameOverScreen = document.getElementById('gameOverScreen');
-            const difficultyLabel = document.getElementById('difficultyLabel');
-            const easyBtn = document.getElementById('easyBtn');
-            const mediumBtn = document.getElementById('mediumBtn');
-            const hardBtn = document.getElementById('hardBtn');
-            const restartBtn = document.getElementById('restartBtn');
-            const changeDifficultyBtn = document.getElementById('changeDifficultyBtn');
+        const SCREEN = { START: 0, PLAYING: 1, GAME_OVER: 2 };
 
-            // Generate starfield
-            function generateStars() {
-                stars = [];
-                for (var i = 0; i < 120; i++) {
-                    stars.push({
-                        x: Math.random() * CANVAS_SIZE,
-                        y: Math.random() * CANVAS_SIZE,
-                        size: Math.random() * 2 + 0.5,
-                        brightness: Math.random(),
-                        twinkleSpeed: Math.random() * 0.03 + 0.01,
-                        twinkleOffset: Math.random() * Math.PI * 2
-                    });
-                }
+        // ===== SECTION B: GAME STATE =====
+        let screenState = SCREEN.START;
+        let terrainGrid = []; // 2D array [row][col]
+        let snake = []; // {x, y, prevX, prevY} grid coords
+        let direction = {x:1, y:0};
+        let nextDirection = {x:1, y:0};
+        let score = 0, level = 1, totalFruitsEaten = 0;
+        let fruitCounts = {acai:0, passion:0, guava:0, mango:0, cacao:0};
+        let highScore = 0;
+        let highScoreFruits = {acai:0, passion:0, guava:0, mango:0, cacao:0};
+
+        let fruits = []; // {x, y, type, glowPhase}
+        let jaguars = []; // {x, y, prevX, prevY, patrolPath:[], pathIndex, tickCounter}
+        let frogs = []; // {x, y, spawnTime, lifetime, color}
+        let toucans = []; // {px, py, dx, active, wingPhase}
+
+        // Particles
+        let fireflies = [];
+        let leaves = [];
+        let rainDrops = [];
+        let ripples = [];
+        let floatingTexts = []; // {text, x, y, life, color}
+        let isRaining = false;
+        let rainTimer = 0;
+        let nextRainTime = 0;
+
+        // Timing
+        let accumulator = 0, lastTime = 0;
+        let onRiver = false;
+        let gameTime = 0; // total game time in ms
+
+        // Audio
+        let audioCtx = null;
+        let audioInitialized = false;
+        let ambientGain = null;
+        let ambientNodes = [];
+        let chirpInterval = null;
+
+        // DOM
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startScreen = document.getElementById('startScreen');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const playBtn = document.getElementById('playBtn');
+        const restartBtn = document.getElementById('restartBtn');
+        const startHighScoreEl = document.getElementById('startHighScore');
+        const scoreBreakdownEl = document.getElementById('scoreBreakdown');
+        const finalTotalEl = document.getElementById('finalTotal');
+        const goHighScoreEl = document.getElementById('goHighScore');
+
+        // ===== SECTION C: WEB AUDIO API SOUND ENGINE =====
+        function initAudio() {
+            if (audioInitialized) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                audioCtx.resume();
+                audioInitialized = true;
+            } catch(e) { /* silent fail */ }
+        }
+
+        function startAmbient() {
+            if (!audioCtx) return;
+            stopAmbient();
+            ambientGain = audioCtx.createGain();
+            ambientGain.gain.value = 0.06;
+            ambientGain.connect(audioCtx.destination);
+
+            // Brown noise (filtered white noise)
+            const bufferSize = audioCtx.sampleRate * 2;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = noiseBuffer.getChannelData(0);
+            let lastOut = 0;
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                data[i] = (lastOut + (0.02 * white)) / 1.02;
+                lastOut = data[i];
+                data[i] *= 3.5;
             }
+            const noiseSource = audioCtx.createBufferSource();
+            noiseSource.buffer = noiseBuffer;
+            noiseSource.loop = true;
+            const lpf = audioCtx.createBiquadFilter();
+            lpf.type = 'lowpass';
+            lpf.frequency.value = 400;
+            const noiseGain = audioCtx.createGain();
+            noiseGain.gain.value = 0.8;
+            noiseSource.connect(lpf);
+            lpf.connect(noiseGain);
+            noiseGain.connect(ambientGain);
+            noiseSource.start();
+            ambientNodes.push(noiseSource);
 
-            // Initialize stars
-            generateStars();
+            // Insect buzz (high freq, amplitude modulated)
+            const buzzOsc = audioCtx.createOscillator();
+            buzzOsc.type = 'sine';
+            buzzOsc.frequency.value = 4000;
+            const buzzGain = audioCtx.createGain();
+            buzzGain.gain.value = 0.015;
+            const lfo = audioCtx.createOscillator();
+            lfo.type = 'sine';
+            lfo.frequency.value = 10;
+            const lfoGain = audioCtx.createGain();
+            lfoGain.gain.value = 0.01;
+            lfo.connect(lfoGain);
+            lfoGain.connect(buzzGain.gain);
+            buzzOsc.connect(buzzGain);
+            buzzGain.connect(ambientGain);
+            buzzOsc.start();
+            lfo.start();
+            ambientNodes.push(buzzOsc, lfo);
 
-            // Initialize game
-            function initGame() {
-                snake = [
-                    { x: 10, y: 10 },
-                    { x: 9, y: 10 },
-                    { x: 8, y: 10 }
-                ];
-                direction = { x: 1, y: 0 };
-                nextDirection = { x: 1, y: 0 };
-                score = 0;
-                rawScore = 0;
-                scoreDisplay.textContent = '0';
-                particles = [];
-                thrusterParticles = [];
-                spawnFood();
+            // Periodic bird chirps
+            chirpInterval = setInterval(() => {
+                if (screenState !== SCREEN.PLAYING) return;
+                playChirp();
+            }, 3000 + Math.random() * 4000);
+        }
+
+        function stopAmbient() {
+            ambientNodes.forEach(n => { try { n.stop(); } catch(e){} });
+            ambientNodes = [];
+            if (chirpInterval) { clearInterval(chirpInterval); chirpInterval = null; }
+        }
+
+        function playChirp() {
+            if (!audioCtx) return;
+            const t = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            osc.type = 'sine';
+            const baseFreq = 800 + Math.random() * 400;
+            osc.frequency.setValueAtTime(baseFreq, t);
+            osc.frequency.linearRampToValueAtTime(baseFreq + 400, t + 0.15);
+            osc.frequency.linearRampToValueAtTime(baseFreq - 200, t + 0.25);
+            const g = audioCtx.createGain();
+            g.gain.setValueAtTime(0, t);
+            g.gain.linearRampToValueAtTime(0.03, t + 0.02);
+            g.gain.linearRampToValueAtTime(0, t + 0.3);
+            osc.connect(g);
+            g.connect(audioCtx.destination);
+            osc.start(t);
+            osc.stop(t + 0.35);
+        }
+
+        function playCrunch() {
+            if (!audioCtx) return;
+            const t = audioCtx.currentTime;
+            const bufferSize = audioCtx.sampleRate * 0.06;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const d = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) d[i] = Math.random() * 2 - 1;
+            const src = audioCtx.createBufferSource();
+            src.buffer = buffer;
+            const bp = audioCtx.createBiquadFilter();
+            bp.type = 'bandpass';
+            bp.frequency.value = 2000;
+            bp.Q.value = 1;
+            const g = audioCtx.createGain();
+            g.gain.setValueAtTime(0.2, t);
+            g.gain.linearRampToValueAtTime(0, t + 0.06);
+            src.connect(bp);
+            bp.connect(g);
+            g.connect(audioCtx.destination);
+            src.start(t);
+        }
+
+        function playWarning(dist) {
+            if (!audioCtx || dist > 5) return;
+            const vol = Math.max(0, (5 - dist) / 5) * 0.08;
+            const t = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.value = 80;
+            const osc2 = audioCtx.createOscillator();
+            osc2.type = 'triangle';
+            osc2.frequency.value = 60;
+            const g = audioCtx.createGain();
+            g.gain.setValueAtTime(vol, t);
+            g.gain.linearRampToValueAtTime(0, t + 0.3);
+            osc.connect(g);
+            osc2.connect(g);
+            g.connect(audioCtx.destination);
+            osc.start(t);
+            osc2.start(t);
+            osc.stop(t + 0.35);
+            osc2.stop(t + 0.35);
+        }
+
+        function playGameOverDrum() {
+            if (!audioCtx) return;
+            const t = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(80, t);
+            osc.frequency.exponentialRampToValueAtTime(40, t + 0.5);
+            const g = audioCtx.createGain();
+            g.gain.setValueAtTime(0.3, t);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+            osc.connect(g);
+            g.connect(audioCtx.destination);
+            osc.start(t);
+            osc.stop(t + 0.7);
+            // Noise layer
+            const bufSz = audioCtx.sampleRate * 0.1;
+            const buf = audioCtx.createBuffer(1, bufSz, audioCtx.sampleRate);
+            const d = buf.getChannelData(0);
+            for (let i = 0; i < bufSz; i++) d[i] = Math.random() * 2 - 1;
+            const ns = audioCtx.createBufferSource();
+            ns.buffer = buf;
+            const ng = audioCtx.createGain();
+            ng.gain.setValueAtTime(0.15, t);
+            ng.gain.linearRampToValueAtTime(0, t + 0.1);
+            ns.connect(ng);
+            ng.connect(audioCtx.destination);
+            ns.start(t);
+        }
+
+        // ===== SECTION D: TERRAIN GENERATION =====
+        function createEmptyGrid() {
+            const g = [];
+            for (let r = 0; r < GRID_ROWS; r++) {
+                g[r] = [];
+                for (let c = 0; c < GRID_COLS; c++) g[r][c] = T_EMPTY;
             }
+            return g;
+        }
 
-            // Spawn food at random position not occupied by snake
-            function spawnFood() {
-                var newFood;
-                do {
-                    newFood = {
-                        x: Math.floor(Math.random() * GRID_SIZE),
-                        y: Math.floor(Math.random() * GRID_SIZE)
-                    };
-                } while (snake.some(function(segment) { return segment.x === newFood.x && segment.y === newFood.y; }));
-                food = newFood;
-                foodType = Math.floor(Math.random() * 3); // cycle through types
+        function generateRiver(grid) {
+            const len = 15 + Math.floor(Math.random() * 11); // 15-25
+            const horizontal = Math.random() > 0.5;
+            let x, y;
+            if (horizontal) {
+                x = 0; y = 5 + Math.floor(Math.random() * 20);
+            } else {
+                x = 5 + Math.floor(Math.random() * 20); y = 0;
             }
-
-            // Create particle burst when food is collected
-            function createFoodParticles(x, y) {
-                var colors = ['#00e5ff', '#7c4dff', '#ff4081', '#ffab40', '#69f0ae'];
-                for (var i = 0; i < 12; i++) {
-                    var angle = (Math.PI * 2 / 12) * i + Math.random() * 0.5;
-                    var speed = Math.random() * 3 + 1.5;
-                    particles.push({
-                        x: x,
-                        y: y,
-                        vx: Math.cos(angle) * speed,
-                        vy: Math.sin(angle) * speed,
-                        life: 1.0,
-                        decay: Math.random() * 0.03 + 0.02,
-                        size: Math.random() * 3 + 2,
-                        color: colors[Math.floor(Math.random() * colors.length)]
-                    });
-                }
-            }
-
-            // Create thruster particles behind the snake head
-            function createThrusterParticle() {
-                if (!gameRunning || snake.length === 0) return;
-                var head = snake[0];
-                var cx = head.x * CELL_SIZE + CELL_SIZE / 2;
-                var cy = head.y * CELL_SIZE + CELL_SIZE / 2;
-                // Place particles behind the direction of travel
-                var offsetX = -direction.x * CELL_SIZE * 0.4;
-                var offsetY = -direction.y * CELL_SIZE * 0.4;
-                for (var i = 0; i < 2; i++) {
-                    thrusterParticles.push({
-                        x: cx + offsetX + (Math.random() - 0.5) * 6,
-                        y: cy + offsetY + (Math.random() - 0.5) * 6,
-                        vx: -direction.x * (Math.random() * 1.5 + 0.5) + (Math.random() - 0.5) * 0.8,
-                        vy: -direction.y * (Math.random() * 1.5 + 0.5) + (Math.random() - 0.5) * 0.8,
-                        life: 1.0,
-                        decay: Math.random() * 0.05 + 0.04,
-                        size: Math.random() * 2.5 + 1
-                    });
-                }
-            }
-
-            // Update particles
-            function updateParticles() {
-                // Food particles
-                for (var i = particles.length - 1; i >= 0; i--) {
-                    particles[i].x += particles[i].vx;
-                    particles[i].y += particles[i].vy;
-                    particles[i].life -= particles[i].decay;
-                    particles[i].vx *= 0.96;
-                    particles[i].vy *= 0.96;
-                    if (particles[i].life <= 0) {
-                        particles.splice(i, 1);
+            for (let i = 0; i < len; i++) {
+                if (x >= 0 && x < GRID_COLS && y >= 0 && y < GRID_ROWS) {
+                    grid[y][x] = T_RIVER;
+                    // make river 2 wide sometimes
+                    if (Math.random() > 0.5) {
+                        const ny = y + (Math.random() > 0.5 ? 1 : -1);
+                        if (ny >= 0 && ny < GRID_ROWS) grid[ny][x] = T_RIVER;
                     }
                 }
-                // Thruster particles
-                for (var j = thrusterParticles.length - 1; j >= 0; j--) {
-                    thrusterParticles[j].x += thrusterParticles[j].vx;
-                    thrusterParticles[j].y += thrusterParticles[j].vy;
-                    thrusterParticles[j].life -= thrusterParticles[j].decay;
-                    if (thrusterParticles[j].life <= 0) {
-                        thrusterParticles.splice(j, 1);
-                    }
-                }
-            }
-
-            // Update game state
-            function update() {
-                // Apply buffered direction
-                direction = { x: nextDirection.x, y: nextDirection.y };
-
-                // Calculate new head position
-                var head = {
-                    x: snake[0].x + direction.x,
-                    y: snake[0].y + direction.y
-                };
-
-                // Check wall collision
-                if (head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE) {
-                    gameOver();
-                    return;
-                }
-
-                // Check self collision
-                if (snake.some(function(segment) { return segment.x === head.x && segment.y === head.y; })) {
-                    gameOver();
-                    return;
-                }
-
-                // Add new head
-                snake.unshift(head);
-
-                // Create thruster particles
-                createThrusterParticle();
-
-                // Check food collision
-                if (head.x === food.x && head.y === food.y) {
-                    rawScore++;
-                    score = rawScore * scoreMultiplier;
-                    scoreDisplay.textContent = score;
-                    // Create particle burst at food position
-                    createFoodParticles(
-                        food.x * CELL_SIZE + CELL_SIZE / 2,
-                        food.y * CELL_SIZE + CELL_SIZE / 2
-                    );
-                    spawnFood();
+                if (horizontal) {
+                    x++;
+                    if (Math.random() > 0.6) y += (Math.random() > 0.5 ? 1 : -1);
                 } else {
-                    // Remove tail if no food eaten
-                    snake.pop();
+                    y++;
+                    if (Math.random() > 0.6) x += (Math.random() > 0.5 ? 1 : -1);
+                }
+                x = Math.max(0, Math.min(GRID_COLS - 1, x));
+                y = Math.max(0, Math.min(GRID_ROWS - 1, y));
+            }
+        }
+
+        function placeRocks(grid, count) {
+            let placed = 0;
+            for (let attempts = 0; attempts < 500 && placed < count; attempts++) {
+                const x = Math.floor(Math.random() * GRID_COLS);
+                const y = Math.floor(Math.random() * GRID_ROWS);
+                if (grid[y][x] === T_EMPTY && !isNearCenter(x, y, 4)) {
+                    grid[y][x] = T_ROCK;
+                    placed++;
+                }
+            }
+        }
+
+        function placeLogs(grid, count) {
+            let placed = 0;
+            for (let attempts = 0; attempts < 500 && placed < count; attempts++) {
+                const horiz = Math.random() > 0.5;
+                const len = 2 + Math.floor(Math.random() * 2); // 2-3
+                const x = Math.floor(Math.random() * (GRID_COLS - (horiz ? len : 0)));
+                const y = Math.floor(Math.random() * (GRID_ROWS - (horiz ? 0 : len)));
+                let canPlace = true;
+                for (let i = 0; i < len; i++) {
+                    const cx = x + (horiz ? i : 0);
+                    const cy = y + (horiz ? 0 : i);
+                    if (grid[cy][cx] !== T_EMPTY || isNearCenter(cx, cy, 4)) {
+                        canPlace = false;
+                        break;
+                    }
+                }
+                if (canPlace) {
+                    for (let i = 0; i < len; i++) {
+                        const cx = x + (horiz ? i : 0);
+                        const cy = y + (horiz ? 0 : i);
+                        grid[cy][cx] = T_LOG;
+                    }
+                    placed++;
+                }
+            }
+        }
+
+        function ensureClearings(grid) {
+            // Two 3x3 clearings: one near center for snake start, one random
+            const clearings = [
+                {x: Math.floor(GRID_COLS/2) - 1, y: Math.floor(GRID_ROWS/2) - 1},
+                {x: 3 + Math.floor(Math.random() * (GRID_COLS - 8)), y: 3 + Math.floor(Math.random() * (GRID_ROWS - 8))}
+            ];
+            for (const cl of clearings) {
+                for (let dy = 0; dy < 3; dy++) {
+                    for (let dx = 0; dx < 3; dx++) {
+                        const cx = cl.x + dx, cy = cl.y + dy;
+                        if (cx >= 0 && cx < GRID_COLS && cy >= 0 && cy < GRID_ROWS) {
+                            grid[cy][cx] = T_CLEARING;
+                        }
+                    }
+                }
+            }
+        }
+
+        function isNearCenter(x, y, dist) {
+            return Math.abs(x - GRID_COLS/2) < dist && Math.abs(y - GRID_ROWS/2) < dist;
+        }
+
+        function generateTerrain(lvl) {
+            const grid = createEmptyGrid();
+            generateRiver(grid);
+            placeRocks(grid, 3 + lvl);
+            placeLogs(grid, 2 + Math.floor(lvl / 3));
+            ensureClearings(grid);
+            return grid;
+        }
+
+        // ===== SECTION E: ENTITY SPAWNING =====
+        function findEmptyCell(grid, snakeArr, extraBlocked) {
+            for (let att = 0; att < 500; att++) {
+                const x = Math.floor(Math.random() * GRID_COLS);
+                const y = Math.floor(Math.random() * GRID_ROWS);
+                const t = grid[y][x];
+                if (t === T_ROCK || t === T_LOG) continue;
+                if (snakeArr.some(s => s.x === x && s.y === y)) continue;
+                if (extraBlocked && extraBlocked.some(b => b.x === x && b.y === y)) continue;
+                return {x, y};
+            }
+            return {x: 0, y: 0};
+        }
+
+        function pickFruitType() {
+            let r = Math.random() * FRUIT_TOTAL_WEIGHT;
+            for (const k of FRUIT_KEYS) {
+                r -= FRUIT_DEFS[k].weight;
+                if (r <= 0) return k;
+            }
+            return FRUIT_KEYS[0];
+        }
+
+        function spawnFruit() {
+            const blocked = [...fruits, ...jaguars, ...frogs];
+            const pos = findEmptyCell(terrainGrid, snake, blocked);
+            fruits.push({x: pos.x, y: pos.y, type: pickFruitType(), glowPhase: Math.random() * Math.PI * 2});
+        }
+
+        function generateJaguarPatrol(grid) {
+            // Create a rectangular patrol path
+            for (let att = 0; att < 100; att++) {
+                const sx = 2 + Math.floor(Math.random() * (GRID_COLS - 6));
+                const sy = 2 + Math.floor(Math.random() * (GRID_ROWS - 6));
+                const w = 2 + Math.floor(Math.random() * 3);
+                const h = 2 + Math.floor(Math.random() * 3);
+                if (isNearCenter(sx + w/2, sy + h/2, 5)) continue;
+                const path = [];
+                // Top edge
+                for (let i = 0; i <= w; i++) path.push({x: sx+i, y: sy});
+                // Right edge
+                for (let i = 1; i <= h; i++) path.push({x: sx+w, y: sy+i});
+                // Bottom edge
+                for (let i = w-1; i >= 0; i--) path.push({x: sx+i, y: sy+h});
+                // Left edge
+                for (let i = h-1; i >= 1; i--) path.push({x: sx, y: sy+i});
+                // Check no path cell is a rock/log
+                const blocked = path.some(p => {
+                    if (p.x < 0 || p.x >= GRID_COLS || p.y < 0 || p.y >= GRID_ROWS) return true;
+                    const t = grid[p.y][p.x];
+                    return t === T_ROCK || t === T_LOG;
+                });
+                if (!blocked) return path;
+            }
+            // Fallback: simple 4-tile path
+            return [{x:2,y:2},{x:3,y:2},{x:3,y:3},{x:2,y:3}];
+        }
+
+        function spawnJaguars(grid, count) {
+            jaguars = [];
+            for (let i = 0; i < count; i++) {
+                const path = generateJaguarPatrol(grid);
+                const p = path[0];
+                jaguars.push({
+                    x: p.x, y: p.y, prevX: p.x, prevY: p.y,
+                    patrolPath: path, pathIndex: 0, tickCounter: 0
+                });
+            }
+        }
+
+        function spawnFrogs(grid, count) {
+            frogs = [];
+            const blocked = [...jaguars, ...fruits];
+            for (let i = 0; i < count; i++) {
+                const pos = findEmptyCell(grid, snake, blocked);
+                frogs.push({
+                    x: pos.x, y: pos.y,
+                    spawnTime: gameTime,
+                    lifetime: 8000 + Math.random() * 4000,
+                    colorIdx: Math.floor(Math.random() * 3) // 0=blue, 1=red, 2=yellow
+                });
+            }
+        }
+
+        function spawnToucan() {
+            const fromLeft = Math.random() > 0.5;
+            toucans.push({
+                px: fromLeft ? -40 : CANVAS_W + 40,
+                py: 20 + Math.random() * (CANVAS_H * 0.4),
+                dx: fromLeft ? 2.5 : -2.5,
+                active: true,
+                wingPhase: Math.random() * Math.PI * 2
+            });
+        }
+
+        // ===== SECTION F: GAME LOGIC =====
+        function currentTickInterval() {
+            const base = Math.max(200 - (level - 1) * 5, 100);
+            return onRiver ? base * 1.5 : base;
+        }
+
+        function jaguarTickRate() {
+            return Math.max(3 - Math.floor(level / 5), 1);
+        }
+
+        function jaguarCount() { return Math.min(Math.floor(level / 2) + 1, 5); }
+        function frogCount() { return Math.min(Math.floor(level / 3) + 1, 4); }
+
+        function initGameState() {
+            level = 1;
+            score = 0;
+            totalFruitsEaten = 0;
+            fruitCounts = {acai:0, passion:0, guava:0, mango:0, cacao:0};
+            direction = {x:1, y:0};
+            nextDirection = {x:1, y:0};
+            onRiver = false;
+            gameTime = 0;
+            accumulator = 0;
+
+            terrainGrid = generateTerrain(level);
+            const cx = Math.floor(GRID_COLS/2);
+            const cy = Math.floor(GRID_ROWS/2);
+            snake = [
+                {x: cx, y: cy, prevX: cx - 1, prevY: cy},
+                {x: cx - 1, y: cy, prevX: cx - 2, prevY: cy},
+                {x: cx - 2, y: cy, prevX: cx - 3, prevY: cy},
+            ];
+
+            fruits = [];
+            spawnFruit();
+            spawnJaguars(terrainGrid, jaguarCount());
+            spawnFrogs(terrainGrid, frogCount());
+            toucans = [];
+            fireflies = [];
+            leaves = [];
+            rainDrops = [];
+            ripples = [];
+            floatingTexts = [];
+            isRaining = false;
+            rainTimer = 0;
+            nextRainTime = 30000 + Math.random() * 30000;
+
+            // Initialize fireflies
+            for (let i = 0; i < 20; i++) spawnFirefly();
+        }
+
+        function tick() {
+            // Apply direction
+            direction = {x: nextDirection.x, y: nextDirection.y};
+
+            // Store previous positions
+            for (const seg of snake) {
+                seg.prevX = seg.x;
+                seg.prevY = seg.y;
+            }
+
+            // New head
+            let nx = snake[0].x + direction.x;
+            let ny = snake[0].y + direction.y;
+            // Wrap around
+            nx = ((nx % GRID_COLS) + GRID_COLS) % GRID_COLS;
+            ny = ((ny % GRID_ROWS) + GRID_ROWS) % GRID_ROWS;
+
+            // Self collision
+            if (snake.some(s => s.x === nx && s.y === ny)) {
+                gameOver();
+                return;
+            }
+
+            // Terrain collision
+            const terrain = terrainGrid[ny][nx];
+            if (terrain === T_ROCK || terrain === T_LOG) {
+                gameOver();
+                return;
+            }
+
+            // Jaguar collision
+            if (jaguars.some(j => j.x === nx && j.y === ny)) {
+                gameOver();
+                return;
+            }
+
+            // Frog collision
+            if (frogs.some(f => f.x === nx && f.y === ny)) {
+                gameOver();
+                return;
+            }
+
+            // River slow-down
+            onRiver = (terrain === T_RIVER);
+            if (onRiver) {
+                createRipple(nx * CELL_W + CELL_W/2, ny * CELL_H + CELL_H/2);
+            }
+
+            // Move snake
+            const newHead = {x: nx, y: ny, prevX: snake[0].x, prevY: snake[0].y};
+            snake.unshift(newHead);
+
+            // Fruit check
+            let ate = false;
+            for (let i = fruits.length - 1; i >= 0; i--) {
+                if (fruits[i].x === nx && fruits[i].y === ny) {
+                    const f = fruits[i];
+                    const def = FRUIT_DEFS[f.type];
+                    score += def.points;
+                    fruitCounts[f.type]++;
+                    totalFruitsEaten++;
+                    ate = true;
+                    // Floating text
+                    floatingTexts.push({
+                        text: def.name + ' +' + def.points,
+                        x: nx * CELL_W + CELL_W/2,
+                        y: ny * CELL_H,
+                        life: 1.0,
+                        color: def.color1
+                    });
+                    fruits.splice(i, 1);
+                    playCrunch();
+                    // Spawn new
+                    spawnFruit();
+                    // Check level up
+                    const newLevel = Math.floor(totalFruitsEaten / 5) + 1;
+                    if (newLevel > level && newLevel <= 20) {
+                        levelUp(newLevel);
+                    }
+                    break;
                 }
             }
 
-            // Draw starfield background
-            function drawStarfield() {
-                // Deep space background
-                ctx.fillStyle = '#0a0a1a';
-                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+            if (!ate) {
+                snake.pop();
+            }
 
-                // Subtle nebula gradient
-                var nebula = ctx.createRadialGradient(200, 200, 50, 200, 200, 250);
-                nebula.addColorStop(0, 'rgba(26, 0, 51, 0.3)');
-                nebula.addColorStop(0.5, 'rgba(10, 10, 40, 0.2)');
-                nebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                ctx.fillStyle = nebula;
-                ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+            // Move jaguars
+            for (const j of jaguars) {
+                j.tickCounter++;
+                if (j.tickCounter >= jaguarTickRate()) {
+                    j.tickCounter = 0;
+                    j.prevX = j.x;
+                    j.prevY = j.y;
+                    j.pathIndex = (j.pathIndex + 1) % j.patrolPath.length;
+                    const np = j.patrolPath[j.pathIndex];
+                    j.x = np.x;
+                    j.y = np.y;
+                }
+            }
 
-                // Draw stars with twinkling
-                var time = Date.now() * 0.001;
-                for (var i = 0; i < stars.length; i++) {
-                    var star = stars[i];
-                    var twinkle = Math.sin(time * star.twinkleSpeed * 60 + star.twinkleOffset) * 0.5 + 0.5;
-                    var alpha = star.brightness * 0.4 + twinkle * 0.6;
-                    // Scroll effect - slight vertical drift
-                    var yPos = (star.y + starfieldOffset * star.size * 0.3) % CANVAS_SIZE;
-                    if (yPos < 0) yPos += CANVAS_SIZE;
+            // Jaguar warning sounds
+            let minJagDist = Infinity;
+            for (const j of jaguars) {
+                const dx = Math.abs(snake[0].x - j.x);
+                const dy = Math.abs(snake[0].y - j.y);
+                const d = Math.sqrt(dx*dx + dy*dy);
+                if (d < minJagDist) minJagDist = d;
+            }
+            if (minJagDist <= 5) playWarning(minJagDist);
 
-                    ctx.beginPath();
-                    ctx.arc(star.x, yPos, star.size * (0.5 + twinkle * 0.5), 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(200, 220, 255, ' + alpha + ')';
-                    ctx.fill();
+            // Check snake hit jaguar after jaguar moved
+            if (jaguars.some(j => j.x === snake[0].x && j.y === snake[0].y)) {
+                gameOver();
+                return;
+            }
 
-                    // Add glow to brighter stars
-                    if (star.size > 1.5) {
+            // Frog timers
+            for (let i = frogs.length - 1; i >= 0; i--) {
+                if (gameTime - frogs[i].spawnTime > frogs[i].lifetime) {
+                    frogs.splice(i, 1);
+                    // Respawn
+                    const pos = findEmptyCell(terrainGrid, snake, [...jaguars, ...fruits, ...frogs]);
+                    frogs.push({
+                        x: pos.x, y: pos.y,
+                        spawnTime: gameTime,
+                        lifetime: 8000 + Math.random() * 4000,
+                        colorIdx: Math.floor(Math.random() * 3)
+                    });
+                }
+            }
+        }
+
+        function levelUp(newLevel) {
+            level = newLevel;
+            // Regenerate terrain but keep snake position safe
+            terrainGrid = generateTerrain(level);
+            // Clear terrain around snake
+            for (const seg of snake) {
+                if (seg.y >= 0 && seg.y < GRID_ROWS && seg.x >= 0 && seg.x < GRID_COLS) {
+                    terrainGrid[seg.y][seg.x] = T_EMPTY;
+                }
+            }
+            // Respawn jaguars and frogs
+            spawnJaguars(terrainGrid, jaguarCount());
+            spawnFrogs(terrainGrid, frogCount());
+        }
+
+        function gameOver() {
+            screenState = SCREEN.GAME_OVER;
+            stopAmbient();
+            playGameOverDrum();
+            // Save high score
+            if (score > highScore) {
+                highScore = score;
+                highScoreFruits = {...fruitCounts};
+                try {
+                    localStorage.setItem('anaconda_highScore', JSON.stringify(highScore));
+                    localStorage.setItem('anaconda_highScoreFruits', JSON.stringify(highScoreFruits));
+                } catch(e) {}
+            }
+            showGameOverScreen();
+        }
+
+        // ===== SECTION G: PARTICLE SYSTEMS =====
+        function spawnFirefly() {
+            fireflies.push({
+                x: Math.random() * CANVAS_W,
+                y: Math.random() * CANVAS_H,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: (Math.random() - 0.5) * 0.3,
+                phase: Math.random() * Math.PI * 2,
+                brightness: 0.5 + Math.random() * 0.5
+            });
+        }
+
+        function updateFireflies(dt) {
+            for (const f of fireflies) {
+                f.x += f.vx + Math.sin(f.phase) * 0.2;
+                f.y += f.vy + Math.cos(f.phase * 0.7) * 0.15;
+                f.phase += 0.02;
+                // Wrap
+                if (f.x < -10) f.x = CANVAS_W + 10;
+                if (f.x > CANVAS_W + 10) f.x = -10;
+                if (f.y < -10) f.y = CANVAS_H + 10;
+                if (f.y > CANVAS_H + 10) f.y = -10;
+            }
+        }
+
+        function spawnLeaf() {
+            leaves.push({
+                x: Math.random() * CANVAS_W,
+                y: -10,
+                vy: 0.3 + Math.random() * 0.5,
+                vx: (Math.random() - 0.5) * 0.4,
+                rotation: Math.random() * Math.PI * 2,
+                rotSpeed: (Math.random() - 0.5) * 0.03,
+                size: 3 + Math.random() * 4,
+                color: Math.random() > 0.5 ? '#2d5a27' : '#6b3a1f'
+            });
+        }
+
+        function updateLeaves(dt) {
+            for (let i = leaves.length - 1; i >= 0; i--) {
+                const l = leaves[i];
+                l.y += l.vy;
+                l.x += l.vx + Math.sin(l.rotation) * 0.3;
+                l.rotation += l.rotSpeed;
+                if (l.y > CANVAS_H + 20) leaves.splice(i, 1);
+            }
+            // Spawn new leaves occasionally
+            if (Math.random() < 0.03) spawnLeaf();
+        }
+
+        function updateRain(dt) {
+            rainTimer += dt;
+            if (!isRaining && rainTimer > nextRainTime) {
+                isRaining = true;
+                rainTimer = 0;
+                nextRainTime = 5000 + Math.random() * 5000; // rain duration
+            } else if (isRaining && rainTimer > nextRainTime) {
+                isRaining = false;
+                rainTimer = 0;
+                nextRainTime = 30000 + Math.random() * 30000;
+            }
+            if (isRaining) {
+                for (let i = 0; i < 3; i++) {
+                    rainDrops.push({
+                        x: Math.random() * CANVAS_W,
+                        y: -5,
+                        speed: 5 + Math.random() * 3,
+                        length: 8 + Math.random() * 8
+                    });
+                }
+            }
+            for (let i = rainDrops.length - 1; i >= 0; i--) {
+                rainDrops[i].y += rainDrops[i].speed;
+                if (rainDrops[i].y > CANVAS_H + 20) rainDrops.splice(i, 1);
+            }
+        }
+
+        function createRipple(x, y) {
+            ripples.push({x, y, radius: 1, maxRadius: CELL_W * 1.2, alpha: 0.6});
+        }
+
+        function updateRipples(dt) {
+            for (let i = ripples.length - 1; i >= 0; i--) {
+                const r = ripples[i];
+                r.radius += 0.5;
+                r.alpha -= 0.015;
+                if (r.alpha <= 0 || r.radius > r.maxRadius) ripples.splice(i, 1);
+            }
+        }
+
+        function updateFloatingTexts(dt) {
+            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+                const ft = floatingTexts[i];
+                ft.y -= 0.5;
+                ft.life -= 0.015;
+                if (ft.life <= 0) floatingTexts.splice(i, 1);
+            }
+        }
+
+        function updateToucans(dt) {
+            for (let i = toucans.length - 1; i >= 0; i--) {
+                const t = toucans[i];
+                t.px += t.dx;
+                t.wingPhase += 0.1;
+                if ((t.dx > 0 && t.px > CANVAS_W + 60) || (t.dx < 0 && t.px < -60)) {
+                    toucans.splice(i, 1);
+                }
+            }
+            // Spawn toucans occasionally
+            if (Math.random() < 0.001 && toucans.length < 2) spawnToucan();
+        }
+
+        // ===== SECTION H: RENDERING =====
+        let bgTime = 0;
+
+        function drawBackground() {
+            // Jungle gradient background
+            const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
+            grad.addColorStop(0, '#0d2b0d');
+            grad.addColorStop(0.3, '#1a4d1a');
+            grad.addColorStop(0.7, '#143814');
+            grad.addColorStop(1, '#0a1f0a');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
+
+            // Canopy effect at top
+            ctx.fillStyle = 'rgba(10, 30, 10, 0.6)';
+            for (let i = 0; i < 8; i++) {
+                const x = (i * 85 + 20) % CANVAS_W;
+                ctx.beginPath();
+                ctx.ellipse(x, -5, 50 + Math.sin(bgTime + i) * 5, 25, 0, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Vine silhouettes
+            ctx.strokeStyle = 'rgba(20, 60, 20, 0.4)';
+            ctx.lineWidth = 2;
+            for (let i = 0; i < 5; i++) {
+                const vx = 30 + i * 130;
+                ctx.beginPath();
+                ctx.moveTo(vx, 0);
+                for (let y = 0; y < CANVAS_H * 0.4; y += 10) {
+                    ctx.lineTo(vx + Math.sin(y * 0.05 + bgTime * 0.5 + i) * 8, y);
+                }
+                ctx.stroke();
+            }
+        }
+
+        function drawTerrain() {
+            for (let r = 0; r < GRID_ROWS; r++) {
+                for (let c = 0; c < GRID_COLS; c++) {
+                    const t = terrainGrid[r][c];
+                    const px = c * CELL_W, py = r * CELL_H;
+                    if (t === T_RIVER) {
+                        // Animated water
+                        const wave = Math.sin(bgTime * 2 + c * 0.5 + r * 0.3) * 0.15;
+                        ctx.fillStyle = `rgba(42, 157, 143, ${0.5 + wave})`;
+                        ctx.fillRect(px, py, CELL_W + 0.5, CELL_H + 0.5);
+                        // Water shimmer
+                        ctx.fillStyle = `rgba(135, 206, 235, ${0.15 + wave * 0.3})`;
+                        ctx.fillRect(px + 2, py + 2, CELL_W - 4, 2);
+                    } else if (t === T_ROCK) {
+                        // Rock
+                        ctx.fillStyle = '#4a4a3a';
                         ctx.beginPath();
-                        ctx.arc(star.x, yPos, star.size * 2, 0, Math.PI * 2);
-                        ctx.fillStyle = 'rgba(150, 180, 255, ' + (alpha * 0.2) + ')';
+                        ctx.arc(px + CELL_W/2, py + CELL_H/2, CELL_W/2 - 1, 0, Math.PI * 2);
+                        ctx.fill();
+                        ctx.fillStyle = '#5a5a4a';
+                        ctx.beginPath();
+                        ctx.arc(px + CELL_W/2 - 1, py + CELL_H/2 - 1, CELL_W/3, 0, Math.PI * 2);
+                        ctx.fill();
+                    } else if (t === T_LOG) {
+                        // Log
+                        ctx.fillStyle = '#5c3a1a';
+                        ctx.fillRect(px + 1, py + 3, CELL_W - 2, CELL_H - 6);
+                        // Wood grain
+                        ctx.strokeStyle = '#7a5030';
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(px + 2, py + CELL_H/2 - 1);
+                        ctx.lineTo(px + CELL_W - 2, py + CELL_H/2 - 1);
+                        ctx.moveTo(px + 2, py + CELL_H/2 + 2);
+                        ctx.lineTo(px + CELL_W - 2, py + CELL_H/2 + 2);
+                        ctx.stroke();
+                    } else if (t === T_CLEARING) {
+                        ctx.fillStyle = 'rgba(58, 125, 68, 0.15)';
+                        ctx.fillRect(px, py, CELL_W, CELL_H);
+                    }
+                }
+            }
+        }
+
+        function drawFruits() {
+            for (const f of fruits) {
+                const def = FRUIT_DEFS[f.type];
+                const px = f.x * CELL_W + CELL_W/2;
+                const py = f.y * CELL_H + CELL_H/2;
+                const r = CELL_W/2 - 2;
+                f.glowPhase += 0.04;
+                const glow = Math.sin(f.glowPhase) * 0.3 + 0.7;
+
+                ctx.save();
+                // Glow
+                ctx.shadowColor = def.color1;
+                ctx.shadowBlur = 8 * glow;
+
+                if (f.type === 'acai') {
+                    // Small cluster of berries
+                    ctx.fillStyle = def.color1;
+                    for (let i = 0; i < 5; i++) {
+                        const angle = (Math.PI * 2 / 5) * i;
+                        const bx = px + Math.cos(angle) * r * 0.4;
+                        const by = py + Math.sin(angle) * r * 0.4;
+                        ctx.beginPath();
+                        ctx.arc(bx, by, r * 0.35, 0, Math.PI * 2);
                         ctx.fill();
                     }
+                    ctx.beginPath();
+                    ctx.arc(px, py, r * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (f.type === 'passion') {
+                    // Oval shape, two-tone
+                    ctx.fillStyle = def.color1;
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, r, r * 0.8, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.fillStyle = def.color2;
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, r * 0.5, r * 0.4, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (f.type === 'guava') {
+                    // Round with green/pink
+                    const gg = ctx.createRadialGradient(px - 1, py - 1, 0, px, py, r);
+                    gg.addColorStop(0, def.color1);
+                    gg.addColorStop(1, def.color2);
+                    ctx.fillStyle = gg;
+                    ctx.beginPath();
+                    ctx.arc(px, py, r, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Leaf on top
+                    ctx.fillStyle = '#3a7d44';
+                    ctx.beginPath();
+                    ctx.ellipse(px + r*0.3, py - r*0.8, r*0.4, r*0.2, 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (f.type === 'mango') {
+                    // Teardrop/mango shape
+                    const mg = ctx.createRadialGradient(px - 1, py, 0, px, py, r);
+                    mg.addColorStop(0, '#ffcc00');
+                    mg.addColorStop(0.6, def.color1);
+                    mg.addColorStop(1, '#ff8c00');
+                    ctx.fillStyle = mg;
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, r * 0.7, r, 0.3, 0, Math.PI * 2);
+                    ctx.fill();
+                } else if (f.type === 'cacao') {
+                    // Elongated pod
+                    ctx.fillStyle = def.color1;
+                    ctx.beginPath();
+                    ctx.ellipse(px, py, r * 0.5, r, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Ridges
+                    ctx.strokeStyle = def.color2;
+                    ctx.lineWidth = 0.7;
+                    for (let i = -2; i <= 2; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(px + i * 2, py - r + 2);
+                        ctx.lineTo(px + i * 2, py + r - 2);
+                        ctx.stroke();
+                    }
                 }
 
-                // Very subtle grid (faint blue lines)
-                ctx.strokeStyle = 'rgba(30, 40, 80, 0.15)';
-                ctx.lineWidth = 0.3;
-                for (var g = 0; g <= GRID_SIZE; g++) {
-                    ctx.beginPath();
-                    ctx.moveTo(g * CELL_SIZE, 0);
-                    ctx.lineTo(g * CELL_SIZE, CANVAS_SIZE);
-                    ctx.stroke();
-                    ctx.beginPath();
-                    ctx.moveTo(0, g * CELL_SIZE);
-                    ctx.lineTo(CANVAS_SIZE, g * CELL_SIZE);
-                    ctx.stroke();
-                }
+                ctx.restore();
             }
+        }
 
-            // Draw food as space objects
-            function drawFood() {
-                var fx = food.x * CELL_SIZE + CELL_SIZE / 2;
-                var fy = food.y * CELL_SIZE + CELL_SIZE / 2;
-                var radius = CELL_SIZE / 2 - 2;
-                foodPulse += 0.08;
-                var pulse = Math.sin(foodPulse) * 0.2 + 0.8;
+        function drawJaguars(t) {
+            for (const j of jaguars) {
+                const lerpFactor = j.tickCounter / jaguarTickRate();
+                const px = lerp(j.prevX, j.x, lerpFactor) * CELL_W + CELL_W/2;
+                const py = lerp(j.prevY, j.y, lerpFactor) * CELL_H + CELL_H/2;
+                const s = CELL_W / 2 - 1;
+
+                ctx.save();
+                // Body
+                ctx.fillStyle = '#d4a030';
+                ctx.beginPath();
+                ctx.ellipse(px, py, s, s * 0.75, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Spots
+                ctx.fillStyle = '#3a2510';
+                const spots = [[-0.3,-0.2],[0.3,-0.2],[0,-0.1],[0.2,0.3],[-0.2,0.3],[-0.4,0.1],[0.4,0.1]];
+                for (const sp of spots) {
+                    ctx.beginPath();
+                    ctx.arc(px + sp[0] * s, py + sp[1] * s, s * 0.15, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                // Eyes
+                ctx.fillStyle = '#ffeb3b';
+                ctx.beginPath();
+                ctx.arc(px - s*0.25, py - s*0.35, s*0.12, 0, Math.PI*2);
+                ctx.fill();
+                ctx.arc(px + s*0.25, py - s*0.35, s*0.12, 0, Math.PI*2);
+                ctx.fill();
+                // Pupils
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(px - s*0.25, py - s*0.35, s*0.06, 0, Math.PI*2);
+                ctx.fill();
+                ctx.arc(px + s*0.25, py - s*0.35, s*0.06, 0, Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function drawFrogs() {
+            const frogColors = ['#3498db', '#e63946', '#f1c40f'];
+            for (const f of frogs) {
+                const px = f.x * CELL_W + CELL_W/2;
+                const py = f.y * CELL_H + CELL_H/2;
+                const s = CELL_W / 2 - 2;
+                const pulse = Math.sin(bgTime * 3 + f.x) * 0.1 + 1;
+
+                ctx.save();
+                ctx.fillStyle = frogColors[f.colorIdx];
+                // Body
+                ctx.beginPath();
+                ctx.ellipse(px, py, s * pulse, s * 0.7 * pulse, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Eyes (big)
+                ctx.fillStyle = '#fff';
+                ctx.beginPath();
+                ctx.arc(px - s*0.3, py - s*0.4, s*0.22, 0, Math.PI*2);
+                ctx.fill();
+                ctx.arc(px + s*0.3, py - s*0.4, s*0.22, 0, Math.PI*2);
+                ctx.fill();
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(px - s*0.3, py - s*0.4, s*0.1, 0, Math.PI*2);
+                ctx.fill();
+                ctx.arc(px + s*0.3, py - s*0.4, s*0.1, 0, Math.PI*2);
+                ctx.fill();
+                // Spots
+                ctx.fillStyle = `rgba(0,0,0,0.2)`;
+                ctx.beginPath();
+                ctx.arc(px + s*0.1, py + s*0.1, s*0.15, 0, Math.PI*2);
+                ctx.fill();
+                ctx.arc(px - s*0.2, py + s*0.2, s*0.12, 0, Math.PI*2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function drawSnake(t) {
+            if (snake.length === 0) return;
+
+            for (let i = snake.length - 1; i >= 0; i--) {
+                const seg = snake[i];
+                let lx = lerp(seg.prevX, seg.x, t);
+                let ly = lerp(seg.prevY, seg.y, t);
+
+                // Handle wrap-around interpolation
+                if (Math.abs(seg.x - seg.prevX) > GRID_COLS / 2) {
+                    if (seg.x > seg.prevX) lx = lerp(seg.prevX + GRID_COLS, seg.x, t);
+                    else lx = lerp(seg.prevX - GRID_COLS, seg.x, t);
+                    lx = ((lx % GRID_COLS) + GRID_COLS) % GRID_COLS;
+                }
+                if (Math.abs(seg.y - seg.prevY) > GRID_ROWS / 2) {
+                    if (seg.y > seg.prevY) ly = lerp(seg.prevY + GRID_ROWS, seg.y, t);
+                    else ly = lerp(seg.prevY - GRID_ROWS, seg.y, t);
+                    ly = ((ly % GRID_ROWS) + GRID_ROWS) % GRID_ROWS;
+                }
+
+                const px = lx * CELL_W + CELL_W/2;
+                const py = ly * CELL_H + CELL_H/2;
+                const progress = i / Math.max(snake.length - 1, 1);
+                const radius = (CELL_W/2 - 1) * (1 - progress * 0.3);
 
                 ctx.save();
 
-                if (foodType === 0) {
-                    // Planet with rings
-                    // Glow
-                    ctx.shadowColor = '#ff6e40';
-                    ctx.shadowBlur = 12 * pulse;
-                    // Planet body
-                    var planetGrad = ctx.createRadialGradient(fx - 2, fy - 2, 1, fx, fy, radius);
-                    planetGrad.addColorStop(0, '#ff8a65');
-                    planetGrad.addColorStop(0.6, '#d84315');
-                    planetGrad.addColorStop(1, '#bf360c');
-                    ctx.fillStyle = planetGrad;
+                if (i === 0) {
+                    // Head - distinct
+                    ctx.fillStyle = '#2d7a2d';
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * pulse, 0, Math.PI * 2);
+                    ctx.ellipse(px, py, radius * 1.1, radius * 0.9, 0, 0, Math.PI * 2);
                     ctx.fill();
-                    ctx.shadowBlur = 0;
-                    // Ring
-                    ctx.strokeStyle = 'rgba(255, 171, 64, 0.7)';
-                    ctx.lineWidth = 1.5;
+
+                    // Pattern on head
+                    ctx.fillStyle = '#1a4d1a';
                     ctx.beginPath();
-                    ctx.ellipse(fx, fy, radius * 1.3 * pulse, radius * 0.4 * pulse, -0.3, 0, Math.PI * 2);
-                    ctx.stroke();
-                } else if (foodType === 1) {
-                    // 5-pointed star
-                    ctx.shadowColor = '#ffeb3b';
-                    ctx.shadowBlur = 15 * pulse;
-                    ctx.fillStyle = '#fdd835';
+                    ctx.ellipse(px, py - radius * 0.1, radius * 0.5, radius * 0.3, 0, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Eyes
+                    const eyeOffset = radius * 0.4;
+                    ctx.fillStyle = '#ffeb3b';
                     ctx.beginPath();
-                    for (var p = 0; p < 5; p++) {
-                        var outerAngle = (Math.PI * 2 / 5) * p - Math.PI / 2;
-                        var innerAngle = outerAngle + Math.PI / 5;
-                        var outerR = radius * pulse;
-                        var innerR = radius * 0.4 * pulse;
-                        if (p === 0) {
-                            ctx.moveTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        } else {
-                            ctx.lineTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        }
-                        ctx.lineTo(fx + Math.cos(innerAngle) * innerR, fy + Math.sin(innerAngle) * innerR);
+                    ctx.arc(px - eyeOffset, py - radius * 0.2, radius * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.arc(px + eyeOffset, py - radius * 0.2, radius * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Pupils (slitted)
+                    ctx.fillStyle = '#000';
+                    ctx.beginPath();
+                    ctx.ellipse(px - eyeOffset, py - radius * 0.2, radius * 0.06, radius * 0.14, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.ellipse(px + eyeOffset, py - radius * 0.2, radius * 0.06, radius * 0.14, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Tongue
+                    if (Math.sin(bgTime * 5) > 0.7) {
+                        ctx.strokeStyle = '#e63946';
+                        ctx.lineWidth = 1;
+                        const tongueDir = direction;
+                        ctx.beginPath();
+                        ctx.moveTo(px + tongueDir.x * radius, py + tongueDir.y * radius);
+                        ctx.lineTo(px + tongueDir.x * radius * 2, py + tongueDir.y * radius * 2);
+                        ctx.stroke();
+                        // Fork
+                        ctx.beginPath();
+                        ctx.moveTo(px + tongueDir.x * radius * 2, py + tongueDir.y * radius * 2);
+                        ctx.lineTo(px + tongueDir.x * radius * 2.3 + 2, py + tongueDir.y * radius * 2.3 + 2);
+                        ctx.moveTo(px + tongueDir.x * radius * 2, py + tongueDir.y * radius * 2);
+                        ctx.lineTo(px + tongueDir.x * radius * 2.3 - 2, py + tongueDir.y * radius * 2.3 - 2);
+                        ctx.stroke();
                     }
+                } else {
+                    // Body segment with diamond pattern
+                    // Main body
+                    ctx.fillStyle = i % 2 === 0 ? '#2d7a2d' : '#256b25';
+                    ctx.beginPath();
+                    ctx.arc(px, py, radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Diamond/zigzag pattern
+                    ctx.fillStyle = i % 2 === 0 ? '#1a4d1a' : '#3a7d44';
+                    ctx.beginPath();
+                    // Diamond shape
+                    ctx.moveTo(px, py - radius * 0.6);
+                    ctx.lineTo(px + radius * 0.5, py);
+                    ctx.lineTo(px, py + radius * 0.6);
+                    ctx.lineTo(px - radius * 0.5, py);
                     ctx.closePath();
                     ctx.fill();
-                    ctx.shadowBlur = 0;
-                } else {
-                    // Energy orb (pulsating cyan/purple)
-                    ctx.shadowColor = '#00e5ff';
-                    ctx.shadowBlur = 18 * pulse;
-                    var orbGrad = ctx.createRadialGradient(fx, fy, 0, fx, fy, radius * pulse);
-                    orbGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-                    orbGrad.addColorStop(0.3, 'rgba(0, 229, 255, 0.8)');
-                    orbGrad.addColorStop(0.7, 'rgba(124, 77, 255, 0.6)');
-                    orbGrad.addColorStop(1, 'rgba(124, 77, 255, 0)');
-                    ctx.fillStyle = orbGrad;
+
+                    // Lighter belly effect
+                    ctx.fillStyle = 'rgba(58, 125, 68, 0.3)';
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 1.2 * pulse, 0, Math.PI * 2);
-                    ctx.fill();
-                    // Inner core
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 0.3, 0, Math.PI * 2);
+                    ctx.ellipse(px, py + radius * 0.3, radius * 0.5, radius * 0.3, 0, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
                 ctx.restore();
             }
+        }
 
-            // Draw snake head as a spaceship
-            function drawSnakeHead(segment) {
-                var cx = segment.x * CELL_SIZE + CELL_SIZE / 2;
-                var cy = segment.y * CELL_SIZE + CELL_SIZE / 2;
-                var size = CELL_SIZE / 2 - 1;
-
+        function drawToucans() {
+            for (const t of toucans) {
+                const px = t.px, py = t.py;
                 ctx.save();
+                ctx.translate(px, py);
+                if (t.dx < 0) ctx.scale(-1, 1);
 
-                // Translate and rotate based on direction
-                ctx.translate(cx, cy);
-                var angle = 0;
-                if (direction.x === 1) angle = 0;
-                else if (direction.x === -1) angle = Math.PI;
-                else if (direction.y === -1) angle = -Math.PI / 2;
-                else if (direction.y === 1) angle = Math.PI / 2;
-                ctx.rotate(angle);
-
-                // Glow effect
-                ctx.shadowColor = '#00e5ff';
-                ctx.shadowBlur = 12;
-
-                // Ship body (triangle/arrow pointing right)
+                // Body
+                ctx.fillStyle = '#1a1a1a';
                 ctx.beginPath();
-                ctx.moveTo(size, 0); // Nose
-                ctx.lineTo(-size * 0.7, -size * 0.7); // Top wing
-                ctx.lineTo(-size * 0.3, 0); // Indent
-                ctx.lineTo(-size * 0.7, size * 0.7); // Bottom wing
+                ctx.ellipse(0, 0, 16, 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Beak (big, colorful)
+                const beakGrad = ctx.createLinearGradient(10, -5, 30, 5);
+                beakGrad.addColorStop(0, '#f4a261');
+                beakGrad.addColorStop(0.5, '#e63946');
+                beakGrad.addColorStop(1, '#ff8c00');
+                ctx.fillStyle = beakGrad;
+                ctx.beginPath();
+                ctx.moveTo(14, -3);
+                ctx.quadraticCurveTo(30, -1, 28, 4);
+                ctx.lineTo(14, 3);
                 ctx.closePath();
-
-                // Gradient fill
-                var shipGrad = ctx.createLinearGradient(-size, 0, size, 0);
-                shipGrad.addColorStop(0, '#1a237e');
-                shipGrad.addColorStop(0.5, '#00bcd4');
-                shipGrad.addColorStop(1, '#00e5ff');
-                ctx.fillStyle = shipGrad;
                 ctx.fill();
 
-                // Outline
-                ctx.strokeStyle = '#00e5ff';
-                ctx.lineWidth = 1;
-                ctx.stroke();
-
-                ctx.shadowBlur = 0;
-
-                // Cockpit/windshield
+                // Wing
+                const wingY = Math.sin(t.wingPhase) * 6;
+                ctx.fillStyle = '#333';
                 ctx.beginPath();
-                ctx.arc(size * 0.2, 0, size * 0.25, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.ellipse(-4, wingY - 5, 12, 5, -0.3, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Engine glow at the back
+                // Eye
+                ctx.fillStyle = '#fff';
                 ctx.beginPath();
-                ctx.arc(-size * 0.4, 0, size * 0.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 100, 0, 0.6)';
+                ctx.arc(8, -3, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(8, -3, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // White chest
+                ctx.fillStyle = '#f0e68c';
+                ctx.beginPath();
+                ctx.ellipse(3, 5, 6, 4, 0, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.restore();
             }
+        }
 
-            // Draw snake body as comet/energy trail
-            function drawSnakeBody() {
-                for (var index = 1; index < snake.length; index++) {
-                    var segment = snake[index];
-                    var x = segment.x * CELL_SIZE + CELL_SIZE / 2;
-                    var y = segment.y * CELL_SIZE + CELL_SIZE / 2;
-                    var progress = index / snake.length; // 0 at head, 1 at tail
+        function drawFireflies() {
+            for (const f of fireflies) {
+                const b = (Math.sin(f.phase) * 0.5 + 0.5) * f.brightness;
+                ctx.save();
+                ctx.globalAlpha = b * 0.8;
+                ctx.fillStyle = '#c8ff00';
+                ctx.shadowColor = '#c8ff00';
+                ctx.shadowBlur = 6;
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, 2, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
 
-                    // Fade from bright blue-purple near head to dim toward tail
-                    var alpha = 1 - progress * 0.7;
-                    var size = (CELL_SIZE / 2 - 2) * (1 - progress * 0.3);
+        function drawLeaves() {
+            for (const l of leaves) {
+                ctx.save();
+                ctx.translate(l.x, l.y);
+                ctx.rotate(l.rotation);
+                ctx.fillStyle = l.color;
+                ctx.beginPath();
+                ctx.ellipse(0, 0, l.size, l.size * 0.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
 
-                    ctx.save();
+        function drawRain() {
+            if (rainDrops.length === 0) return;
+            ctx.save();
+            ctx.strokeStyle = 'rgba(135, 206, 235, 0.3)';
+            ctx.lineWidth = 1;
+            for (const r of rainDrops) {
+                ctx.beginPath();
+                ctx.moveTo(r.x, r.y);
+                ctx.lineTo(r.x - 1, r.y + r.length);
+                ctx.stroke();
+            }
+            ctx.restore();
+        }
 
-                    // Outer glow
-                    ctx.shadowColor = 'rgba(100, 50, 255, ' + (alpha * 0.5) + ')';
-                    ctx.shadowBlur = 8 * (1 - progress);
+        function drawRipples() {
+            for (const r of ripples) {
+                ctx.save();
+                ctx.strokeStyle = `rgba(135, 206, 235, ${r.alpha})`;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(r.x, r.y, r.radius, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
 
-                    // Gradient orb for each segment
-                    var segGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
-                    // Shift from cyan (near head) to purple (near tail)
-                    var r = Math.floor(30 + progress * 100);
-                    var g = Math.floor(200 - progress * 150);
-                    var b = Math.floor(255);
-                    segGrad.addColorStop(0, 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')');
-                    segGrad.addColorStop(0.6, 'rgba(' + Math.floor(r * 0.5) + ', ' + Math.floor(g * 0.3) + ', ' + b + ', ' + (alpha * 0.7) + ')');
-                    segGrad.addColorStop(1, 'rgba(' + Math.floor(r * 0.3) + ', ' + Math.floor(g * 0.1) + ', ' + Math.floor(b * 0.8) + ', 0)');
+        function drawFloatingTexts() {
+            for (const ft of floatingTexts) {
+                ctx.save();
+                ctx.globalAlpha = ft.life;
+                ctx.fillStyle = ft.color;
+                ctx.font = 'bold 10px Georgia';
+                ctx.textAlign = 'center';
+                ctx.fillText(ft.text, ft.x, ft.y);
+                ctx.restore();
+            }
+        }
 
-                    ctx.fillStyle = segGrad;
-                    ctx.beginPath();
-                    ctx.arc(x, y, size * 1.2, 0, Math.PI * 2);
-                    ctx.fill();
+        function drawHUD() {
+            // Wooden plank background for score
+            ctx.save();
 
-                    // Inner bright core
-                    ctx.fillStyle = 'rgba(200, 230, 255, ' + (alpha * 0.4) + ')';
-                    ctx.beginPath();
-                    ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
-                    ctx.fill();
+            // Score plank
+            const plankX = 4, plankY = 4, plankW = 180, plankH = 26;
+            ctx.fillStyle = '#6b3a1f';
+            ctx.fillRect(plankX, plankY, plankW, plankH);
+            ctx.fillStyle = '#7a4a2a';
+            ctx.fillRect(plankX + 2, plankY + 2, plankW - 4, plankH - 4);
+            // Wood grain
+            ctx.strokeStyle = 'rgba(90, 60, 30, 0.4)';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i < 4; i++) {
+                ctx.beginPath();
+                ctx.moveTo(plankX + 4, plankY + 5 + i * 5);
+                ctx.lineTo(plankX + plankW - 4, plankY + 5 + i * 5);
+                ctx.stroke();
+            }
+            // Score text
+            ctx.fillStyle = '#f4a261';
+            ctx.font = 'bold 13px Georgia';
+            ctx.textAlign = 'left';
+            ctx.fillText('Score: ' + score, plankX + 8, plankY + 17);
 
-                    ctx.restore();
-                }
+            // Level indicator
+            const lvlX = plankX + plankW + 6;
+            ctx.fillStyle = '#6b3a1f';
+            ctx.fillRect(lvlX, plankY, 80, plankH);
+            ctx.fillStyle = '#7a4a2a';
+            ctx.fillRect(lvlX + 2, plankY + 2, 76, plankH - 4);
+            ctx.fillStyle = '#87ceeb';
+            ctx.font = 'bold 12px Georgia';
+            ctx.fillText('Level ' + level, lvlX + 8, plankY + 17);
+
+            // Fruit counter (bottom-left)
+            const fcY = CANVAS_H - 22;
+            ctx.fillStyle = 'rgba(74,44,10,0.6)';
+            ctx.fillRect(2, fcY - 4, 290, 22);
+            ctx.font = '10px Georgia';
+            let fcX = 8;
+            for (const k of FRUIT_KEYS) {
+                const def = FRUIT_DEFS[k];
+                ctx.fillStyle = def.color1;
+                ctx.beginPath();
+                ctx.arc(fcX + 4, fcY + 6, 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#e8dcc8';
+                ctx.fillText(fruitCounts[k] + '', fcX + 12, fcY + 10);
+                fcX += 50;
             }
 
-            // Draw particles
-            function drawParticles() {
-                // Food collection particles
-                for (var i = 0; i < particles.length; i++) {
-                    var p = particles[i];
-                    ctx.save();
-                    ctx.globalAlpha = p.life;
-                    ctx.shadowColor = p.color;
-                    ctx.shadowBlur = 5;
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                }
+            ctx.restore();
+        }
 
-                // Thruster particles
-                for (var j = 0; j < thrusterParticles.length; j++) {
-                    var tp = thrusterParticles[j];
-                    ctx.save();
-                    ctx.globalAlpha = tp.life * 0.7;
-                    var tpColor = tp.life > 0.5 ? 'rgba(255, 150, 0, ' + tp.life + ')' : 'rgba(255, 50, 0, ' + tp.life + ')';
-                    ctx.fillStyle = tpColor;
-                    ctx.beginPath();
-                    ctx.arc(tp.x, tp.y, tp.size * tp.life, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.restore();
-                }
+        // ===== Utility =====
+        function lerp(a, b, t) {
+            return a + (b - a) * t;
+        }
+
+        // ===== SECTION I: MAIN LOOP =====
+        function render(t) {
+            ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+            if (screenState === SCREEN.START) {
+                drawStartBackground();
+                return;
             }
 
-            // Draw everything
-            function draw() {
-                // Draw starfield background
-                drawStarfield();
+            drawBackground();
+            drawTerrain();
+            drawRipples();
+            drawFruits();
+            drawJaguars(t);
+            drawFrogs();
+            drawSnake(t);
+            drawToucans();
+            drawFireflies();
+            drawLeaves();
+            drawRain();
+            drawFloatingTexts();
+            drawHUD();
 
-                // Draw particles (behind snake and food)
-                drawParticles();
-
-                // Draw food
-                drawFood();
-
-                // Draw snake body (before head so head overlaps)
-                drawSnakeBody();
-
-                // Draw snake head
-                if (snake.length > 0) {
-                    drawSnakeHead(snake[0]);
-                }
+            if (screenState === SCREEN.GAME_OVER) {
+                // Dim overlay
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
             }
+        }
 
-            // Animation loop for starfield scrolling and particle updates (runs independently)
-            function animateBackground() {
-                starfieldOffset += 0.3;
-                updateParticles();
-                if (gameRunning) {
-                    // Redraw is handled by the game loop
-                } else {
-                    // When game is not running, still animate the background
-                    draw();
-                }
-                animationFrame = requestAnimationFrame(animateBackground);
-            }
+        function drawStartBackground() {
+            // Animated jungle bg for start screen
+            const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
+            grad.addColorStop(0, '#0d2b0d');
+            const shift = Math.sin(bgTime * 0.3) * 0.05;
+            grad.addColorStop(0.5, `rgb(${26 + shift*200}, ${77 + shift*100}, ${26 + shift*200})`);
+            grad.addColorStop(1, '#0a1f0a');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
-            // Select difficulty and start the game
-            function selectDifficulty(level) {
-                var settings = DIFFICULTY_SETTINGS[level];
-                if (!settings) return;
+            // Floating fireflies on start screen
+            updateFireflies(16);
+            drawFireflies();
+            if (Math.random() < 0.02) spawnLeaf();
+            updateLeaves(16);
+            drawLeaves();
+        }
 
-                currentDifficulty = level;
-                gameSpeed = settings.speed;
-                scoreMultiplier = settings.multiplier;
-                difficultySelected = true;
+        function gameLoop(timestamp) {
+            if (!lastTime) lastTime = timestamp;
+            const dt = Math.min(timestamp - lastTime, 100); // cap delta
+            lastTime = timestamp;
+            bgTime += dt * 0.001;
 
-                // Update the difficulty label in the header
-                difficultyLabel.textContent = settings.label;
-                difficultyLabel.className = 'difficulty-label ' + settings.cssClass;
-
-                // Hide difficulty screen and start the game
-                difficultyScreen.classList.add('hidden');
-                startGame();
-            }
-
-            // Show the difficulty selection screen
-            function showDifficultyScreen() {
-                gameStarted = false;
-                difficultySelected = false;
-                gameOverScreen.classList.add('hidden');
-                difficultyScreen.classList.remove('hidden');
-                difficultyLabel.classList.add('hidden');
-            }
-
-            // Game over handler
-            function gameOver() {
-                gameRunning = false;
-                if (gameLoop) {
-                    clearInterval(gameLoop);
-                    gameLoop = null;
-                }
-                finalScoreDisplay.textContent = score;
-                gameOverScreen.classList.remove('hidden');
-            }
-
-            // Start game
-            function startGame() {
-                if (gameLoop) {
-                    clearInterval(gameLoop);
-                    gameLoop = null;
-                }
-                initGame();
-                gameRunning = true;
-                gameStarted = true;
-                difficultyScreen.classList.add('hidden');
-                gameOverScreen.classList.add('hidden');
-                draw();
-                gameLoop = setInterval(function() {
-                    update();
-                    if (gameRunning) {
-                        draw();
-                    }
-                }, gameSpeed);
-            }
-
-            // Restart game at same difficulty
-            function restartGame() {
-                gameOverScreen.classList.add('hidden');
-                startGame();
-            }
-
-            // Input handling
-            document.addEventListener('keydown', function(e) {
-                // Difficulty selection keys (1, 2, 3) when on difficulty screen
-                if (!difficultySelected && !gameStarted) {
-                    if (e.key === '1') {
-                        selectDifficulty('easy');
-                        e.preventDefault();
-                        return;
-                    } else if (e.key === '2') {
-                        selectDifficulty('medium');
-                        e.preventDefault();
-                        return;
-                    } else if (e.key === '3') {
-                        selectDifficulty('hard');
-                        e.preventDefault();
-                        return;
-                    }
+            if (screenState === SCREEN.PLAYING) {
+                gameTime += dt;
+                accumulator += dt;
+                const tickInt = currentTickInterval();
+                let ticked = false;
+                while (accumulator >= tickInt) {
+                    tick();
+                    if (screenState !== SCREEN.PLAYING) break;
+                    accumulator -= tickInt;
+                    ticked = true;
                 }
 
-                // Arrow keys should only work after difficulty is selected
-                // Start game on arrow key if difficulty selected but game not yet started
-                // (This handles the case where the game was just restarted)
-                if (difficultySelected && !gameRunning && !gameStarted) {
-                    if (e.key === 'ArrowUp' || e.key === 'ArrowDown' || e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                        startGame();
-                        if (e.key === 'ArrowUp' && direction.y !== 1) {
-                            nextDirection = { x: 0, y: -1 };
-                        } else if (e.key === 'ArrowDown' && direction.y !== -1) {
-                            nextDirection = { x: 0, y: 1 };
-                        } else if (e.key === 'ArrowLeft' && direction.x !== 1) {
-                            nextDirection = { x: -1, y: 0 };
-                        } else if (e.key === 'ArrowRight' && direction.x !== -1) {
-                            nextDirection = { x: 1, y: 0 };
-                        }
-                        e.preventDefault();
-                        return;
-                    }
-                }
+                // Update particles
+                updateFireflies(dt);
+                updateLeaves(dt);
+                updateRain(dt);
+                updateRipples(dt);
+                updateFloatingTexts(dt);
+                updateToucans(dt);
+            }
 
-                // Restart on Enter when game over, Escape to change difficulty
-                if (!gameRunning && gameStarted && e.key === 'Enter') {
+            const t = screenState === SCREEN.PLAYING ?
+                Math.min(accumulator / currentTickInterval(), 1) : 0;
+            render(t);
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ===== SECTION J: INPUT HANDLING =====
+        document.addEventListener('keydown', (e) => {
+            initAudio();
+
+            if (screenState === SCREEN.START) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    startGame();
+                    e.preventDefault();
+                }
+                return;
+            }
+
+            if (screenState === SCREEN.GAME_OVER) {
+                if (e.key === 'Enter' || e.key === ' ') {
                     restartGame();
                     e.preventDefault();
-                    return;
                 }
-                if (!gameRunning && gameStarted && e.key === 'Escape') {
-                    showDifficultyScreen();
+                return;
+            }
+
+            // Direction controls
+            switch(e.key) {
+                case 'ArrowUp': case 'w': case 'W':
+                    if (direction.y !== 1) nextDirection = {x:0, y:-1};
                     e.preventDefault();
-                    return;
-                }
-
-                // Direction controls during gameplay
-                if (gameRunning) {
-                    if (e.key === 'ArrowUp' && direction.y !== 1) {
-                        nextDirection = { x: 0, y: -1 };
-                    } else if (e.key === 'ArrowDown' && direction.y !== -1) {
-                        nextDirection = { x: 0, y: 1 };
-                    } else if (e.key === 'ArrowLeft' && direction.x !== 1) {
-                        nextDirection = { x: -1, y: 0 };
-                    } else if (e.key === 'ArrowRight' && direction.x !== -1) {
-                        nextDirection = { x: 1, y: 0 };
-                    }
+                    break;
+                case 'ArrowDown': case 's': case 'S':
+                    if (direction.y !== -1) nextDirection = {x:0, y:1};
                     e.preventDefault();
+                    break;
+                case 'ArrowLeft': case 'a': case 'A':
+                    if (direction.x !== 1) nextDirection = {x:-1, y:0};
+                    e.preventDefault();
+                    break;
+                case 'ArrowRight': case 'd': case 'D':
+                    if (direction.x !== -1) nextDirection = {x:1, y:0};
+                    e.preventDefault();
+                    break;
+            }
+        });
+
+        playBtn.addEventListener('click', () => {
+            initAudio();
+            startGame();
+        });
+
+        restartBtn.addEventListener('click', () => {
+            initAudio();
+            restartGame();
+        });
+
+        // ===== SECTION K: SCREEN STATE MACHINE =====
+        function startGame() {
+            screenState = SCREEN.PLAYING;
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            initGameState();
+            accumulator = 0;
+            lastTime = 0;
+            startAmbient();
+        }
+
+        function restartGame() {
+            gameOverScreen.classList.add('hidden');
+            startGame();
+        }
+
+        function showGameOverScreen() {
+            gameOverScreen.classList.remove('hidden');
+
+            // Build score breakdown
+            let html = '';
+            for (const k of FRUIT_KEYS) {
+                const def = FRUIT_DEFS[k];
+                const cnt = fruitCounts[k];
+                if (cnt > 0) {
+                    html += `<div class="fruit-line"><span>${def.name} × ${cnt}</span><span class="pts">${cnt * def.points}</span></div>`;
                 }
-            });
+            }
+            if (!html) html = '<div class="fruit-line"><span>No fruits collected</span><span class="pts">0</span></div>';
+            scoreBreakdownEl.innerHTML = html;
+            finalTotalEl.textContent = 'Total: ' + score;
+            goHighScoreEl.textContent = 'High Score: ' + highScore;
+        }
 
-            // Button handlers - Difficulty selection
-            easyBtn.addEventListener('click', function() { selectDifficulty('easy'); });
-            mediumBtn.addEventListener('click', function() { selectDifficulty('medium'); });
-            hardBtn.addEventListener('click', function() { selectDifficulty('hard'); });
+        // ===== SECTION L: RESPONSIVE CANVAS SIZING =====
+        function resizeCanvas() {
+            // CSS handles responsive via max-width/max-height; internal resolution stays 600x600
+            const container = document.getElementById('game-container');
+            const maxW = window.innerWidth * 0.96;
+            const maxH = window.innerHeight * 0.92;
+            const size = Math.min(maxW, maxH, 600);
+            canvas.style.width = size + 'px';
+            canvas.style.height = size + 'px';
+        }
+        window.addEventListener('resize', resizeCanvas);
 
-            // Button handlers - Game over
-            restartBtn.addEventListener('click', restartGame);
-            changeDifficultyBtn.addEventListener('click', showDifficultyScreen);
+        // ===== SECTION M: INITIALIZATION =====
+        // Load high score
+        try {
+            const hs = localStorage.getItem('anaconda_highScore');
+            if (hs) highScore = JSON.parse(hs);
+            const hsf = localStorage.getItem('anaconda_highScoreFruits');
+            if (hsf) highScoreFruits = JSON.parse(hsf);
+        } catch(e) {}
 
-            // Start background animation
-            animateBackground();
+        // Display high score on start screen
+        function updateStartHighScore() {
+            if (highScore > 0) {
+                startHighScoreEl.textContent = 'High Score: ' + highScore;
+            } else {
+                startHighScoreEl.textContent = '';
+            }
+        }
+        updateStartHighScore();
 
-            // Draw initial state
-            draw();
-        })();
+        // Initialize fireflies for start screen
+        for (let i = 0; i < 15; i++) spawnFirefly();
+
+        resizeCanvas();
+
+        // Start the animation loop
+        requestAnimationFrame(gameLoop);
+    })();
     </script>
 </body>
 </html>
