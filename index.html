@@ -245,7 +245,9 @@
         let audioInitialized = false;
         let ambientGain = null;
         let ambientNodes = [];
-        let chirpInterval = null;
+        let chirpTimeout = null;
+        let warningCooldown = 0;
+        let rAFId = null;
 
         // DOM
         const canvas = document.getElementById('gameCanvas');
@@ -320,17 +322,20 @@
             lfo.start();
             ambientNodes.push(buzzOsc, lfo);
 
-            // Periodic bird chirps
-            chirpInterval = setInterval(() => {
-                if (screenState !== SCREEN.PLAYING) return;
-                playChirp();
-            }, 3000 + Math.random() * 4000);
+            // Periodic bird chirps with varied timing
+            function scheduleChirp() {
+                chirpTimeout = setTimeout(() => {
+                    if (screenState === SCREEN.PLAYING) playChirp();
+                    scheduleChirp();
+                }, 3000 + Math.random() * 4000);
+            }
+            scheduleChirp();
         }
 
         function stopAmbient() {
             ambientNodes.forEach(n => { try { n.stop(); } catch(e){} });
             ambientNodes = [];
-            if (chirpInterval) { clearInterval(chirpInterval); chirpInterval = null; }
+            if (chirpTimeout) { clearTimeout(chirpTimeout); chirpTimeout = null; }
         }
 
         function playChirp() {
@@ -376,6 +381,9 @@
 
         function playWarning(dist) {
             if (!audioCtx || dist > 5) return;
+            const now = audioCtx.currentTime;
+            if (now - warningCooldown < 0.3) return; // cooldown: max ~3/s
+            warningCooldown = now;
             const vol = Math.max(0, (5 - dist) / 5) * 0.08;
             const t = audioCtx.currentTime;
             const osc = audioCtx.createOscillator();
@@ -858,10 +866,11 @@
         }
 
         function updateFireflies(dt) {
+            const dtFactor = dt / 16.67;
             for (const f of fireflies) {
-                f.x += f.vx + Math.sin(f.phase) * 0.2;
-                f.y += f.vy + Math.cos(f.phase * 0.7) * 0.15;
-                f.phase += 0.02;
+                f.x += (f.vx + Math.sin(f.phase) * 0.2) * dtFactor;
+                f.y += (f.vy + Math.cos(f.phase * 0.7) * 0.15) * dtFactor;
+                f.phase += 0.02 * dtFactor;
                 // Wrap
                 if (f.x < -10) f.x = CANVAS_W + 10;
                 if (f.x > CANVAS_W + 10) f.x = -10;
@@ -884,18 +893,27 @@
         }
 
         function updateLeaves(dt) {
+            const dtFactor = dt / 16.67;
             for (let i = leaves.length - 1; i >= 0; i--) {
                 const l = leaves[i];
-                l.y += l.vy;
-                l.x += l.vx + Math.sin(l.rotation) * 0.3;
-                l.rotation += l.rotSpeed;
-                if (l.y > CANVAS_H + 20) leaves.splice(i, 1);
+                l.y += l.vy * dtFactor;
+                l.x += (l.vx + Math.sin(l.rotation) * 0.3) * dtFactor;
+                l.rotation += l.rotSpeed * dtFactor;
             }
+            // Remove off-screen leaves
+            let writeIdx = 0;
+            for (let i = 0; i < leaves.length; i++) {
+                if (leaves[i].y <= CANVAS_H + 20) {
+                    leaves[writeIdx++] = leaves[i];
+                }
+            }
+            leaves.length = writeIdx;
             // Spawn new leaves occasionally
             if (Math.random() < 0.03) spawnLeaf();
         }
 
         function updateRain(dt) {
+            const dtFactor = dt / 16.67;
             rainTimer += dt;
             if (!isRaining && rainTimer > nextRainTime) {
                 isRaining = true;
@@ -906,7 +924,7 @@
                 rainTimer = 0;
                 nextRainTime = 30000 + Math.random() * 30000;
             }
-            if (isRaining) {
+            if (isRaining && rainDrops.length < 300) {
                 for (let i = 0; i < 3; i++) {
                     rainDrops.push({
                         x: Math.random() * CANVAS_W,
@@ -916,10 +934,15 @@
                     });
                 }
             }
-            for (let i = rainDrops.length - 1; i >= 0; i--) {
-                rainDrops[i].y += rainDrops[i].speed;
-                if (rainDrops[i].y > CANVAS_H + 20) rainDrops.splice(i, 1);
+            // Remove off-screen drops efficiently
+            let rdWrite = 0;
+            for (let i = 0; i < rainDrops.length; i++) {
+                rainDrops[i].y += rainDrops[i].speed * dtFactor;
+                if (rainDrops[i].y <= CANVAS_H + 20) {
+                    rainDrops[rdWrite++] = rainDrops[i];
+                }
             }
+            rainDrops.length = rdWrite;
         }
 
         function createRipple(x, y) {
@@ -927,32 +950,45 @@
         }
 
         function updateRipples(dt) {
-            for (let i = ripples.length - 1; i >= 0; i--) {
+            const dtFactor = dt / 16.67;
+            let writeIdx = 0;
+            for (let i = 0; i < ripples.length; i++) {
                 const r = ripples[i];
-                r.radius += 0.5;
-                r.alpha -= 0.015;
-                if (r.alpha <= 0 || r.radius > r.maxRadius) ripples.splice(i, 1);
+                r.radius += 0.5 * dtFactor;
+                r.alpha -= 0.015 * dtFactor;
+                if (r.alpha > 0 && r.radius <= r.maxRadius) {
+                    ripples[writeIdx++] = r;
+                }
             }
+            ripples.length = writeIdx;
         }
 
         function updateFloatingTexts(dt) {
-            for (let i = floatingTexts.length - 1; i >= 0; i--) {
+            const dtFactor = dt / 16.67;
+            let writeIdx = 0;
+            for (let i = 0; i < floatingTexts.length; i++) {
                 const ft = floatingTexts[i];
-                ft.y -= 0.5;
-                ft.life -= 0.015;
-                if (ft.life <= 0) floatingTexts.splice(i, 1);
+                ft.y -= 0.5 * dtFactor;
+                ft.life -= 0.015 * dtFactor;
+                if (ft.life > 0) {
+                    floatingTexts[writeIdx++] = ft;
+                }
             }
+            floatingTexts.length = writeIdx;
         }
 
         function updateToucans(dt) {
-            for (let i = toucans.length - 1; i >= 0; i--) {
+            const dtFactor = dt / 16.67;
+            let writeIdx = 0;
+            for (let i = 0; i < toucans.length; i++) {
                 const t = toucans[i];
-                t.px += t.dx;
-                t.wingPhase += 0.1;
-                if ((t.dx > 0 && t.px > CANVAS_W + 60) || (t.dx < 0 && t.px < -60)) {
-                    toucans.splice(i, 1);
+                t.px += t.dx * dtFactor;
+                t.wingPhase += 0.1 * dtFactor;
+                if (!((t.dx > 0 && t.px > CANVAS_W + 60) || (t.dx < 0 && t.px < -60))) {
+                    toucans[writeIdx++] = t;
                 }
             }
+            toucans.length = writeIdx;
             // Spawn toucans occasionally
             if (Math.random() < 0.001 && toucans.length < 2) spawnToucan();
         }
@@ -1479,11 +1515,11 @@
         }
 
         // ===== SECTION I: MAIN LOOP =====
-        function render(t) {
+        function render(t, dt) {
             ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
 
             if (screenState === SCREEN.START) {
-                drawStartBackground();
+                drawStartBackground(dt);
                 return;
             }
 
@@ -1508,7 +1544,7 @@
             }
         }
 
-        function drawStartBackground() {
+        function drawStartBackground(dt) {
             // Animated jungle bg for start screen
             const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_H);
             grad.addColorStop(0, '#0d2b0d');
@@ -1519,10 +1555,11 @@
             ctx.fillRect(0, 0, CANVAS_W, CANVAS_H);
 
             // Floating fireflies on start screen
-            updateFireflies(16);
+            const effectiveDt = dt || 16.67;
+            updateFireflies(effectiveDt);
             drawFireflies();
             if (Math.random() < 0.02) spawnLeaf();
-            updateLeaves(16);
+            updateLeaves(effectiveDt);
             drawLeaves();
         }
 
@@ -1555,9 +1592,9 @@
 
             const t = screenState === SCREEN.PLAYING ?
                 Math.min(accumulator / currentTickInterval(), 1) : 0;
-            render(t);
+            render(t, dt);
 
-            requestAnimationFrame(gameLoop);
+            rAFId = requestAnimationFrame(gameLoop);
         }
 
         // ===== SECTION J: INPUT HANDLING =====
@@ -1619,6 +1656,9 @@
             initGameState();
             accumulator = 0;
             lastTime = 0;
+            // Cancel existing rAF to prevent dt spike, then restart loop
+            if (rAFId) cancelAnimationFrame(rAFId);
+            rAFId = requestAnimationFrame(gameLoop);
             startAmbient();
         }
 
@@ -1682,7 +1722,7 @@
         resizeCanvas();
 
         // Start the animation loop
-        requestAnimationFrame(gameLoop);
+        rAFId = requestAnimationFrame(gameLoop);
     })();
     </script>
 </body>

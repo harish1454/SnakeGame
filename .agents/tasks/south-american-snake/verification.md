@@ -1,142 +1,91 @@
-# Verification Report — South American Themed Snake Game
+# Verification Report — South American Snake Game (Review Fix Iteration)
 
 ## Environment
-- Node.js v22.23.2
-- No headless browser available (no Chromium, Puppeteer, Playwright, or Selenium installed)
-- Verification performed via: JS syntax parsing, static feature analysis, mocked runtime initialization
+- No headless browser (Puppeteer/Playwright/Chromium) is available in this environment.
+- Verification relies on JS syntax validation via `new Function()`, regex-based feature checks, and static analysis.
+- **Browser-based verification (screenshots, interactive play, audio, visual effects, localStorage persistence, 60fps measurement) remains UNVERIFIED** — must be tested manually in a browser.
 
-## Verification Commands Run
+## Review Findings Addressed
 
-### 1. JS Syntax Validation
-```
-NODE_OPTIONS="" node -e "new Function(jsContent)"
-```
-**Result**: `JS SYNTAX: VALID` — The entire JS block extracted from index.html parses without syntax errors.
+All 7 findings from review.json have been fixed:
 
-### 2. Feature Presence Check (48/48 passed)
-Static regex analysis confirmed the presence of all 48 required features. Full list:
+### Finding 1: Frame-rate–dependent particle motion ✅ FIXED
+- `updateFireflies`, `updateLeaves`, `updateRain`, `updateRipples`, `updateFloatingTexts`, and `updateToucans` now compute `const dtFactor = dt / 16.67` and multiply all per-frame increments by it.
+- This normalizes motion to 60fps — on a 144Hz display, dtFactor ≈ 0.42, so particles move at the same real-world speed.
 
-| Feature | Status |
-|---------|--------|
-| Canvas 600×600 | ✅ Verified |
-| requestAnimationFrame loop | ✅ Verified |
-| Arrow key controls | ✅ Verified |
-| WASD controls | ✅ Verified |
-| 30×30 grid | ✅ Verified |
-| Smooth interpolation (lerp function) | ✅ Verified |
-| Wrap-around edges (modulo math) | ✅ Verified |
-| 5 fruit types (açaí, passion, guava, mango, cacao) | ✅ Verified |
-| Different point values (10, 15, 20, 25, 30) | ✅ Verified |
-| Jaguars with patrol paths | ✅ Verified |
-| Poison dart frogs (timed, 3 colors) | ✅ Verified |
-| Toucans (visual flair, non-interactive) | ✅ Verified |
-| River terrain (T_RIVER) | ✅ Verified |
-| Rock terrain (T_ROCK) | ✅ Verified |
-| Log terrain (T_LOG) | ✅ Verified |
-| Clearings (T_CLEARING) | ✅ Verified |
-| Fireflies (glowing particles) | ✅ Verified |
-| Falling leaves | ✅ Verified |
-| Rain effect (periodic) | ✅ Verified |
-| Water ripples on river crossing | ✅ Verified |
-| Web Audio API (AudioContext) | ✅ Verified |
-| Ambient sounds (brown noise + chirps + buzz) | ✅ Verified |
-| Crunch sound on fruit collection | ✅ Verified |
-| Jaguar warning (distance-based) | ✅ Verified |
-| Game over drum sound | ✅ Verified |
-| localStorage high score persistence | ✅ Verified |
-| Start screen with title and play button | ✅ Verified |
-| Game over screen with score breakdown | ✅ Verified |
-| "ANACONDA — Tales of the Amazon" title | ✅ Verified |
-| "The jungle reclaims all..." message | ✅ Verified |
-| Level progression (every 5 fruits) | ✅ Verified |
-| Score on wooden plank HUD | ✅ Verified |
-| Fruit collection counter | ✅ Verified |
-| Level indicator | ✅ Verified |
-| Floating text on fruit collection | ✅ Verified |
-| Diamond pattern on snake body | ✅ Verified |
-| South American color palette used | ✅ Verified |
-| Responsive canvas resizing | ✅ Verified |
-| Self collision detection | ✅ Verified |
-| Obstacle collision detection | ✅ Verified |
+### Finding 2: Unbounded rainDrop array during rain ✅ FIXED
+- Added guard: `if (isRaining && rainDrops.length < 300)` before spawning new drops.
+- Caps the array at 300 elements regardless of frame rate or storm duration.
 
-### 3. Structural Validation
-| Check | Status |
+### Finding 3: Oscillator leak in playWarning ✅ FIXED
+- Added `warningCooldown` variable initialized to 0.
+- `playWarning` now checks `if (now - warningCooldown < 0.3) return;` — limits oscillator creation to max ~3 per second instead of 6–10+.
+
+### Finding 4: chirpInterval scheduling is fixed ✅ FIXED
+- Replaced `setInterval` with recursive `setTimeout` pattern via `scheduleChirp()`.
+- Each chirp schedules the next with a fresh `3000 + Math.random() * 4000` delay, producing natural variation.
+- `stopAmbient` now calls `clearTimeout(chirpTimeout)` instead of `clearInterval`.
+
+### Finding 5: No cancelAnimationFrame on game over / restart ✅ FIXED
+- `startGame()` now calls `cancelAnimationFrame(rAFId)` before starting a new rAF loop.
+- `rAFId` variable tracks the current animation frame ID.
+- This prevents the `lastTime = 0` → `dt = timestamp` spike on first frame after restart.
+
+### Finding 6: Floating-text and ripple splice-in-loop pattern ✅ FIXED
+- Replaced O(n²) `splice(i, 1)` patterns with O(n) write-index compaction:
+  - `updateRipples`: uses `writeIdx` to compact in-place, then `ripples.length = writeIdx`
+  - `updateFloatingTexts`: same pattern
+  - `updateLeaves`: same pattern
+  - `updateRain` (rainDrops): same pattern
+  - `updateToucans`: same pattern
+- Remaining `splice` calls are in `fruits` (single item per tick) and `frogs` (single respawn), which are O(1) per tick and not particle systems.
+
+### Finding 7: drawStartBackground calls updateFireflies(16) with hardcoded dt ✅ FIXED
+- `drawStartBackground` now accepts `dt` parameter.
+- `render(t, dt)` passes actual frame delta to `drawStartBackground(dt)`.
+- Fallback `const effectiveDt = dt || 16.67` handles the first frame where dt might be 0.
+
+## Syntax Validation
+
+| Check | Result |
 |-------|--------|
-| Valid DOCTYPE | ✅ |
-| Complete HTML structure (html/head/body) | ✅ |
-| Viewport meta tag | ✅ |
-| Charset declaration | ✅ |
-| Single script tag | ✅ |
-| IIFE wrapper with 'use strict' | ✅ |
-| No external CSS files | ✅ |
-| No external JS files | ✅ |
-| No external image assets | ✅ |
-| No external audio files | ✅ |
-| Single index.html file | ✅ |
+| `new Function(js)` parse | ✅ VALID — no syntax errors |
+| File size | 66,744 chars, 1,730 lines |
+| HTML structure | ✅ DOCTYPE, head, body, canvas, overlays present |
 
-### 4. Game Mechanics Verification
-| Mechanic | Status | Evidence |
-|----------|--------|----------|
-| Grid-based movement | ✅ | `direction.x`/`direction.y` grid step in `tick()` |
-| Smooth animation (interpolation) | ✅ | `lerp(seg.prevX, seg.x, t)` in `drawSnake(t)` |
-| Fixed-timestep game loop | ✅ | Accumulator pattern in `gameLoop()` with `while (accumulator >= tickInt)` |
-| 60fps rendering | ✅ | `requestAnimationFrame(gameLoop)` used |
-| Wrap-around edges | ✅ | `((nx % GRID_COLS) + GRID_COLS) % GRID_COLS` |
-| 180° reversal prevention | ✅ | `if (direction.y !== 1) nextDirection = ...` pattern |
-| River slow-down (1.5×) | ✅ | `onRiver ? base * 1.5 : base` in `currentTickInterval()` |
-| Level formula | ✅ | `Math.floor(totalFruitsEaten / 5) + 1`, capped at 20 |
-| Speed increase per level | ✅ | `200 - (level - 1) * 5`, min 100ms |
-| Jaguar count scaling | ✅ | `Math.min(Math.floor(level / 2) + 1, 5)` |
-| Frog count scaling | ✅ | `Math.min(Math.floor(level / 3) + 1, 4)` |
-| Terrain regeneration on level-up | ✅ | `generateTerrain(level)` called in `levelUp()` |
-| Weighted fruit spawning | ✅ | `pickFruitType()` uses cumulative weight random |
+## Feature Verification (regex-based, 49/49 passed)
 
-### 5. Audio Verification
-| Sound | Synthesis Method | Status |
-|-------|-----------------|--------|
-| Ambient background | Brown noise (filtered white noise, LP @ 400Hz) | ✅ |
-| Bird chirps | Sine oscillator frequency sweep, periodic | ✅ |
-| Insect buzz | 4kHz sine, AM via 10Hz LFO | ✅ |
-| Fruit crunch | White noise burst, bandpass 2kHz, 60ms | ✅ |
-| Jaguar warning | 80Hz sine + 60Hz triangle, distance-based gain | ✅ |
-| Game over drum | 80→40Hz sine sweep + noise burst | ✅ |
-| AudioContext user-gesture gate | Created on click/keydown, `.resume()` called | ✅ |
+| Category | Features Checked | Status |
+|----------|-----------------|--------|
+| Core structure | DOCTYPE, Canvas, ANACONDA title, Tales of the Amazon | ✅ All present |
+| Grid/constants | 30×30 grid, 600×600 canvas | ✅ |
+| Fruit types | açaí, passion, guava, mango, cacao (5 types) | ✅ All present |
+| Terrain | River, Rock, Log, Clearing types | ✅ All present |
+| Wildlife | Jaguars, Frogs, Toucans | ✅ All present |
+| Particles | Fireflies, Leaves, Rain, Ripples | ✅ All present |
+| Audio (Web Audio API) | AudioContext, ambient, crunch, warning, game-over drum | ✅ All present |
+| Game mechanics | rAF loop, Arrow keys, WASD, wrap-around, localStorage, levels, score | ✅ All present |
+| UI screens | Start screen, Game over screen, Score breakdown | ✅ All present |
+| Review fixes | All 7 findings (dtFactor ×6, rain cap, cooldown, setTimeout, cancelRAF, no splice, dt passthrough) | ✅ All fixed |
 
-### 6. Runtime Initialization Test
-Mocked browser APIs (document, window, canvas context, AudioContext, localStorage, requestAnimationFrame) and executed the full JS.
-**Result**: `No immediate errors on initialization` — the game code starts without throwing.
-
-### 7. File Metrics
-- File size: 65,024 bytes
-- Lines: 1,690
-- JS code size: 58,684 bytes
-- Single file, no external dependencies
-
-## Screenshots
-**Not available** — no headless browser automation tools are installed in this environment (no Chromium, Puppeteer, Playwright, or Selenium). The game must be visually verified by opening `/projects/sandbox/SnakeGame/index.html` in a browser.
-
-## What Remains Unverified (no browser available)
-1. **Visual rendering** — cannot take screenshots of start screen, gameplay, or game over screen
-2. **Actual 60fps measurement** — requestAnimationFrame is used but frame deltas cannot be measured without a browser
-3. **Interactive gameplay** — cannot simulate arrow key/WASD presses in a real browser to test movement
-4. **Audio playback** — Web Audio API calls are present and structurally correct but cannot be heard
-5. **localStorage persistence across reload** — the API calls are correct but cannot be tested end-to-end
-6. **Canvas rendering performance** — particle systems exist but performance under load untested
-7. **Responsive behavior on actual resize** — resize handler is present but visual result untested
-
-## Verification Target Summary
+## Verification Targets Status
 
 | # | Target | Status | Evidence |
 |---|--------|--------|----------|
-| 1 | Valid HTML opens in browser | ✅ Verified (syntax) / ⚠️ Unverified (visual) | Valid DOCTYPE, structure, no syntax errors |
-| 2 | 60fps loop | ✅ Code verified / ⚠️ Unverified (measurement) | requestAnimationFrame used, delta-capped |
-| 3 | Arrow keys + WASD work | ✅ Code verified / ⚠️ Unverified (interactive) | Both key sets handled in keydown listener |
-| 4 | Grid movement with smooth animation | ✅ Code verified | Fixed-timestep + lerp interpolation |
-| 5 | Collision: jaguars, frogs, rocks, logs | ✅ Code verified | All 4 collision checks in tick() |
-| 6 | Food collection, scoring, levels | ✅ Code verified | Point values, fruitCounts, levelUp() |
-| 7 | Start screen displays | ✅ Code verified / ⚠️ Unverified (visual) | HTML overlay with title, button, instructions |
-| 8 | Game over screen displays | ✅ Code verified / ⚠️ Unverified (visual) | HTML overlay with breakdown, high score |
-| 9 | Web Audio API sounds play | ✅ Code verified / ⚠️ Unverified (audible) | 6 sound functions, user-gesture gated |
-| 10 | localStorage persistence | ✅ Code verified / ⚠️ Unverified (end-to-end) | setItem/getItem calls present |
-| 11 | Visual effects render | ✅ Code verified / ⚠️ Unverified (visual) | Fireflies, leaves, rain, ripples all coded |
-| 12 | No console errors | ✅ Mock runtime clean / ⚠️ Unverified (browser) | No errors on mock initialization |
+| 1 | Valid HTML opens in browser | ⚠️ Syntax valid, browser test unverified | JS parses without error |
+| 2 | 60fps loop using requestAnimationFrame | ⚠️ Code present, runtime unverified | `requestAnimationFrame(gameLoop)` confirmed |
+| 3 | Arrow keys and WASD work | ⚠️ Code present, runtime unverified | keydown handler with ArrowUp/Down/Left/Right + w/a/s/d confirmed |
+| 4 | Grid movement with smooth animation | ⚠️ Code present, runtime unverified | Accumulator + lerp interpolation confirmed in code |
+| 5 | Collision detection (jaguars, frogs, rocks, logs) | ⚠️ Code present, runtime unverified | tick() checks T_ROCK, T_LOG, jaguars, frogs |
+| 6 | Food collection, scoring, level progression | ⚠️ Code present, runtime unverified | 5 fruit types, weighted spawning, levelUp() every 5 fruits |
+| 7 | Start screen and game over screen | ⚠️ Code present, runtime unverified | HTML overlays with themed styling confirmed |
+| 8 | Web Audio API sounds play without errors | ⚠️ Code present, runtime unverified | AudioContext gated behind user gesture, synthesized sounds |
+| 9 | localStorage high score persistence | ⚠️ Code present, runtime unverified | getItem/setItem with 'anaconda_highScore' key |
+| 10 | Visual effects render without perf issues | ⚠️ Code present, runtime unverified | dtFactor normalization now applied; rain capped at 300 |
+
+## Screenshots
+- **No screenshots available** — no headless browser in this environment.
+
+## What Remains Unverified
+- All runtime/interactive behavior (browser rendering, input handling, audio playback, visual effects, performance, localStorage persistence)
+- Must be tested by opening `index.html` in a browser manually
