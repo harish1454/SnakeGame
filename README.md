@@ -1,33 +1,80 @@
 # Snake Game
 
-A classic Snake game built with HTML5 Canvas, CSS, and JavaScript. Fully self-contained in a single HTML file with no external dependencies.
+<p align="center">
+  <img src="screenshots/03-gameplay-active.png" alt="Snake Game Screenshot" width="400">
+</p>
+
+<p align="center">
+  <strong>A classic Snake game built with HTML5 Canvas, CSS, and JavaScript.</strong><br>
+  Fully self-contained in a single HTML file with no external dependencies.
+</p>
+
+<p align="center">
+  <a href="#how-to-play">How to Play</a> •
+  <a href="#features">Features</a> •
+  <a href="#technical-details">Technical Details</a>
+</p>
+
+---
 
 ## How to Play
 
-1. Open `index.html` in any modern web browser.
-2. Click **Start Game** or press any arrow key to begin.
-3. Use the **arrow keys** to control the snake's direction:
-   - Up Arrow: Move up
-   - Down Arrow: Move down
-   - Left Arrow: Move left
-   - Right Arrow: Move right
-4. Eat the red food to grow longer and increase your score.
-5. Avoid hitting the walls or your own tail.
-6. When the game ends, press **Enter** or click **Play Again** to restart.
+<table>
+  <tr>
+    <td width="50%">
+      <ol>
+        <li>Open <code>index.html</code> in any modern web browser.</li>
+        <li>Click <strong>Start Game</strong> or press any arrow key to begin.</li>
+        <li>Use the <strong>arrow keys</strong> to control the snake's direction.</li>
+        <li>Eat the red food to grow longer and increase your score.</li>
+        <li>Avoid hitting the walls or your own tail.</li>
+        <li>When the game ends, press <strong>Enter</strong> or click <strong>Play Again</strong> to restart.</li>
+      </ol>
+    </td>
+    <td width="50%">
+      <h4>🎮 Controls</h4>
+      <table>
+        <tr><td>⬆️</td><td>Move Up</td></tr>
+        <tr><td>⬇️</td><td>Move Down</td></tr>
+        <tr><td>⬅️</td><td>Move Left</td></tr>
+        <tr><td>➡️</td><td>Move Right</td></tr>
+      </table>
+    </td>
+  </tr>
+</table>
 
 ## Features
 
-- Smooth canvas-based rendering on a 20x20 grid
-- Score tracking with on-screen display
-- Start screen with instructions
-- Game over screen with final score and restart option
-- Visual polish: gradient snake body, glowing food, subtle grid, and animated eyes
-- No external dependencies required
+<div align="center">
+
+| Feature | Description |
+|---------|-------------|
+| 🎨 **Smooth Rendering** | Canvas-based rendering on a 20x20 grid |
+| 📊 **Score Tracking** | On-screen score display |
+| 🚀 **Start Screen** | Instructions displayed before gameplay |
+| 💀 **Game Over Screen** | Final score with restart option |
+| ✨ **Visual Polish** | Gradient snake, glowing food, subtle grid, animated eyes |
+| 📦 **Zero Dependencies** | No external libraries required |
+
+</div>
 
 ## Technical Details
 
-- Pure HTML5, CSS, and JavaScript
-- Canvas size: 400x400 pixels
-- Grid: 20x20 cells (20px per cell)
-- Game speed: ~8 frames per second
-- Collision detection for walls and self-intersection
+<details>
+<summary>Click to expand technical specifications</summary>
+
+<br>
+
+- **Technology**: Pure HTML5, CSS, and JavaScript
+- **Canvas Size**: 400×400 pixels
+- **Grid**: 20×20 cells (20px per cell)
+- **Game Speed**: ~8 frames per second
+- **Collision Detection**: Walls and self-intersection
+
+</details>
+
+---
+
+<p align="center">
+  <sub>Built with ❤️ using vanilla JavaScript</sub>
+</p>
