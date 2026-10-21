@@ -1,80 +1,131 @@
-# Snake Game
+<div align="center">
 
-<p align="center">
-  <img src="screenshots/03-gameplay-active.png" alt="Snake Game Screenshot" width="400">
-</p>
+# 🐍 Snake Game
 
-<p align="center">
-  <strong>A classic Snake game built with HTML5 Canvas, CSS, and JavaScript.</strong><br>
-  Fully self-contained in a single HTML file with no external dependencies.
-</p>
+<img src="screenshots/03-gameplay-active.png" alt="Snake Game Screenshot" width="450" style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.3);">
 
-<p align="center">
-  <a href="#how-to-play">How to Play</a> •
-  <a href="#features">Features</a> •
-  <a href="#technical-details">Technical Details</a>
-</p>
+<br><br>
+
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+
+**A classic Snake game built with HTML5 Canvas, CSS, and JavaScript.**<br>
+*Fully self-contained in a single HTML file with no external dependencies.*
+
+<br>
+
+[🎮 Play Now](#how-to-play) · [✨ Features](#features) · [🔧 Technical Details](#technical-details)
 
 ---
 
-## How to Play
+</div>
+
+## 🎮 How to Play
 
 <table>
   <tr>
-    <td width="50%">
+    <td width="60%" valign="top">
+      <h3>📋 Instructions</h3>
       <ol>
-        <li>Open <code>index.html</code> in any modern web browser.</li>
-        <li>Click <strong>Start Game</strong> or press any arrow key to begin.</li>
-        <li>Use the <strong>arrow keys</strong> to control the snake's direction.</li>
-        <li>Eat the red food to grow longer and increase your score.</li>
-        <li>Avoid hitting the walls or your own tail.</li>
-        <li>When the game ends, press <strong>Enter</strong> or click <strong>Play Again</strong> to restart.</li>
+        <li>Open <code>index.html</code> in any modern web browser</li>
+        <li>Click <kbd>Start Game</kbd> or press any arrow key to begin</li>
+        <li>Use the <strong>arrow keys</strong> to control the snake</li>
+        <li>🍎 Eat the red food to grow longer and score points</li>
+        <li>💀 Avoid hitting the walls or your own tail</li>
+        <li>Press <kbd>Enter</kbd> or click <kbd>Play Again</kbd> to restart</li>
       </ol>
     </td>
-    <td width="50%">
-      <h4>🎮 Controls</h4>
-      <table>
-        <tr><td>⬆️</td><td>Move Up</td></tr>
-        <tr><td>⬇️</td><td>Move Down</td></tr>
-        <tr><td>⬅️</td><td>Move Left</td></tr>
-        <tr><td>➡️</td><td>Move Right</td></tr>
+    <td width="40%" valign="top">
+      <h3>🕹️ Controls</h3>
+      <table align="center">
+        <tr>
+          <td align="center" colspan="3"><kbd>⬆️ ↑</kbd><br><sub>Move Up</sub></td>
+        </tr>
+        <tr>
+          <td align="center"><kbd>⬅️ ←</kbd><br><sub>Left</sub></td>
+          <td width="40"></td>
+          <td align="center"><kbd>➡️ →</kbd><br><sub>Right</sub></td>
+        </tr>
+        <tr>
+          <td align="center" colspan="3"><kbd>⬇️ ↓</kbd><br><sub>Move Down</sub></td>
+        </tr>
       </table>
     </td>
   </tr>
 </table>
 
-## Features
+---
+
+## ✨ Features
 
 <div align="center">
 
-| Feature | Description |
-|---------|-------------|
-| 🎨 **Smooth Rendering** | Canvas-based rendering on a 20x20 grid |
-| 📊 **Score Tracking** | On-screen score display |
-| 🚀 **Start Screen** | Instructions displayed before gameplay |
-| 💀 **Game Over Screen** | Final score with restart option |
-| ✨ **Visual Polish** | Gradient snake, glowing food, subtle grid, animated eyes |
-| 📦 **Zero Dependencies** | No external libraries required |
+| | Feature | Description |
+|:--:|---------|-------------|
+| 🎨 | **Smooth Rendering** | Canvas-based rendering on a 20×20 grid |
+| 📊 | **Score Tracking** | Real-time on-screen score display |
+| 🚀 | **Start Screen** | Welcome screen with game instructions |
+| 💀 | **Game Over Screen** | Final score display with restart option |
+| 🌈 | **Visual Polish** | Gradient snake body, glowing food, animated eyes |
+| ⚡ | **Zero Dependencies** | No external libraries — just pure vanilla code |
 
 </div>
 
-## Technical Details
+---
+
+## 🔧 Technical Details
 
 <details>
-<summary>Click to expand technical specifications</summary>
+<summary><b>📐 Click to expand technical specifications</b></summary>
 
 <br>
 
-- **Technology**: Pure HTML5, CSS, and JavaScript
-- **Canvas Size**: 400×400 pixels
-- **Grid**: 20×20 cells (20px per cell)
-- **Game Speed**: ~8 frames per second
-- **Collision Detection**: Walls and self-intersection
+<div align="center">
+
+| Specification | Value |
+|--------------|-------|
+| **Technology** | Pure HTML5, CSS3, JavaScript |
+| **Canvas Size** | 400 × 400 pixels |
+| **Grid** | 20 × 20 cells |
+| **Cell Size** | 20px × 20px |
+| **Game Speed** | ~8 FPS (125ms interval) |
+| **Collision** | Walls + Self-intersection |
+
+</div>
+
+### 🏗️ Project Structure
+
+```
+SnakeGame/
+├── index.html      # Complete game (single file!)
+├── README.md       # You are here 📍
+└── screenshots/    # Game screenshots
+```
 
 </details>
 
 ---
 
-<p align="center">
-  <sub>Built with ❤️ using vanilla JavaScript</sub>
-</p>
+<div align="center">
+
+### 🌟 Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/harish1454/SnakeGame.git
+
+# Open the game
+open SnakeGame/index.html
+# or just double-click index.html in your file browser!
+```
+
+---
+
+<sub>Built with ❤️ using vanilla JavaScript</sub>
+
+<br>
+
+**[⬆ Back to Top](#-snake-game)**
+
+</div>
