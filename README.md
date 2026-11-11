@@ -31,3 +31,16 @@ A classic Snake game built with HTML5 Canvas, CSS, and JavaScript. Fully self-co
 - Grid: 20x20 cells (20px per cell)
 - Game speed: ~8 frames per second
 - Collision detection for walls and self-intersection
+
+## Portal Snake (new variant)
+
+Open `portal-snake.html` in a browser for a twist on the classic game. It is also a single file with no dependencies.
+
+- **Portals:** a blue and an orange portal are twins. Enter one and you exit from the other, still moving in the same direction. They relocate every 100 points.
+- **Bonus food:** a golden star appears at random after eating, worth 50 points, and vanishes after 5 seconds (see the countdown ring).
+- **Obstacles:** a stone block appears every 5 foods eaten (max 15). Hitting one ends the game.
+- **Speed levels:** the snake speeds up every 5 foods eaten.
+- **Best score** is saved in your browser (`localStorage`).
+- **Controls:** Arrow keys or WASD to steer, Space or P to pause, Enter to start or restart.
+
+The feature spec lives in `.kiro/specs/portal-snake/` (requirements, design, tasks).
