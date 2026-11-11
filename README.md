@@ -31,3 +31,12 @@ A classic Snake game built with HTML5 Canvas, CSS, and JavaScript. Fully self-co
 - Grid: 20x20 cells (20px per cell)
 - Game speed: ~8 frames per second
 - Collision detection for walls and self-intersection
+
+## Wormhole Run (new variant)
+
+Open `wormhole-run.html` for a new twist on Snake. The spec lives in `.kiro/specs/wormhole-run/`.
+
+- Paired **wormholes** (cyan and magenta) teleport your ship across the board (+1 energy per jump) and relocate every 10 seconds (they flicker before moving).
+- Every 3rd energy collected spawns an **asteroid** that ends the game on contact, so the arena gets more dangerous as you grow.
+- Controls: Arrow keys / WASD to steer, Space to pause, Enter to start or relaunch.
+- Best score is saved in `localStorage`.
