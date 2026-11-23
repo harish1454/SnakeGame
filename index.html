@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Space Snake</title>
+    <title>Christmas Snake</title>
     <style>
         * {
             margin: 0;
@@ -12,13 +12,13 @@
         }
 
         body {
-            background-color: #0a0a1a;
+            background: radial-gradient(ellipse at top, #0d3b2e 0%, #0a2a20 55%, #06160f 100%);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #e0e0e0;
+            color: #f5f5f5;
             overflow: hidden;
         }
 
@@ -39,8 +39,8 @@
         .title {
             font-size: 28px;
             font-weight: bold;
-            color: #00e5ff;
-            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5), 0 0 20px rgba(0, 229, 255, 0.3);
+            color: #ff4d4d;
+            text-shadow: 0 0 10px rgba(255, 77, 77, 0.6), 0 0 20px rgba(76, 217, 100, 0.3);
             letter-spacing: 2px;
         }
 
@@ -84,15 +84,15 @@
 
         .score-display {
             font-size: 20px;
-            color: #ffab40;
+            color: #ffd54f;
             font-weight: bold;
-            text-shadow: 0 0 8px rgba(255, 171, 64, 0.4);
+            text-shadow: 0 0 8px rgba(255, 213, 79, 0.5);
         }
 
         canvas {
-            border: 2px solid #1a237e;
+            border: 2px solid #c62828;
             border-radius: 4px;
-            box-shadow: 0 0 30px rgba(0, 229, 255, 0.15), inset 0 0 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 30px rgba(255, 213, 79, 0.2), inset 0 0 30px rgba(0, 0, 0, 0.5);
             display: block;
         }
 
@@ -104,53 +104,53 @@
             justify-content: center;
             width: 400px;
             height: 400px;
-            background: radial-gradient(ellipse at center, rgba(10, 10, 40, 0.95) 0%, rgba(5, 5, 20, 0.98) 100%);
+            background: radial-gradient(ellipse at center, rgba(13, 59, 46, 0.95) 0%, rgba(6, 22, 15, 0.98) 100%);
             border-radius: 4px;
             gap: 16px;
         }
 
         .overlay h2 {
             font-size: 32px;
-            color: #00e5ff;
-            text-shadow: 0 0 15px rgba(0, 229, 255, 0.7), 0 0 30px rgba(0, 229, 255, 0.4);
+            color: #ff4d4d;
+            text-shadow: 0 0 15px rgba(255, 77, 77, 0.7), 0 0 30px rgba(76, 217, 100, 0.4);
             letter-spacing: 3px;
         }
 
         .overlay p {
             font-size: 16px;
-            color: #b0bec5;
+            color: #e0f2e9;
             text-align: center;
             line-height: 1.6;
         }
 
         .overlay .final-score {
             font-size: 24px;
-            color: #ffab40;
+            color: #ffd54f;
             font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 171, 64, 0.5);
+            text-shadow: 0 0 10px rgba(255, 213, 79, 0.5);
         }
 
         .btn {
             padding: 12px 32px;
             font-size: 16px;
             font-weight: bold;
-            color: #00e5ff;
+            color: #4cd964;
             background: transparent;
-            border: 2px solid #00e5ff;
+            border: 2px solid #4cd964;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             margin-top: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.1);
+            box-shadow: 0 0 10px rgba(76, 217, 100, 0.3), inset 0 0 10px rgba(76, 217, 100, 0.1);
         }
 
         .btn:hover {
-            background: rgba(0, 229, 255, 0.15);
-            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6), inset 0 0 15px rgba(0, 229, 255, 0.2);
+            background: rgba(76, 217, 100, 0.15);
+            box-shadow: 0 0 20px rgba(76, 217, 100, 0.6), inset 0 0 15px rgba(76, 217, 100, 0.2);
             transform: scale(1.05);
-            text-shadow: 0 0 8px rgba(0, 229, 255, 0.8);
+            text-shadow: 0 0 8px rgba(76, 217, 100, 0.8);
         }
 
         .btn:active {
@@ -251,7 +251,7 @@
 
         .overlay-subtitle {
             font-size: 14px;
-            color: #5c6bc0;
+            color: #ffd54f;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 4px;
@@ -268,23 +268,23 @@
             padding: 10px 28px;
             font-size: 14px;
             font-weight: bold;
-            color: #b0bec5;
+            color: #e0f2e9;
             background: transparent;
-            border: 1px solid #5c6bc0;
+            border: 1px solid #c62828;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
-            box-shadow: 0 0 8px rgba(92, 107, 192, 0.2);
+            box-shadow: 0 0 8px rgba(198, 40, 40, 0.3);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .btn-secondary:hover {
-            color: #e0e0e0;
-            border-color: #7986cb;
-            background: rgba(92, 107, 192, 0.15);
-            box-shadow: 0 0 15px rgba(92, 107, 192, 0.4);
+            color: #ffffff;
+            border-color: #ff4d4d;
+            background: rgba(198, 40, 40, 0.18);
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.4);
             transform: scale(1.05);
         }
 
@@ -294,7 +294,7 @@
 
         .instructions {
             font-size: 14px;
-            color: #5c6bc0;
+            color: #9ccc9c;
             margin-top: 8px;
         }
 
@@ -306,36 +306,36 @@
 <body>
     <div class="game-container">
         <div class="header">
-            <div class="title">SPACE SNAKE</div>
+            <div class="title">🎄 CHRISTMAS SNAKE</div>
             <div class="header-right">
                 <span class="difficulty-label hidden" id="difficultyLabel"></span>
-                <div class="score-display">Energy: <span id="score">0</span></div>
+                <div class="score-display">Gifts: <span id="score">0</span></div>
             </div>
         </div>
         <div style="position: relative;">
             <canvas id="gameCanvas" width="400" height="400"></canvas>
             <div class="overlay" id="difficultyScreen">
-                <h2>COSMIC SERPENT</h2>
-                <div class="overlay-subtitle">Select Mission Difficulty</div>
+                <h2>🎁 MERRY SNAKEMAS</h2>
+                <div class="overlay-subtitle">Choose Your Festive Challenge</div>
                 <div class="difficulty-buttons">
                     <button class="difficulty-btn easy" id="easyBtn" data-difficulty="easy">
                         <div class="diff-info">
-                            <span class="diff-name">Easy</span>
-                            <span class="diff-desc">Slow speed, 1x score multiplier</span>
+                            <span class="diff-name">Elf</span>
+                            <span class="diff-desc">Slow speed, 1x gift multiplier</span>
                         </div>
                         <span class="diff-key">[ 1 ]</span>
                     </button>
                     <button class="difficulty-btn medium" id="mediumBtn" data-difficulty="medium">
                         <div class="diff-info">
-                            <span class="diff-name">Medium</span>
-                            <span class="diff-desc">Normal speed, 2x score multiplier</span>
+                            <span class="diff-name">Reindeer</span>
+                            <span class="diff-desc">Normal speed, 2x gift multiplier</span>
                         </div>
                         <span class="diff-key">[ 2 ]</span>
                     </button>
                     <button class="difficulty-btn hard" id="hardBtn" data-difficulty="hard">
                         <div class="diff-info">
-                            <span class="diff-name">Hard</span>
-                            <span class="diff-desc">Fast speed, 3x score multiplier</span>
+                            <span class="diff-name">Santa</span>
+                            <span class="diff-desc">Fast speed, 3x gift multiplier</span>
                         </div>
                         <span class="diff-key">[ 3 ]</span>
                     </button>
@@ -343,13 +343,13 @@
                 <div class="instructions">Press 1, 2, or 3 to select</div>
             </div>
             <div class="overlay hidden" id="gameOverScreen">
-                <h2>SHIP DESTROYED</h2>
-                <p class="final-score">Energy Collected: <span id="finalScore">0</span></p>
+                <h2>❄️ GAME OVER</h2>
+                <p class="final-score">Gifts Collected: <span id="finalScore">0</span></p>
                 <div class="game-over-buttons">
-                    <button class="btn" id="restartBtn">Relaunch</button>
-                    <button class="btn-secondary" id="changeDifficultyBtn">Change Difficulty</button>
+                    <button class="btn" id="restartBtn">Play Again</button>
+                    <button class="btn-secondary" id="changeDifficultyBtn">Change Challenge</button>
                 </div>
-                <div class="instructions">Press Enter to relaunch or Esc to change difficulty</div>
+                <div class="instructions">Press Enter to play again or Esc to change challenge</div>
             </div>
         </div>
     </div>
@@ -363,9 +363,9 @@
 
             // Difficulty settings
             const DIFFICULTY_SETTINGS = {
-                easy:   { speed: 150, multiplier: 1, label: 'Easy',   color: '#69f0ae', cssClass: 'easy' },
-                medium: { speed: 120, multiplier: 2, label: 'Medium', color: '#ffab40', cssClass: 'medium' },
-                hard:   { speed: 80,  multiplier: 3, label: 'Hard',   color: '#ff5252', cssClass: 'hard' }
+                easy:   { speed: 150, multiplier: 1, label: 'Elf',      color: '#69f0ae', cssClass: 'easy' },
+                medium: { speed: 120, multiplier: 2, label: 'Reindeer', color: '#ffab40', cssClass: 'medium' },
+                hard:   { speed: 80,  multiplier: 3, label: 'Santa',    color: '#ff5252', cssClass: 'hard' }
             };
 
             // Current difficulty state
@@ -385,13 +385,13 @@
             let gameStarted = false;
             let difficultySelected = false;
 
-            // Space theme state
-            let stars = [];
+            // Christmas theme state
+            let stars = []; // snowflakes
             let particles = [];
-            let thrusterParticles = [];
-            let foodType = 0; // 0 = planet, 1 = star, 2 = energy orb
+            let thrusterParticles = []; // sparkle trail behind the snake
+            let foodType = 0; // 0 = present, 1 = ornament, 2 = candy cane
             let foodPulse = 0;
-            let starfieldOffset = 0;
+            let starfieldOffset = 0; // snowfall offset
             let animationFrame = null;
 
             // DOM elements
@@ -408,22 +408,24 @@
             const restartBtn = document.getElementById('restartBtn');
             const changeDifficultyBtn = document.getElementById('changeDifficultyBtn');
 
-            // Generate starfield
+            // Generate falling snowflakes
             function generateStars() {
                 stars = [];
                 for (var i = 0; i < 120; i++) {
                     stars.push({
                         x: Math.random() * CANVAS_SIZE,
                         y: Math.random() * CANVAS_SIZE,
-                        size: Math.random() * 2 + 0.5,
+                        size: Math.random() * 2.2 + 0.8,
                         brightness: Math.random(),
                         twinkleSpeed: Math.random() * 0.03 + 0.01,
-                        twinkleOffset: Math.random() * Math.PI * 2
+                        twinkleOffset: Math.random() * Math.PI * 2,
+                        drift: Math.random() * 0.6 + 0.2,
+                        sway: Math.random() * Math.PI * 2
                     });
                 }
             }
 
-            // Initialize stars
+            // Initialize snowflakes
             generateStars();
 
             // Initialize game
@@ -458,7 +460,7 @@
 
             // Create particle burst when food is collected
             function createFoodParticles(x, y) {
-                var colors = ['#00e5ff', '#7c4dff', '#ff4081', '#ffab40', '#69f0ae'];
+                var colors = ['#ff4d4d', '#4cd964', '#ffd54f', '#ffffff', '#e53935'];
                 for (var i = 0; i < 12; i++) {
                     var angle = (Math.PI * 2 / 12) * i + Math.random() * 0.5;
                     var speed = Math.random() * 3 + 1.5;
@@ -567,46 +569,47 @@
                 }
             }
 
-            // Draw starfield background
+            // Draw snowy night background
             function drawStarfield() {
-                // Deep space background
-                ctx.fillStyle = '#0a0a1a';
+                // Deep festive green night sky
+                ctx.fillStyle = '#06160f';
                 ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-                // Subtle nebula gradient
-                var nebula = ctx.createRadialGradient(200, 200, 50, 200, 200, 250);
-                nebula.addColorStop(0, 'rgba(26, 0, 51, 0.3)');
-                nebula.addColorStop(0.5, 'rgba(10, 10, 40, 0.2)');
+                // Soft green glow gradient
+                var nebula = ctx.createRadialGradient(200, 160, 40, 200, 200, 260);
+                nebula.addColorStop(0, 'rgba(20, 83, 45, 0.45)');
+                nebula.addColorStop(0.5, 'rgba(13, 59, 46, 0.25)');
                 nebula.addColorStop(1, 'rgba(0, 0, 0, 0)');
                 ctx.fillStyle = nebula;
                 ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
 
-                // Draw stars with twinkling
+                // Draw drifting, twinkling snowflakes
                 var time = Date.now() * 0.001;
                 for (var i = 0; i < stars.length; i++) {
                     var star = stars[i];
                     var twinkle = Math.sin(time * star.twinkleSpeed * 60 + star.twinkleOffset) * 0.5 + 0.5;
                     var alpha = star.brightness * 0.4 + twinkle * 0.6;
-                    // Scroll effect - slight vertical drift
-                    var yPos = (star.y + starfieldOffset * star.size * 0.3) % CANVAS_SIZE;
+                    // Snowfall - vertical drift plus gentle horizontal sway
+                    var yPos = (star.y + starfieldOffset * star.drift) % CANVAS_SIZE;
                     if (yPos < 0) yPos += CANVAS_SIZE;
+                    var xPos = star.x + Math.sin(time + star.sway) * 4;
 
                     ctx.beginPath();
-                    ctx.arc(star.x, yPos, star.size * (0.5 + twinkle * 0.5), 0, Math.PI * 2);
-                    ctx.fillStyle = 'rgba(200, 220, 255, ' + alpha + ')';
+                    ctx.arc(xPos, yPos, star.size * (0.6 + twinkle * 0.4), 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, ' + alpha + ')';
                     ctx.fill();
 
-                    // Add glow to brighter stars
-                    if (star.size > 1.5) {
+                    // Add soft halo to larger snowflakes
+                    if (star.size > 1.6) {
                         ctx.beginPath();
-                        ctx.arc(star.x, yPos, star.size * 2, 0, Math.PI * 2);
-                        ctx.fillStyle = 'rgba(150, 180, 255, ' + (alpha * 0.2) + ')';
+                        ctx.arc(xPos, yPos, star.size * 2, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(220, 240, 255, ' + (alpha * 0.2) + ')';
                         ctx.fill();
                     }
                 }
 
-                // Very subtle grid (faint blue lines)
-                ctx.strokeStyle = 'rgba(30, 40, 80, 0.15)';
+                // Very subtle grid (faint green lines)
+                ctx.strokeStyle = 'rgba(76, 217, 100, 0.12)';
                 ctx.lineWidth = 0.3;
                 for (var g = 0; g <= GRID_SIZE; g++) {
                     ctx.beginPath();
@@ -620,7 +623,7 @@
                 }
             }
 
-            // Draw food as space objects
+            // Draw food as festive Christmas treats
             function drawFood() {
                 var fx = food.x * CELL_SIZE + CELL_SIZE / 2;
                 var fy = food.y * CELL_SIZE + CELL_SIZE / 2;
@@ -631,72 +634,76 @@
                 ctx.save();
 
                 if (foodType === 0) {
-                    // Planet with rings
-                    // Glow
-                    ctx.shadowColor = '#ff6e40';
+                    // Wrapped present (red box, gold ribbon)
+                    var s = radius * pulse;
+                    ctx.shadowColor = '#ff4d4d';
                     ctx.shadowBlur = 12 * pulse;
-                    // Planet body
-                    var planetGrad = ctx.createRadialGradient(fx - 2, fy - 2, 1, fx, fy, radius);
-                    planetGrad.addColorStop(0, '#ff8a65');
-                    planetGrad.addColorStop(0.6, '#d84315');
-                    planetGrad.addColorStop(1, '#bf360c');
-                    ctx.fillStyle = planetGrad;
-                    ctx.beginPath();
-                    ctx.arc(fx, fy, radius * pulse, 0, Math.PI * 2);
-                    ctx.fill();
+                    // Box
+                    ctx.fillStyle = '#e53935';
+                    ctx.fillRect(fx - s, fy - s * 0.85, s * 2, s * 1.85);
                     ctx.shadowBlur = 0;
-                    // Ring
-                    ctx.strokeStyle = 'rgba(255, 171, 64, 0.7)';
-                    ctx.lineWidth = 1.5;
+                    // Ribbon (vertical + horizontal)
+                    ctx.fillStyle = '#ffd54f';
+                    ctx.fillRect(fx - s * 0.18, fy - s * 0.85, s * 0.36, s * 1.85);
+                    ctx.fillRect(fx - s, fy - s * 0.18, s * 2, s * 0.36);
+                    // Bow
+                    ctx.fillStyle = '#fff176';
                     ctx.beginPath();
-                    ctx.ellipse(fx, fy, radius * 1.3 * pulse, radius * 0.4 * pulse, -0.3, 0, Math.PI * 2);
-                    ctx.stroke();
+                    ctx.arc(fx - s * 0.3, fy - s * 0.85, s * 0.3, 0, Math.PI * 2);
+                    ctx.arc(fx + s * 0.3, fy - s * 0.85, s * 0.3, 0, Math.PI * 2);
+                    ctx.fill();
                 } else if (foodType === 1) {
-                    // 5-pointed star
-                    ctx.shadowColor = '#ffeb3b';
+                    // Christmas tree ornament (shiny green ball with cap)
+                    ctx.shadowColor = '#4cd964';
                     ctx.shadowBlur = 15 * pulse;
-                    ctx.fillStyle = '#fdd835';
+                    var ornGrad = ctx.createRadialGradient(fx - 2, fy - 2, 1, fx, fy, radius * pulse);
+                    ornGrad.addColorStop(0, '#a5ffb0');
+                    ornGrad.addColorStop(0.6, '#2e9e4f');
+                    ornGrad.addColorStop(1, '#1b7a37');
+                    ctx.fillStyle = ornGrad;
                     ctx.beginPath();
-                    for (var p = 0; p < 5; p++) {
-                        var outerAngle = (Math.PI * 2 / 5) * p - Math.PI / 2;
-                        var innerAngle = outerAngle + Math.PI / 5;
-                        var outerR = radius * pulse;
-                        var innerR = radius * 0.4 * pulse;
-                        if (p === 0) {
-                            ctx.moveTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        } else {
-                            ctx.lineTo(fx + Math.cos(outerAngle) * outerR, fy + Math.sin(outerAngle) * outerR);
-                        }
-                        ctx.lineTo(fx + Math.cos(innerAngle) * innerR, fy + Math.sin(innerAngle) * innerR);
-                    }
-                    ctx.closePath();
+                    ctx.arc(fx, fy + radius * 0.15, radius * pulse, 0, Math.PI * 2);
                     ctx.fill();
                     ctx.shadowBlur = 0;
+                    // Highlight
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.beginPath();
+                    ctx.arc(fx - radius * 0.3, fy - radius * 0.15, radius * 0.22, 0, Math.PI * 2);
+                    ctx.fill();
+                    // Gold cap
+                    ctx.fillStyle = '#ffd54f';
+                    ctx.fillRect(fx - radius * 0.25, fy - radius * pulse - radius * 0.1, radius * 0.5, radius * 0.4);
                 } else {
-                    // Energy orb (pulsating cyan/purple)
-                    ctx.shadowColor = '#00e5ff';
-                    ctx.shadowBlur = 18 * pulse;
-                    var orbGrad = ctx.createRadialGradient(fx, fy, 0, fx, fy, radius * pulse);
-                    orbGrad.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-                    orbGrad.addColorStop(0.3, 'rgba(0, 229, 255, 0.8)');
-                    orbGrad.addColorStop(0.7, 'rgba(124, 77, 255, 0.6)');
-                    orbGrad.addColorStop(1, 'rgba(124, 77, 255, 0)');
-                    ctx.fillStyle = orbGrad;
+                    // Candy cane (white with red stripes, hooked top)
+                    ctx.shadowColor = '#ff4d4d';
+                    ctx.shadowBlur = 14 * pulse;
+                    var w = radius * 0.5 * pulse;
+                    ctx.lineWidth = w;
+                    ctx.lineCap = 'round';
+                    // White base stroke (shaft + hook)
+                    ctx.strokeStyle = '#ffffff';
                     ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 1.2 * pulse, 0, Math.PI * 2);
-                    ctx.fill();
-                    // Inner core
+                    ctx.moveTo(fx + radius * 0.3, fy + radius * 0.8);
+                    ctx.lineTo(fx + radius * 0.3, fy - radius * 0.2);
+                    ctx.arc(fx, fy - radius * 0.2, radius * 0.3, 0, Math.PI, true);
+                    ctx.stroke();
                     ctx.shadowBlur = 0;
-                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                    ctx.beginPath();
-                    ctx.arc(fx, fy, radius * 0.3, 0, Math.PI * 2);
-                    ctx.fill();
+                    // Red diagonal stripes
+                    ctx.strokeStyle = '#e53935';
+                    ctx.lineWidth = w * 0.45;
+                    for (var c = 0; c < 4; c++) {
+                        var sy = fy + radius * 0.6 - c * radius * 0.35;
+                        ctx.beginPath();
+                        ctx.moveTo(fx + radius * 0.1, sy);
+                        ctx.lineTo(fx + radius * 0.5, sy - radius * 0.2);
+                        ctx.stroke();
+                    }
                 }
 
                 ctx.restore();
             }
 
-            // Draw snake head as a spaceship
+            // Draw snake head as a festive head wearing a Santa hat
             function drawSnakeHead(segment) {
                 var cx = segment.x * CELL_SIZE + CELL_SIZE / 2;
                 var cy = segment.y * CELL_SIZE + CELL_SIZE / 2;
@@ -714,48 +721,57 @@
                 ctx.rotate(angle);
 
                 // Glow effect
-                ctx.shadowColor = '#00e5ff';
+                ctx.shadowColor = '#4cd964';
                 ctx.shadowBlur = 12;
 
-                // Ship body (triangle/arrow pointing right)
+                // Rounded green head
+                var headGrad = ctx.createRadialGradient(-size * 0.2, -size * 0.2, 1, 0, 0, size);
+                headGrad.addColorStop(0, '#8aff9a');
+                headGrad.addColorStop(0.6, '#2e9e4f');
+                headGrad.addColorStop(1, '#1b7a37');
+                ctx.fillStyle = headGrad;
                 ctx.beginPath();
-                ctx.moveTo(size, 0); // Nose
-                ctx.lineTo(-size * 0.7, -size * 0.7); // Top wing
-                ctx.lineTo(-size * 0.3, 0); // Indent
-                ctx.lineTo(-size * 0.7, size * 0.7); // Bottom wing
-                ctx.closePath();
-
-                // Gradient fill
-                var shipGrad = ctx.createLinearGradient(-size, 0, size, 0);
-                shipGrad.addColorStop(0, '#1a237e');
-                shipGrad.addColorStop(0.5, '#00bcd4');
-                shipGrad.addColorStop(1, '#00e5ff');
-                ctx.fillStyle = shipGrad;
+                ctx.arc(0, 0, size, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Outline
-                ctx.strokeStyle = '#00e5ff';
+                ctx.strokeStyle = '#1b7a37';
                 ctx.lineWidth = 1;
                 ctx.stroke();
-
                 ctx.shadowBlur = 0;
 
-                // Cockpit/windshield
+                // Eyes (toward the nose / direction of travel, +x)
+                ctx.fillStyle = '#ffffff';
                 ctx.beginPath();
-                ctx.arc(size * 0.2, 0, size * 0.25, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.arc(size * 0.35, -size * 0.3, size * 0.22, 0, Math.PI * 2);
+                ctx.arc(size * 0.35, size * 0.3, size * 0.22, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#06160f';
+                ctx.beginPath();
+                ctx.arc(size * 0.45, -size * 0.3, size * 0.1, 0, Math.PI * 2);
+                ctx.arc(size * 0.45, size * 0.3, size * 0.1, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Engine glow at the back
+                // Santa hat sits on top of the head (-x side, the "back")
+                // Red cap
+                ctx.fillStyle = '#e53935';
                 ctx.beginPath();
-                ctx.arc(-size * 0.4, 0, size * 0.2, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(255, 100, 0, 0.6)';
+                ctx.moveTo(-size * 0.1, -size * 0.75);
+                ctx.lineTo(-size * 0.1, size * 0.75);
+                ctx.lineTo(-size * 1.1, 0);
+                ctx.closePath();
+                ctx.fill();
+                // White fur trim
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(-size * 0.25, -size * 0.8, size * 0.28, size * 1.6);
+                // White pom-pom at the tip
+                ctx.beginPath();
+                ctx.arc(-size * 1.1, 0, size * 0.25, 0, Math.PI * 2);
                 ctx.fill();
 
                 ctx.restore();
             }
 
-            // Draw snake body as comet/energy trail
+            // Draw snake body as a festive red-and-green garland
             function drawSnakeBody() {
                 for (var index = 1; index < snake.length; index++) {
                     var segment = snake[index];
@@ -763,35 +779,46 @@
                     var y = segment.y * CELL_SIZE + CELL_SIZE / 2;
                     var progress = index / snake.length; // 0 at head, 1 at tail
 
-                    // Fade from bright blue-purple near head to dim toward tail
-                    var alpha = 1 - progress * 0.7;
+                    // Fade slightly toward the tail
+                    var alpha = 1 - progress * 0.6;
                     var size = (CELL_SIZE / 2 - 2) * (1 - progress * 0.3);
+
+                    // Alternate red and green beads like a garland
+                    var isRed = index % 2 === 1;
+                    var coreColor, midColor, glowColor;
+                    if (isRed) {
+                        coreColor = '#ff8a8a';
+                        midColor = '#e53935';
+                        glowColor = 'rgba(229, 57, 53, ';
+                    } else {
+                        coreColor = '#a5ffb0';
+                        midColor = '#2e9e4f';
+                        glowColor = 'rgba(46, 158, 79, ';
+                    }
 
                     ctx.save();
 
                     // Outer glow
-                    ctx.shadowColor = 'rgba(100, 50, 255, ' + (alpha * 0.5) + ')';
+                    ctx.shadowColor = glowColor + (alpha * 0.6) + ')';
                     ctx.shadowBlur = 8 * (1 - progress);
 
-                    // Gradient orb for each segment
-                    var segGrad = ctx.createRadialGradient(x, y, 0, x, y, size);
-                    // Shift from cyan (near head) to purple (near tail)
-                    var r = Math.floor(30 + progress * 100);
-                    var g = Math.floor(200 - progress * 150);
-                    var b = Math.floor(255);
-                    segGrad.addColorStop(0, 'rgba(' + r + ', ' + g + ', ' + b + ', ' + alpha + ')');
-                    segGrad.addColorStop(0.6, 'rgba(' + Math.floor(r * 0.5) + ', ' + Math.floor(g * 0.3) + ', ' + b + ', ' + (alpha * 0.7) + ')');
-                    segGrad.addColorStop(1, 'rgba(' + Math.floor(r * 0.3) + ', ' + Math.floor(g * 0.1) + ', ' + Math.floor(b * 0.8) + ', 0)');
+                    // Gradient bead for each segment
+                    var segGrad = ctx.createRadialGradient(x - size * 0.3, y - size * 0.3, 0, x, y, size);
+                    segGrad.addColorStop(0, coreColor);
+                    segGrad.addColorStop(0.7, midColor);
+                    segGrad.addColorStop(1, glowColor + alpha + ')');
 
                     ctx.fillStyle = segGrad;
+                    ctx.globalAlpha = alpha;
                     ctx.beginPath();
-                    ctx.arc(x, y, size * 1.2, 0, Math.PI * 2);
+                    ctx.arc(x, y, size, 0, Math.PI * 2);
                     ctx.fill();
 
-                    // Inner bright core
-                    ctx.fillStyle = 'rgba(200, 230, 255, ' + (alpha * 0.4) + ')';
+                    // Glossy highlight
+                    ctx.globalAlpha = alpha * 0.6;
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
                     ctx.beginPath();
-                    ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
+                    ctx.arc(x - size * 0.3, y - size * 0.3, size * 0.25, 0, Math.PI * 2);
                     ctx.fill();
 
                     ctx.restore();
@@ -819,7 +846,7 @@
                     var tp = thrusterParticles[j];
                     ctx.save();
                     ctx.globalAlpha = tp.life * 0.7;
-                    var tpColor = tp.life > 0.5 ? 'rgba(255, 150, 0, ' + tp.life + ')' : 'rgba(255, 50, 0, ' + tp.life + ')';
+                    var tpColor = tp.life > 0.5 ? 'rgba(255, 245, 200, ' + tp.life + ')' : 'rgba(255, 213, 79, ' + tp.life + ')';
                     ctx.fillStyle = tpColor;
                     ctx.beginPath();
                     ctx.arc(tp.x, tp.y, tp.size * tp.life, 0, Math.PI * 2);
